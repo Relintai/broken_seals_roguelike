@@ -7,7 +7,7 @@
 [ext_resource path="res://scripts/item_visuals/CharacterAtlasEntry2D.gd" type="Script" id=5]
 [ext_resource path="res://characters/char_t1_outline_split.png" type="Texture" id=6]
 
-[sub_resource type="CharacterAtlasEntry" id=3]
+[sub_resource type="CharacterAtlasEntry" id=1]
 script = ExtResource( 5 )
 front_rect = Rect2( 101, 15, 9, 12 )
 back_rect = Rect2( 74, 18, 9, 12 )
@@ -21,7 +21,7 @@ back_rect = Rect2( 75, 5, 7, 8 )
 right_rect = Rect2( 9, 0, 7, 8 )
 left_rect = Rect2( 9, 0, 7, 8 )
 
-[sub_resource type="CharacterAtlas" id=1]
+[sub_resource type="CharacterAtlas" id=3]
 script = ExtResource( 4 )
 comments = "HUMANOID_BONE_HIP = 0,
 HUMANOID_BONE_TORSO = 1,
@@ -43,7 +43,7 @@ HUMANOID_BONE_HEAD = 14,
 HUMANOID_BONE_HEAD_TOP = 15,
 HUMANOID_BONES_MAX = 16,"
 texture = ExtResource( 6 )
-slots = [ null, SubResource( 3 ), null, null, null, null, null, null, null, null, null, null, null, null, SubResource( 2 ), null ]
+slots = [ null, SubResource( 1 ), null, null, null, null, null, null, null, null, null, null, null, null, SubResource( 2 ), null ]
 
 [node name="Character" type="CharacterSkeleton"]
 script = ExtResource( 1 )
@@ -53,7 +53,7 @@ front_animation_tree_path = NodePath("../Character/CharacterFrontModel/Animation
 side_node_path = NodePath("CharacterSideModel")
 side_animation_player_path = NodePath("../Character/CharacterSideModel/AnimationPlayer")
 side_animation_tree_path = NodePath("../Character/CharacterSideModel/AnimationTree")
-character_atlas = SubResource( 1 )
+character_atlas = SubResource( 3 )
 
 [node name="CharacterFrontModel" parent="." instance=ExtResource( 3 )]
 visible = false

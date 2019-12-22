@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tiles.png-3a48cccc1db1aeab4bf551247aa31792.stex"
+path="res://.import/tiles.png-e2511033dcd256f37e06e0319c180cc2.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://test_iso_size/tiles.png"
-dest_files=[ "res://.import/tiles.png-3a48cccc1db1aeab4bf551247aa31792.stex" ]
+source_file="res://data/tilesets/tiles.png"
+dest_files=[ "res://.import/tiles.png-e2511033dcd256f37e06e0319c180cc2.stex" ]
 
 [params]
 
@@ -24,7 +24,7 @@ flags/filter=false
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2
-process/fix_alpha_border=true
+process/fix_alpha_border=false
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false

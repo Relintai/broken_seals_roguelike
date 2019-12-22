@@ -7,8 +7,6 @@ enum GenType {
 }
 
 
-export(MeshDataResource) var prop_mesht : MeshDataResource
-
 
 export(int) var gen_type : int = GenType.NORMAL
 export(int) var _level_seed : int

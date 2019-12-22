@@ -1,20 +1,17 @@
-extends Entity
-
-# Copyright Péter Magyar relintai@gmail.com
-# MIT License, functionality from this class needs to be protable to the entity spell system
+extends Navigation2D
 
 # Copyright (c) 2019 Péter Magyar
-
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,28 +20,12 @@ extends Entity
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+var collision_layer : int
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	connect("con_damage_taken", self, "c_on_damage_taken")
-	connect("son_damage_taken", self, "s_on_damage_taken")
-	#c_on_damage_taken( Entity Entity, DamagePipelineData damage_pipeline_data )
+func add_entity(entity : Entity) -> void:
+	entity.owner = self
+	entity.collision_layer = collision_layer
+	
 
-	pass # Replace with function body.
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-func c_on_damage_taken(entity, dpd):
-	print("c " + str(dpd.damage))
-	print("ch " + str(get_health().ccurrent) + "/" + str(get_health().cmax))
-	pass
-
-func s_on_damage_taken(entity, dpd):
-	print("s " + str(dpd.damage))
-	#print("ch " + str(get_health().scurrent) + "/" + str(get_health().smax))
-	pass
+func get_collision_layer() -> int:
+	return collision_layer

@@ -33,7 +33,6 @@ func _ready():
 	_shape.radius = 50
 
 	_query = Physics2DShapeQueryParameters.new()
-	_query.collision_layer = 2
 	_query.exclude = [ self ]
 	_query.shape_rid = _shape.get_rid()
 	
@@ -50,6 +49,8 @@ func _physics_process(delta):
 			update_visibility()
 		
 func update_visibility() -> void:
+	_query.collision_layer = get_collision_layer()
+	
 	_query.transform = Transform2D(0, position)
 	var res : Array = get_world_2d().direct_space_state.intersect_shape(_query)
 	
