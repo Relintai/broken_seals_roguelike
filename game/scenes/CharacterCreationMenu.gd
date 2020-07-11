@@ -1,6 +1,6 @@
 extends Control
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,10 +34,15 @@ func _ready():
 	name_line_edit = get_node(name_imput_path)
 	container = get_node(container_path)
 	
+	var profile : PlayerProfile = ProfileManager.getc_player_profile()
+	
 	var fb : Button = null
 	
-	for i in range(Entities.get_player_character_data_count()):
-		var d : EntityData = Entities.get_player_character_data_index(i)
+	for i in range(ESS.get_resource_db().get_entity_data_count()):
+		var d : EntityData = ESS.get_resource_db().get_entity_data_index(i)
+		
+		if not d.is_playable:
+			continue
 		
 		var ce : Button = character_entry.instance() as Button
 		
@@ -48,7 +53,8 @@ func _ready():
 		ce.owner = container
 
 		ce.id = d.id
-		ce.set_class_name(d.entity_class_data.text_name)
+		var class_profile : ClassProfile = profile.get_class_profile(d.resource_path)
+		ce.set_class_name(d.entity_class_data.text_name, class_profile.level, class_profile)
 		ce.group = character_creation_button_group
 		
 	if fb != null:
@@ -69,7 +75,7 @@ func create() -> void:
 	
 	var id : int = active.id
 	
-	var ent : Entity = Entities.spawn_player_for_menu(id, name_line_edit.text, self)
+	var ent : Entity = ESS.entity_spawner.spawn_player_for_menu(id, name_line_edit.text, self)
 	if f.open(file_name, File.WRITE) == OK:
 		f.store_string(to_json(ent.to_dict()))
 		f.close()

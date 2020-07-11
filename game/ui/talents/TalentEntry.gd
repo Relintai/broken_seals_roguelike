@@ -1,6 +1,6 @@
 extends CenterContainer
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -73,22 +73,20 @@ func set_player(player : Entity, spec : CharacterSpec, spec_index : int, row : i
 
 		
 func refresh() -> void:
-	var tr : TalentRowData = _spec.get_talent_row(_row)
-	
-	if tr.get_talent(culomn, 0) == null:
+	if _spec.get_talent(_row, culomn, 0) == null:
 		_main_container.hide()
 		return
 	
 	var rank_count : int = 0
 	var known_rank_count : int = 0
 	
-	for i in range(TalentRowData.MAX_TALENTS_PER_ENTRY):
-		var a : Aura = tr.get_talent(culomn, i)
+	for i in range(_spec.get_num_ranks(_row, culomn)):
+		var a : Aura = _spec.get_talent(_row, culomn, i)
 		
 		if a == null:
 			break
 		
-		if _player.hasc_talent(a.id):
+		if _player.talent_hasc(a.id):
 			known_rank_count += 1
 			
 		rank_count += 1
@@ -102,7 +100,7 @@ func refresh() -> void:
 	
 		_upgrade_button.show()
 	
-	var aura : Aura = tr.get_talent(culomn, ridx)
+	var aura : Aura = _spec.get_talent(_row, culomn, ridx)
 		
 	_aura_name_label.text = aura.text_name
 	_aura_description_label.text = aura.text_description
@@ -116,7 +114,7 @@ func open_popup() -> void:
 	_popup.popup(Rect2(p, _popup.rect_size))
 	
 func upgrade():
-	_player.crequest_talent_learn(_spec_index, _row, culomn)
+	_player.talent_crequest_learn(_spec_index, _row, culomn)
 	
 func ctalent_learned(entity: Entity, talent_id: int) -> void:
 	refresh()

@@ -1,6 +1,6 @@
 extends Control
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ func _ready():
 	connect("visibility_changed", self, "on_visibility_changed")
 	
 	if entry_scene == null:
-		Logger.error("LootWindow: entry_scene is null")
+		print("LootWindow: entry_scene is null")
 
 func refresh():
 	for child in container.get_children():
@@ -57,13 +57,15 @@ func refresh():
 func set_player(p_player : Entity) -> void:
 	player = p_player
 	player.connect("ctarget_bag_changed", self, "ctarget_bag_changed")
+	player.connect("onc_open_loot_winow_request", self, "onc_open_loot_winow_request")
 
 func on_visibility_changed():
 	if visible:
 		refresh()
 	else:
-		target_bag.disconnect("item_removed", self, "on_item_removed")
-		target_bag = null
+		if target_bag != null:
+			target_bag.disconnect("item_removed", self, "on_item_removed")
+			target_bag = null
 		
 func on_item_removed(bag: Bag, item: ItemInstance, slot_id: int) -> void:
 	refresh()
@@ -80,3 +82,5 @@ func ctarget_bag_changed(entity: Entity, bag: Bag) -> void:
 	
 	target_bag.connect("item_removed", self, "on_item_removed")
 	
+func onc_open_loot_winow_request() -> void:
+	show()

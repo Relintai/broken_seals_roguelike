@@ -1,7 +1,8 @@
+
 extends Control
 class_name Menu
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,3 +45,7 @@ func switch_to_menu(menu : int) -> void:
 	else:
 		get_node(charcer_creation_scenes).hide()
 
+
+
+func _on_About_pressed():
+	pass # Replace with function body.

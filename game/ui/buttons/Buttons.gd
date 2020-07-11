@@ -1,6 +1,6 @@
 extends Control
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,15 @@ var spell_book_button
 export (NodePath) var lock_button_path
 var lock_button
 
-var player 
+var player : Entity
 
 func _ready():
-	spell_book = get_node(spell_book_path)
-	spell_book_button = get_node(spell_book_button_path)
-	
-	spell_book_button.connect("pressed", self, "_spell_book_click")
-	
 	lock_button = get_node(lock_button_path)
 	lock_button.connect("pressed", self, "_lock_button_click")
 
 func set_player(p_player):
 	player = p_player
 
-func _spell_book_click():
-	if spell_book.visible:
-		spell_book.hide()
-	else:
-		spell_book.show()
 		
 func _lock_button_click():
 	if player == null:
@@ -57,7 +47,7 @@ func _lock_button_click():
 	if cls == null:
 		return
 		
-	var profile = Profiles.get_class_profile(cls.id)
+	var profile = ProfileManager.getc_player_profile().get_class_profile(cls.resource_path)
 	
 	profile.actionbar_locked = not profile.actionbar_locked
 	

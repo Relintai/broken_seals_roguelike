@@ -26,11 +26,14 @@ export (NodePath) var target_unit_frame_path : NodePath
 var target_unit_frame : Node
 var player_unit_frame : Node
 
-func _ready() -> void:
-	target_unit_frame = get_node(target_unit_frame_path) as Node
-	player_unit_frame = get_node(player_unit_frame_path) as Node
+#func _ready() -> void:
+#	target_unit_frame = get_node(target_unit_frame_path) as Node
+#	player_unit_frame = get_node(player_unit_frame_path) as Node
 
 func set_player(player : Entity) -> void:
+	target_unit_frame = get_node(target_unit_frame_path) as Node
+	player_unit_frame = get_node(player_unit_frame_path) as Node
+	
 	player_unit_frame.set_player(player)
 		
 	_ctarget_changed(player, null)

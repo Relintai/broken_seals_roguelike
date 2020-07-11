@@ -1,6 +1,6 @@
 extends PanelContainer
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -68,8 +68,8 @@ func set_category(category: int) -> void:
 		ch.queue_free()
 	
 	var count : int = 0
-	for i in range(_player.gets_craft_recipe_count()):
-		var cr : CraftRecipe = _player.gets_craft_recipe(i)
+	for i in range(_player.craft_gets_recipe_count()):
+		var cr : CraftRecipe = _player.craft_gets_recipe(i)
 		
 		if cr.category == category:
 			var rss : Node = recipe_selector_scene.instance()
@@ -89,7 +89,7 @@ func set_category(category: int) -> void:
 		
 
 func request_craft() -> void:
-	_player.crequest_craft(_selected_craft_recipe.id)
+	_player.craft_crequest(_selected_craft_recipe.id)
 	
 	for ch in _tools_container.get_children():
 		ch.refresh()
@@ -138,3 +138,10 @@ func select_recipe(recipe : CraftRecipe) -> void:
 		_materials_container.add_child(ie)
 		ie.owner = _materials_container
 		ie.set_item(_player, ih)
+
+
+func _on_CraftingButton_toggled(button_pressed):
+	if button_pressed:
+		show()
+	else:
+		hide()

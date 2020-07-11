@@ -1,6 +1,6 @@
 extends Button
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,8 +38,8 @@ var player : Entity
 var spell_id : int = 0
 var spell_type : int = 0
 
-var cd : Cooldown = null
-var categ_cd : CategoryCooldown = null
+var cd : float = 0
+var categ_cd : float = 0
 
 var has_gcd : bool = false
 var gcd : float = 0.0
@@ -59,7 +59,13 @@ func _exit_tree():
 		ThemeAtlas.unref_texture(icon_rect.texture)
 
 func _process(delta : float) -> void:
-	if cd == null and categ_cd == null and gcd < 0.001:
+	if cd > 0:
+		cd -= delta
+		
+	if categ_cd > 0:
+		categ_cd -= delta
+	
+	if cd < 0.02 and categ_cd < 0.02 and gcd < 0.001:
 		set_process(false)
 		hide_cooldown_timer()
 		return
@@ -72,11 +78,11 @@ func _process(delta : float) -> void:
 		
 	var value : float = gcd
 		
-	if cd != null and cd.remaining > value:
-		value = cd.remaining
+	if cd > value:
+		value = cd
 		
-	if categ_cd != null and categ_cd.remaining > value:
-		value = categ_cd.remaining
+	if categ_cd > value:
+		value = categ_cd
 	
 	set_cooldown_time(value) 
 
@@ -150,7 +156,7 @@ func setup_icon() -> void:
 		
 		icon_rect.texture = null
 	elif (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL):
-		if (button_entry.item_id == 0):
+		if (button_entry.item_path == ""):
 			if icon_rect.texture != null:
 				ThemeAtlas.unref_texture(icon_rect.texture)
 		
@@ -161,7 +167,10 @@ func setup_icon() -> void:
 			ThemeAtlas.unref_texture(icon_rect.texture)
 			icon_rect.texture = null
 			
-		var spell = Entities.get_spell(button_entry.item_id)
+		var spell = ESS.resource_db.get_spell_path(button_entry.item_path)
+		
+		if spell == null:
+			return
 		
 		if spell.icon != null:
 			icon_rect.texture = ThemeAtlas.add_texture(spell.icon)
@@ -169,18 +178,45 @@ func setup_icon() -> void:
 		
 		spell_id = spell.id
 		spell_type = spell.spell_type
-		has_gcd = spell.cooldown_global_cooldown
-	
-func _on_button_pressed() -> void:
-	if (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL):
-		if (button_entry.item_id == 0):
+		has_gcd = spell.cooldown_global_cooldown_enabled
+	elif (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_ITEM):
+		if (button_entry.item_path == ""):
+			if icon_rect.texture != null:
+				ThemeAtlas.unref_texture(icon_rect.texture)
+		
+			icon_rect.texture = null
 			return
 			
-		player.crequest_spell_cast(button_entry.item_id)
+		if icon_rect.texture != null:
+			ThemeAtlas.unref_texture(icon_rect.texture)
+			icon_rect.texture = null
+			
+		var item : ItemTemplate = ESS.get_resource_db().get_item_template_path(button_entry.item_path)
 		
-func set_button_entry_data(type: int, item_id: int) -> void:
+		if item.icon != null:
+			icon_rect.texture = ThemeAtlas.add_texture(item.icon)
+#			icon_rect.texture = item.icon
+		
+		spell_id = item.use_spell.id
+		spell_type = item.use_spell.spell_type
+		has_gcd = item.use_spell.cooldown_global_cooldown_enabled
+	
+func _on_button_pressed() -> void:
+	if button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL:
+		if (button_entry.item_path == ""):
+			return
+			
+		player.spell_crequest_cast(ESS.resource_db.spell_path_to_id(button_entry.item_path))
+		
+	elif button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_ITEM:
+		if (button_entry.item_path == ""):
+			return
+			
+		player.item_crequest_use(ESS.resource_db.item_template_path_to_id(button_entry.item_path))
+		
+func set_button_entry_data(type: int, item_path: String) -> void:
 	button_entry.type = type
-	button_entry.itekm_id = item_id
+	button_entry.item_path = item_path
 
 	setup_icon()
 	
@@ -205,10 +241,10 @@ func get_drag_data(pos: Vector2) -> Object:
 	elif (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_ITEM):
 		esd.type = ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_ITEM
 
-	esd.item_id = button_entry.item_id
+	esd.item_path = button_entry.item_path
 
 	button_entry.type = ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_NONE
-	button_entry.item_id = 0
+	button_entry.item_path = ""
 	
 #	Profiles.save()
 	
@@ -221,13 +257,24 @@ func can_drop_data(pos, data) -> bool:
 
 
 func drop_data(pos, esd) -> void:
-	if (esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_SPELL):
+	if esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_SPELL and button_entry.item_path == esd.item_path:
+		return
+	
+	if esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_SPELL:
 		button_entry.type = ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL
-	elif (esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_ITEM):
+		button_entry.item_path = esd.item_path
+	elif esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_ITEM or esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_INVENTORY_ITEM or esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_EQUIPPED_ITEM:
 		button_entry.type = ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_ITEM
-
-	button_entry.item_id = esd.item_id
-
+		
+		if button_entry.item_path != esd.item_path:
+			var it : ItemTemplate = ESS.get_resource_db().get_item_template_path(esd.item_path)
+			
+			if it == null or it.use_spell == null:
+				button_entry.item_path = ""
+			else:
+				button_entry.item_path = esd.item_path
+			
+	
 	setup_icon()
 	
 func set_player(p_player: Entity) -> void:
@@ -247,8 +294,8 @@ func set_player(p_player: Entity) -> void:
 	if player == null:
 		return
 
-#	for i in range(player.getc_cooldown_count()):
-#		var cooldown : Cooldown = player.getc_cooldown(i)
+#	for i in range(player.cooldown_getc_count()):
+#		var cooldown : Cooldown = player.cooldown_getc(i)
 
 	player.connect("ccooldown_added", self, "_ccooldown_added")
 	player.connect("ccooldown_removed", self, "_ccooldown_removed")
@@ -259,25 +306,25 @@ func set_player(p_player: Entity) -> void:
 	player.connect("cgcd_finished", self, "_cgcd_finished")
 
 
-func _ccooldown_added(cooldown : Cooldown) -> void:
-	if cooldown.spell_id == spell_id:
-		cd = cooldown
+func _ccooldown_added(id : int, value : float) -> void:
+	if id == spell_id:
+		cd = value
 		set_process(true)
-		show_cooldown_timer(cooldown.remaining)
+		show_cooldown_timer(value)
 
-func _ccooldown_removed(cooldown : Cooldown) -> void:
-	if cooldown.spell_id == spell_id:
-		cd = null
+func _ccooldown_removed(id : int, value : float) -> void:
+	if id == spell_id:
+		cd = 0
 	
-func _ccategory_cooldown_added(cooldown : CategoryCooldown) -> void:
-	if cooldown.category_id == spell_type:
-		categ_cd = cooldown
+func _ccategory_cooldown_added(id : int, value : float) -> void:
+	if id  == spell_type:
+		categ_cd = value
 		set_process(true)
-		show_cooldown_timer(cooldown.remaining)
+		show_cooldown_timer(value)
 	
-func _ccategory_cooldown_removed(cooldown : CategoryCooldown) -> void:
-	if cooldown.category_id == spell_type:
-		categ_cd = null
+func _ccategory_cooldown_removed(id : int, value : float) -> void:
+	if id == spell_type:
+		categ_cd = 0
 		
 	
 func _cgcd_started(value :float) -> void:

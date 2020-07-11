@@ -1,6 +1,6 @@
 extends Button
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,20 +33,22 @@ var _item_instance : ItemInstance
 
 func _ready():
 	_texture = get_node(texture_path) as TextureRect
+	
+	connect("button_up", self, "_on_button_pressed")
 
 func set_tooltip_node(tooltip : Popup) -> void:
 	_tooltip = tooltip
 
 func set_player(player: Entity) -> void:
 	if _player != null:
-		_player.disconnect("con_equip_success", self, "con_equip_success")
+		_player.disconnect("equip_con_success", self, "equip_con_success")
 	
 	_player = player
 	
 	if _player == null:
 		return
 	
-	_player.connect("con_equip_success", self, "con_equip_success")
+	_player.connect("equip_con_success", self, "equip_con_success")
 	
 func drop_data(position, data):
 	if _player == null:
@@ -59,7 +61,7 @@ func drop_data(position, data):
 		return
 		
 	if dd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_INVENTORY_ITEM:
-		_player.crequest_equip(equip_slot, dd.item_id)
+		_player.equip_crequest(equip_slot, dd.get_meta("slot_id"))
 
 func can_drop_data(position, data):
 	if _player == null:
@@ -86,11 +88,12 @@ func get_drag_data(position):
 
 	esd.origin = self
 	esd.type = ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_EQUIPPED_ITEM
-	esd.item_id = equip_slot
+	esd.item_path = _item_instance.item_template.resource_path
+	esd.set_meta("equip_slot_id", equip_slot)
 	
 	return esd
 
-func con_equip_success(entity: Entity, pequip_slot: int, item: ItemInstance, old_item: ItemInstance, bag_slot: int):
+func equip_con_success(entity: Entity, pequip_slot: int, item: ItemInstance, old_item: ItemInstance, bag_slot: int):
 	if equip_slot != pequip_slot:
 		return
 
@@ -101,3 +104,13 @@ func con_equip_success(entity: Entity, pequip_slot: int, item: ItemInstance, old
 		return
 		
 	_texture.texture = item.item_template.icon
+
+func _on_button_pressed() -> void:
+#func _pressed():
+	if _tooltip != null and _item_instance != null:
+		var pos : Vector2 = rect_global_position
+		pos.x += rect_size.x
+		
+		_tooltip.set_item(_player, _item_instance)
+		_tooltip.popup(Rect2(pos, _tooltip.rect_size))
+#		_tooltip.pac

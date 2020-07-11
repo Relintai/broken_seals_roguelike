@@ -1,16 +1,18 @@
-./engine/*
-./modules/*
 engine
-modules
+modules/*
+ignore/*
+
 *.d
 *.o
 *.meta
 game/.import/**
+game/.prop_tool_temp/**
 .sconsign.dblite
 .DS_Store
 
 .vs/*
 .kdev4/*
+.vscode/*
 
 TestRWTextures
 
@@ -18,7 +20,7 @@ _build/*
 _binaries/*
 game/android/build/*
 
-#ignore everything in the Engine Directory
-engine/*
-
 *.blend1
+.dir-locals.el
+
+build.config

@@ -50,25 +50,27 @@ func get_layer(index : int) -> Navigation2D:
 
 func load_character(file_name: String) -> void:
 	_player_file_name = file_name
-	_player = Entities.load_player(file_name, Vector2(5, 5), 1) as Entity
+	_player = ESS.entity_spawner.load_player(file_name, Vector3(5, 5, 0), 1) as Entity
 	#TODO hack, do this properly
 #	_player.set_physics_process(false)
 	
 	Server.sset_seed(_player.sseed)
 	
 	generate()
+	
+	
 
 
 func generate() -> void:
 	for x in range(-5, 5):
 		for y in range(-5, 5):
-			Entities.spawn_mob(1, 50, Vector2(x * 200, y * 200))
+			ESS.entity_spawner.spawn_mob(1, 50, Vector3(x * 200, y * 200, 0))
 
 func save() -> void:
 	if _player == null or _player_file_name == "":
 		return
 
-	Entities.save_player(_player, _player_file_name)
+	ESS.entity_spawner.save_player(_player, _player_file_name)
 	
 func _generation_finished():
 

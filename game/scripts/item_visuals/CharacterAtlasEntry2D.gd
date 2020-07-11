@@ -27,13 +27,13 @@ export(Rect2) var right_rect : Rect2
 export(Rect2) var left_rect : Rect2
 
 func get_index(facing : int) -> Rect2:
-	if facing == CharacterSkeleton2D.CharacterFacing.FACING_FRONT:
+	if facing == CharacterSkeleton2DGD.CharacterFacing.FACING_FRONT:
 		return front_rect
-	if facing == CharacterSkeleton2D.CharacterFacing.FACING_BACK:
+	if facing == CharacterSkeleton2DGD.CharacterFacing.FACING_BACK:
 		return back_rect
-	if facing == CharacterSkeleton2D.CharacterFacing.FACING_RIGHT:
+	if facing == CharacterSkeleton2DGD.CharacterFacing.FACING_RIGHT:
 		return right_rect
-	if facing == CharacterSkeleton2D.CharacterFacing.FACING_LEFT:
+	if facing == CharacterSkeleton2DGD.CharacterFacing.FACING_LEFT:
 		return left_rect
 		
 	return front_rect

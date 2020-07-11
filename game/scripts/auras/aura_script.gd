@@ -1,7 +1,7 @@
 extends Aura
 class_name AuraGD
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,19 @@ class_name AuraGD
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 func _handle_aura_damage(aura_data : AuraData, damage_info : SpellDamageInfo) -> void:
 	randomize()
 	
+	if  damage_info.dealer == null:
+		printerr("_handle_aura_damage: damage_info.dealer is null! ")
+		return
+	
 	damage_info.damage = damage_min + (randi() % (damage_max - damage_min))
+	
+	if scale_with_level:
+		damage_info.damage *= int(float(damage_info.dealer.scharacter_level) / float(EntityEnums.MAX_CHARACTER_LEVEL))
+
 	damage_info.damage_source_type = aura_data.aura.damage_type
 	
 	if (is_instance_valid(damage_info.dealer)):
@@ -34,13 +43,14 @@ func _handle_aura_heal(aura_data : AuraData, shi : SpellHealInfo) -> void:
 	randomize()
 	
 	shi.heal = heal_min + (randi() % (heal_max - heal_min))
+	shi.damage *= shi.dealer.scharacter_level / float(EntityEnums.MAX_CHARACTER_LEVEL)
 	shi.heal_source_type = aura_data.aura.aura_type
 	
 	shi.dealer.sdeal_heal_to(shi)
 
 func _sapply(info : AuraApplyInfo) -> void:
 #	var add : bool = false
-	var ad : AuraData = info.target.sget_aura_by(info.caster, info.aura.id)
+	var ad : AuraData = info.target.aura_gets_by(info.caster, info.aura.id)
 
 	if ad == null:
 #		add = true
@@ -48,41 +58,35 @@ func _sapply(info : AuraApplyInfo) -> void:
 		
 		setup_aura_data(ad, info);
 
-		for i in range(get_aura_stat_attribute_count()):
-			var stat_attribute : AuraStatAttribute = get_aura_stat_attribute(i)
-			var stat : Stat = info.target.get_stat_enum(stat_attribute.stat)
-			stat.add_modifier(id, stat_attribute.base_mod, stat_attribute.bonus_mod, stat_attribute.percent_mod)
+		for i in range(stat_attribute_get_count()):
+			info.target.stat_mod(id, stat_attribute_get_base_mod(i), stat_attribute_get_bonus_mod(i), stat_attribute_get_percent_mod(i))
 
 		if states_add != 0:
 			for i in range(EntityEnums.ENTITY_STATE_TYPE_INDEX_MAX):
 				var t : int = 1 << i
 				
 				if states_add & t != 0:
-					info.target.sadd_state_ref(i)
+					info.target.adds_state_ref(i)
 				
 
-		info.target.sadd_aura(ad);
+		info.target.aura_adds(ad);
 	else:
 		ad.remaining_time = time
 		
 	
 func _sdeapply(data : AuraData) -> void:
-	for i in range(get_aura_stat_attribute_count()):
-		var stat_attribute : AuraStatAttribute = get_aura_stat_attribute(i)
-		
-		var stat : Stat = data.owner.get_stat_enum(stat_attribute.stat)
-		
-		stat.remove_modifier(id)
-		
+	for i in range(stat_attribute_get_count()):
+		data.owner.stat_mod(id, stat_attribute_get_base_mod(i), stat_attribute_get_bonus_mod(i), stat_attribute_get_percent_mod(i))
+
 	if states_add != 0:
 		for i in range(EntityEnums.ENTITY_STATE_TYPE_INDEX_MAX):
 			var t : int = 1 << i
 				
 			if states_add & t != 0:
-				data.owner.sremove_state_ref(i)
-	
+				data.owner.removes_state_ref(i)
+
 func _con_aura_added(data : AuraData) -> void:
-	if data.owner.get_character_skeleton() == null:# or data.owner.get_character_skeleton().root_attach_point == null:
+	if data.owner.get_character_skeleton() == null or data.owner.get_character_skeleton().root_attach_point == null:
 		return
 	
 	var bse : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic

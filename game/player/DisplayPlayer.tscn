@@ -5,20 +5,21 @@
 [node name="DisplayPlayer" type="Entity" groups=[
 "players",
 ]]
-collision_layer = 3
-collision_mask = 3
-character_skeleton_path = NodePath("Rotation_Helper/Model/character")
+body_path = NodePath("KinematicBody2D")
+character_skeleton_path = NodePath("KinematicBody2D/Rotation_Helper/Model")
 sseed = 9240987
 cseed = 9240987
 script = ExtResource( 1 )
 
-[node name="Rotation_Helper" type="Spatial" parent="."]
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
+
+[node name="Rotation_Helper" type="Spatial" parent="KinematicBody2D"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.960532, 0 )
 __meta__ = {
 "_editor_description_": ""
 }
 
-[node name="Model" type="Spatial" parent="Rotation_Helper"]
+[node name="Model" type="Spatial" parent="KinematicBody2D/Rotation_Helper"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.875205, 0 )
 __meta__ = {
 "_editor_description_": ""

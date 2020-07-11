@@ -1,0 +1,14 @@
+[gd_resource type="EntitySpeciesData" load_steps=3 format=2]
+
+[ext_resource path="res://modules/species/Human/Body.tscn" type="PackedScene" id=1]
+
+[sub_resource type="SpeciesModelData" id=1]
+bone_structure = 4
+body = ExtResource( 1 )
+
+[resource]
+resource_name = "Human"
+id = 1
+type = 4
+text_name = "Human"
+model_datas = [ SubResource( 1 ) ]

@@ -1,6 +1,6 @@
 extends Button
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,6 @@ func get_drag_data(pos):
 	var esd = ESDragAndDrop.new()
 	
 	esd.type = ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_SPELL
-	esd.item_id = spell.id
+	esd.item_path = spell.resource_path
 
 	return esd

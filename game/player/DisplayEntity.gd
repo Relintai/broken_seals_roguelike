@@ -175,9 +175,9 @@ func process_movement(delta : float) -> void:
 	
 	if get_tree().network_peer:
 		if get_tree().is_network_server():
-			rset_position(position, rotation)
+			rset_position(get_body().position, get_body().rotation)
 		else:
-			rpc("set_position", position, rotation)
+			rpc("set_position", get_body().position, get_body().rotation)
 
 func _input(event: InputEvent) -> void:
 	if not cursor_grabbed:
@@ -272,7 +272,7 @@ func target(position : Vector2):
 	var from = camera.project_ray_origin(position)
 	var to = from + camera.project_ray_normal(position) * ray_length
 		
-	var space_state = get_world_2d().direct_space_state
+	var space_state = get_body().get_world_2d().direct_space_state
 	var result = space_state.intersect_ray(from, to, [], 2)
 		
 	if result:
@@ -291,7 +291,7 @@ func cmouseover(event):
 	var from = camera.project_ray_origin(event.position)
 	var to = from + camera.project_ray_normal(event.position) * ray_length
 		
-	var space_state = get_world_2d().direct_space_state
+	var space_state = get_body().get_world_2d().direct_space_state
 	var result = space_state.intersect_ray(from, to, [], 2)
 	
 	if result:
@@ -333,7 +333,7 @@ func _moved() -> void:
 	if sis_casting():
 		sfail_cast()
 		
-func _con_target_changed(entity: Entity, old_target: Entity) -> void:
+func _con_target_changed(entity: Node, old_target: Node) -> void:
 	if is_instance_valid(old_target):
 		old_target.onc_untargeted()
 		

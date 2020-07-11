@@ -1,8 +1,9 @@
 tool
+#extends VoxelmanLevelGenerator
 extends Resource
 class_name MainPlanetGenerator
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +23,32 @@ class_name MainPlanetGenerator
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-const planet_folder : String = "res://data/planets/"
+const planet_folder : String = "res://modules/planets"
 
 export(int) var _force_planet : int = -1
 export(int) var _level_seed : int
 export(bool) var _spawn_mobs : bool
 
-var _world : Navigation2D
+#var _world : VoxelWorld
 var _planet : Planet
-var _library : Resource
+#var _library : VoxelmanLibrary
 
-func setup(world : Navigation2D, level_seed : int, spawn_mobs : bool, library: Resource) -> void:
-	_level_seed = level_seed
-	_world = world
-	_spawn_mobs = spawn_mobs
-	_library = library
+#func setup(world : VoxelWorld, level_seed : int, spawn_mobs : bool, library: VoxelmanLibrary) -> void:
+#	_level_seed = level_seed
+#	_world = world
+#	_spawn_mobs = spawn_mobs
+#	_library = library
+#
+#	create_planet()
 	
-	create_planet()
-	
-func _generate_chunk(chunk : Node) -> void:
-	if _planet == null:
-		return
-	
-	_planet.generate_chunk(chunk, _spawn_mobs)
+#func _generate_chunk(chunk : VoxelChunk) -> void:
+#	if _planet == null:
+#		return
+#
+#	_planet.generate_chunk(chunk, _spawn_mobs)
 
 func create_planet():
-	var planet_files : Array
-	
-	var dir = Directory.new()
-	if dir.open(planet_folder) == OK:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while (file_name != ""):
-			if not dir.current_is_dir():
-				planet_files.append(file_name)
-				
-			file_name = dir.get_next()
+	var planet_files : Array = get_planets(planet_folder)
 	
 	if planet_files.size() == 0:
 		return
@@ -69,7 +60,7 @@ func create_planet():
 	else:
 		ind = _force_planet
 	
-	var planet_data : PlanetData = ResourceLoader.load(planet_folder + planet_files[ind], "PlanetData")
+	var planet_data : PlanetData = ResourceLoader.load(planet_files[ind], "PlanetData")
 	
 	if planet_data == null:
 		print("planet_data is null!")
@@ -95,4 +86,25 @@ func create_planet():
 	_planet.current_seed = _level_seed
 	_planet.data = planet_data
 	_planet.setup()
-	_planet.setup_library(_library)
+#	_planet.setup_library(_library)
+
+func get_planets(path : String, root : bool = true) -> Array:
+	var planet_files : Array = Array()
+	
+	var dir = Directory.new()
+	if dir.open(path) == OK:
+		dir.list_dir_begin(true)
+		var file_name = dir.get_next()
+		while (file_name != ""):
+			if not dir.current_is_dir():
+				planet_files.append(path + "/" + file_name)
+			else:
+				if root:
+					var l : Array = get_planets(path + "/" + file_name, false)
+					
+					for i in l:
+						planet_files.append(i)
+
+			file_name = dir.get_next()
+			
+	return planet_files

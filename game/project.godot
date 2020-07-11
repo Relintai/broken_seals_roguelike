@@ -29,10 +29,10 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://player/CharacterSkeletonAttachPoint.gd"
 }, {
-"base": "CharacterSkeleton",
-"class": "CharacterSkeleton2D",
+"base": "CharacterSkeleton2D",
+"class": "CharacterSkeleton2DGD",
 "language": "GDScript",
-"path": "res://player/CharacterSkeleton2D.gd"
+"path": "res://player/CharacterSkeleton2DGD.gd"
 }, {
 "base": "Entity",
 "class": "DisplayPlayerGD",
@@ -48,6 +48,161 @@ _global_script_classes=[ {
 "class": "EntityDataGD",
 "language": "GDScript",
 "path": "res://scripts/entities/EntityDataGD.gd"
+}, {
+"base": "Reference",
+"class": "GSAIAgentLocation",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAIAgentLocation.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIArrive",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIArrive.gd"
+}, {
+"base": "GSAIGroupBehavior",
+"class": "GSAIAvoidCollisions",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIAvoidCollisions.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIBlend",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIBlend.gd"
+}, {
+"base": "GSAIGroupBehavior",
+"class": "GSAICohesion",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAICohesion.gd"
+}, {
+"base": "GSAIPursue",
+"class": "GSAIEvade",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIEvade.gd"
+}, {
+"base": "GSAIMatchOrientation",
+"class": "GSAIFace",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIFace.gd"
+}, {
+"base": "GSAISeek",
+"class": "GSAIFlee",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIFlee.gd"
+}, {
+"base": "GSAIArrive",
+"class": "GSAIFollowPath",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIFollowPath.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIGroupBehavior",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAIGroupBehavior.gd"
+}, {
+"base": "GSAIProximity",
+"class": "GSAIInfiniteProximity",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Proximities/GSAIInfiniteProximity.gd"
+}, {
+"base": "GSAISpecializedAgent",
+"class": "GSAIKinematicBody2DAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Agents/GSAIKinematicBody2DAgent.gd"
+}, {
+"base": "GSAISpecializedAgent",
+"class": "GSAIKinematicBody3DAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Agents/GSAIKinematicBody3DAgent.gd"
+}, {
+"base": "GSAIMatchOrientation",
+"class": "GSAILookWhereYouGo",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAILookWhereYouGo.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIMatchOrientation",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIMatchOrientation.gd"
+}, {
+"base": "Reference",
+"class": "GSAIPath",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAIPath.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIPriority",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIPriority.gd"
+}, {
+"base": "Reference",
+"class": "GSAIProximity",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Proximities/GSAIProximity.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAIPursue",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAIPursue.gd"
+}, {
+"base": "GSAIProximity",
+"class": "GSAIRadiusProximity",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Proximities/GSAIRadiusProximity.gd"
+}, {
+"base": "GSAISpecializedAgent",
+"class": "GSAIRigidBody2DAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Agents/GSAIRigidBody2DAgent.gd"
+}, {
+"base": "GSAISpecializedAgent",
+"class": "GSAIRigidBody3DAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Agents/GSAIRigidBody3DAgent.gd"
+}, {
+"base": "GSAISteeringBehavior",
+"class": "GSAISeek",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAISeek.gd"
+}, {
+"base": "GSAIGroupBehavior",
+"class": "GSAISeparation",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Behaviors/GSAISeparation.gd"
+}, {
+"base": "GSAISteeringAgent",
+"class": "GSAISpecializedAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/Agents/GSAISpecializedAgent.gd"
+}, {
+"base": "GSAIAgentLocation",
+"class": "GSAISteeringAgent",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAISteeringAgent.gd"
+}, {
+"base": "Reference",
+"class": "GSAISteeringBehavior",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAISteeringBehavior.gd"
+}, {
+"base": "Reference",
+"class": "GSAITargetAcceleration",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAITargetAcceleration.gd"
+}, {
+"base": "Reference",
+"class": "GSAIUtils",
+"language": "GDScript",
+"path": "res://steering_ai_framework/GSAIUtils.gd"
+}, {
+"base": "Resource",
+"class": "GameModule",
+"language": "GDScript",
+"path": "res://scripts/game_modules/GameModule.gd"
+}, {
+"base": "EntityResource",
+"class": "HealthResource",
+"language": "GDScript",
+"path": "res://scripts/resources/HealthResource.gd"
 }, {
 "base": "CharacterBones",
 "class": "HumanoidCharacterBones2D",
@@ -69,15 +224,15 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/item_visuals/ItemVisualEntry2D.gd"
 }, {
+"base": "Node2D",
+"class": "LayeredTextureMaker",
+"language": "GDScript",
+"path": "res://texture_tools/LayeredTextureMaker.gd"
+}, {
 "base": "Node",
 "class": "Main",
 "language": "GDScript",
 "path": "res://scenes/MainScene.gd"
-}, {
-"base": "Resource",
-"class": "MainDungeonGenerator",
-"language": "GDScript",
-"path": "res://dungeon_generator/MainDungeonGenerator.gd"
 }, {
 "base": "Resource",
 "class": "MainPlanetGenerator",
@@ -87,12 +242,17 @@ _global_script_classes=[ {
 "base": "EntityResource",
 "class": "ManaResource",
 "language": "GDScript",
-"path": "res://scripts/resources/ManResource.gd"
+"path": "res://scripts/resources/ManaResource.gd"
 }, {
 "base": "Control",
 "class": "Menu",
 "language": "GDScript",
 "path": "res://scenes/Menu.gd"
+}, {
+"base": "Entity",
+"class": "MobGD",
+"language": "GDScript",
+"path": "res://player/Mob.gd"
 }, {
 "base": "",
 "class": "NetworkedPlayerGD",
@@ -107,7 +267,12 @@ _global_script_classes=[ {
 "base": "Resource",
 "class": "PlayerMaster",
 "language": "GDScript",
-"path": "res://networking/PlayerMaster.gd"
+"path": "res://scripts/networking/PlayerMaster.gd"
+}, {
+"base": "EntityResource",
+"class": "SpeedResource",
+"language": "GDScript",
+"path": "res://scripts/resources/SpeedResource.gd"
 }, {
 "base": "SpellEffectVisual",
 "class": "SpellEffectVisualBasic",
@@ -118,56 +283,82 @@ _global_script_classes=[ {
 "class": "SpellGD",
 "language": "GDScript",
 "path": "res://scripts/spells/gd_spell_script.gd"
-}, {
-"base": "WorldSpell",
-"class": "WorldSpellGD",
-"language": "GDScript",
-"path": "res://scripts/projectiles/WorldSpellGD.gd"
 } ]
 _global_script_class_icons={
 "AuraGD": "",
 "CharacterAtlas2D": "",
 "CharacterAtlasEntry2D": "",
 "CharacterSkeketonAttachPoint": "",
-"CharacterSkeleton2D": "",
+"CharacterSkeleton2DGD": "",
 "DisplayPlayerGD": "",
 "EntityAIGD": "",
 "EntityDataGD": "",
+"GSAIAgentLocation": "",
+"GSAIArrive": "",
+"GSAIAvoidCollisions": "",
+"GSAIBlend": "",
+"GSAICohesion": "",
+"GSAIEvade": "",
+"GSAIFace": "",
+"GSAIFlee": "",
+"GSAIFollowPath": "",
+"GSAIGroupBehavior": "",
+"GSAIInfiniteProximity": "",
+"GSAIKinematicBody2DAgent": "",
+"GSAIKinematicBody3DAgent": "",
+"GSAILookWhereYouGo": "",
+"GSAIMatchOrientation": "",
+"GSAIPath": "",
+"GSAIPriority": "",
+"GSAIProximity": "",
+"GSAIPursue": "",
+"GSAIRadiusProximity": "",
+"GSAIRigidBody2DAgent": "",
+"GSAIRigidBody3DAgent": "",
+"GSAISeek": "",
+"GSAISeparation": "",
+"GSAISpecializedAgent": "",
+"GSAISteeringAgent": "",
+"GSAISteeringBehavior": "",
+"GSAITargetAcceleration": "",
+"GSAIUtils": "",
+"GameModule": "",
+"HealthResource": "",
 "HumanoidCharacterBones2D": "",
 "ItemTemplateGD": "",
 "ItemVisual2D": "",
 "ItemVisualEntry2D": "",
+"LayeredTextureMaker": "",
 "Main": "",
-"MainDungeonGenerator": "",
 "MainPlanetGenerator": "",
 "ManaResource": "",
 "Menu": "",
+"MobGD": "",
 "NetworkedPlayerGD": "",
 "PlayerGD": "",
 "PlayerMaster": "",
+"SpeedResource": "",
 "SpellEffectVisualBasic": "",
-"SpellGD": "",
-"WorldSpellGD": ""
+"SpellGD": ""
 }
 Node="input/actionbar_5_11"
 
 [application]
 
-config/name="Broken Seals Roguelike"
+config/name="Broken Seals 2D"
+config/description="An open source third person RPG "
 run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
 config/version="0.2"
 
 [autoload]
 
-Logger="*res://autoload/Logger.tscn"
-Settings="*res://autoload/SettingsManager.gd"
-CursorManager="*res://autoload/CursorManager.tscn"
-Entities="*res://autoload/EntityDataManager.tscn"
-Profiles="*res://autoload/ProfileManager.tscn"
-WorldNumbers="*res://autoload/WorldNumbers.tscn"
-ThemeAtlas="*res://autoload/ThemeAtlas.tscn"
 Server="*res://autoload/Server.tscn"
+ThemeAtlas="*res://ui/autoload/ThemeAtlas.tscn"
+WorldNumbers="*res://ui/world_numbers_2d/WorldNumbers.tscn"
+CursorManager="*res://cursors/autoload/CursorManager.tscn"
+Settings="*res://ui/autoload/SettingsManager.tscn"
+Logger="*res://autoload/Logger.tscn"
 
 [debug]
 
@@ -184,10 +375,20 @@ window/handheld/orientation="sensor_landscape"
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 mouse_cursor/sensitivity=0.9
+window/size/viewport_scale=100
 
-[editor_plugins]
+[ess]
 
-enabled=PoolStringArray( "ess_data" )
+data/ess_resource_db_path="res://data/resource_db.tres"
+data/ess_entity_spawner_path="res://player/bs_entity_spawner.tres"
+enums/stats="Agility,Strength,Stamina,Intellect,Spirit,Health,Mana,Speed,Global Cooldown,Haste,Haste Rating,Resilience,Armor,Attack Power,Spell Power,Melee Crit,Melee Crit bonus,Spell Crit,Spell Crit Bonus,Block,Parry,Damage Reduction,Melee Damage Reduction,Spell Damage Reduction,Damage Taken,Heal Taken,Melee Damage,Spell Damage,Holy Resist,Shadow Resist,Nature Resist,Fire Resist,Frost Resist,Lightning Resist,Chaos Resist,Silence Resist,Fear Resist,Stun Resist,Energy,Rage,XP Rate"
+enums/skeletons_bones=PoolStringArray( "", "root,pelvis,spine,spine_1,spine_2,neck,head,left_clavicle,left_upper_arm,left_forearm,left_hand,left_thumb_base,left_thumb_end,left_fingers_base,left_fingers_end,right_clavicle,right_upper_arm,right_forearm,right_hand,right_thumb_base,right_thumb_end,right_fingers_base,right_fingers_end,left_thigh,left_calf,left_foot,right_thigh,right_calf,right_foot" )
+enums/skeletons_bone_attachment_points=PoolStringArray( "", "left_hand,right_hand,torso,root,right_hip,left_hip,spine_2,weapon_left,weapon_right,weapon_left_back,weapon_right_back,weapon_shield_left" )
+xp/class_xps=PoolIntArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+xp/character_xps=PoolIntArray( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+profiles/automatic_save=true
+level/max_character_level=60
+level/max_class_level=60
 
 [importer_defaults]
 
@@ -200,6 +401,26 @@ texture_array={
 "flags/srgb": 0,
 "slices/horizontal": 8,
 "slices/vertical": 8
+}
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": false,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 1,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": false,
+"process/invert_color": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
 }
 
 [input]
@@ -277,11 +498,20 @@ actionbar_1_12={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":true,"control":false,"meta":false,"command":false,"pressed":false,"scancode":39,"unicode":0,"echo":false,"script":null)
  ]
 }
+sheath={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":80,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [layer_names]
 
 3d_physics/layer_1="World"
 3d_physics/layer_2="Entities"
+
+[memory]
+
+limits/message_queue/max_size_kb=2048
 
 [physics]
 
@@ -295,3 +525,5 @@ quality/2d/use_pixel_snap=true
 vram_compression/import_etc=true
 quality/directional_shadow/size.mobile=1024
 quality/shading/force_vertex_shading=true
+quality/2d/use_batching=true
+quality/shadows/enabled=false

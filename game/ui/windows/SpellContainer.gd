@@ -1,6 +1,6 @@
 extends Control
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -67,7 +67,7 @@ func set_spell(p_player : Entity, p_spell: Spell) -> void:
 	_popup.set_spell(_spell)
 	
 	if not _spell == null:
-		_spell_known = _player.hasc_spell(p_spell)
+		_spell_known = _player.spell_hasc(p_spell)
 		
 		_icon.texture = _spell.icon
 		_name_label.text = _spell.text_name + " (Rank " + str(_spell.rank) + ")"
@@ -85,7 +85,7 @@ func learn_spell() -> void:
 	if _player.cfree_spell_points <= 0:
 		return
 		
-	_player.crequest_spell_learn(_spell.id)
+	_player.spell_learn_requestc(_spell.id)
 
 func cspell_added(entity: Entity, spell: Spell) -> void:
 	if spell == _spell:
@@ -107,24 +107,24 @@ func spell_button_pressed() -> void:
 
 func update_spell_indicators():
 	if _spell_known:
-		get_node(known_label_path).show()
-		get_node(learn_button_path).hide()
+#		get_node(known_label_path).show()
+#		get_node(learn_button_path).hide()
 		
 		modulate = known_color
 	else:
 		if _spell != null:
 			if _spell.training_required_spell:
-				if not _player.hasc_spell(_spell.training_required_spell):
+				if not _player.spell_hasc(_spell.training_required_spell):
 					
-					get_node(known_label_path).hide()
-					get_node(learn_button_path).show()
+#					get_node(known_label_path).hide()
+#					get_node(learn_button_path).show()
 		
 					modulate = unlearnable_color
 					
 					return
 		
-		get_node(known_label_path).hide()
-		get_node(learn_button_path).show()
+#		get_node(known_label_path).hide()
+#		get_node(learn_button_path).show()
 		
 		modulate = not_known_color
 		

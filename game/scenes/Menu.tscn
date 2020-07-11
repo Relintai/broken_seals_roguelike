@@ -1,12 +1,12 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://ui/theme/ui_theme.tres" type="Theme" id=1]
-[ext_resource path="res://menu/CharacterEntry.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/menu/CharacterEntry.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/Menu.gd" type="Script" id=3]
-[ext_resource path="res://menu/menu_character_button_group.tres" type="ButtonGroup" id=4]
+[ext_resource path="res://ui/menu/menu_character_button_group.tres" type="ButtonGroup" id=4]
 [ext_resource path="res://scenes/CharacterSelectorMenu.gd" type="Script" id=5]
 [ext_resource path="res://scenes/CharacterCreationMenu.gd" type="Script" id=6]
-[ext_resource path="res://menu/character_creation_button_group.tres" type="ButtonGroup" id=7]
+[ext_resource path="res://ui/menu/character_creation_button_group.tres" type="ButtonGroup" id=7]
 [ext_resource path="res://ui/options/Options.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/register/Register.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ui/login/Login.tscn" type="PackedScene" id=10]
@@ -15,6 +15,7 @@
 [ext_resource path="res://scenes/DisconnectButton.gd" type="Script" id=13]
 [ext_resource path="res://scenes/ConnectServerButton.gd" type="Script" id=14]
 [ext_resource path="res://scenes/HostGameButton.gd" type="Script" id=15]
+[ext_resource path="res://ui/about/About.tscn" type="PackedScene" id=20]
 
 [node name="Menu" type="Control"]
 anchor_right = 1.0
@@ -56,11 +57,14 @@ __meta__ = {
 "_editor_description_": ""
 }
 menu_path = NodePath("..")
-container_path = NodePath("CharacterSelector/CharacterSelector/VBoxContainer/ScrollContainer/Container")
+container_path = NodePath("CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/ScrollContainer/Container")
 player_display_container_path = NodePath("../Char/CharacterDisplay")
 character_button_group = ExtResource( 4 )
 character_entry = ExtResource( 2 )
 character_folder = "characters"
+load_button_path = NodePath("CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/Load")
+renounce_button_path = NodePath("CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/Delete")
+create_button_path = NodePath("CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/New")
 
 [node name="CharacterSelector" type="MarginContainer" parent="CharacterSelectorMenu"]
 anchor_left = 1.0
@@ -77,55 +81,53 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="CharacterSelector" type="PanelContainer" parent="CharacterSelectorMenu/CharacterSelector"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSelectorMenu/CharacterSelector"]
 margin_top = 20.0
 margin_right = 269.0
 margin_bottom = 580.0
+alignment = 2
+
+[node name="CharacterSelector" type="PanelContainer" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer"]
+margin_right = 269.0
+margin_bottom = 560.0
+size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector"]
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 265.0
 margin_bottom = 556.0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer"]
 margin_right = 261.0
-margin_bottom = 484.0
+margin_bottom = 450.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Container" type="VBoxContainer" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/ScrollContainer"]
+[node name="Container" type="VBoxContainer" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/ScrollContainer"]
 margin_right = 261.0
 size_flags_horizontal = 3
 
-[node name="Load" type="Button" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer"]
-margin_top = 492.0
+[node name="Load" type="Button" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer"]
+margin_top = 458.0
 margin_right = 261.0
-margin_bottom = 518.269
+margin_bottom = 484.57
 text = "Load"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer"]
+[node name="New" type="Button" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer"]
+margin_top = 492.0
+margin_right = 261.0
+margin_bottom = 518.57
+text = "New"
+
+[node name="Delete" type="Button" parent="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer"]
 margin_top = 526.0
 margin_right = 261.0
-margin_bottom = 552.0
-
-[node name="Delete" type="Button" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/HBoxContainer"]
-margin_right = 128.0
-margin_bottom = 26.269
-size_flags_horizontal = 3
-size_flags_vertical = 3
+margin_bottom = 552.57
 text = "Delete"
-
-[node name="Create" type="Button" parent="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/HBoxContainer"]
-margin_left = 132.0
-margin_right = 261.0
-margin_bottom = 26.269
-size_flags_horizontal = 3
-size_flags_vertical = 3
-text = "Create"
 
 [node name="PlayerDisplays" type="Node" parent="CharacterSelectorMenu"]
 
@@ -207,7 +209,7 @@ margin_bottom = 47.3413
 [node name="Create" type="Button" parent="CharacterCreationMenu/CharacterSelector2/CharacterSelector/VBoxContainer/PanelContainer/VBoxContainer"]
 margin_top = 55.0
 margin_right = 253.0
-margin_bottom = 81.269
+margin_bottom = 81.5702
 size_flags_horizontal = 3
 text = "Create"
 __meta__ = {
@@ -217,7 +219,7 @@ __meta__ = {
 [node name="Back" type="Button" parent="CharacterCreationMenu/CharacterSelector2/CharacterSelector/VBoxContainer/PanelContainer/VBoxContainer"]
 margin_top = 89.0
 margin_right = 253.0
-margin_bottom = 115.269
+margin_bottom = 115.57
 text = "Back"
 
 [node name="ConnectMenu" type="Control" parent="."]
@@ -282,7 +284,7 @@ text = "23223"
 [node name="CheckBox" type="CheckBox" parent="ConnectMenu/PanelContainer/VBoxContainer"]
 margin_top = 133.0
 margin_right = 244.0
-margin_bottom = 159.269
+margin_bottom = 159.57
 text = "Use WebSockets"
 
 [node name="Status" type="Label" parent="ConnectMenu/PanelContainer/VBoxContainer"]
@@ -295,7 +297,7 @@ valign = 1
 [node name="ConnectButton" type="Button" parent="ConnectMenu/PanelContainer/VBoxContainer"]
 margin_top = 190.0
 margin_right = 244.0
-margin_bottom = 216.269
+margin_bottom = 216.57
 text = "Connect"
 script = ExtResource( 14 )
 container_path = NodePath("../../..")
@@ -307,7 +309,7 @@ port_line_edit_path = NodePath("../LineEdit2")
 [node name="Button2" type="Button" parent="ConnectMenu/PanelContainer/VBoxContainer"]
 margin_top = 224.0
 margin_right = 244.0
-margin_bottom = 250.269
+margin_bottom = 250.57
 text = "Cancel"
 
 [node name="HostMenu" type="Control" parent="."]
@@ -360,7 +362,7 @@ text = "23223"
 [node name="CheckBox" type="CheckBox" parent="HostMenu/PanelContainer/VBoxContainer"]
 margin_top = 78.0
 margin_right = 244.0
-margin_bottom = 104.269
+margin_bottom = 104.57
 text = "Use WebSockets"
 
 [node name="Status" type="Label" parent="HostMenu/PanelContainer/VBoxContainer"]
@@ -373,7 +375,7 @@ valign = 1
 [node name="HostButton" type="Button" parent="HostMenu/PanelContainer/VBoxContainer"]
 margin_top = 135.0
 margin_right = 244.0
-margin_bottom = 161.269
+margin_bottom = 161.57
 text = "Host"
 script = ExtResource( 15 )
 container_path = NodePath("../../..")
@@ -384,7 +386,7 @@ port_line_edit_path = NodePath("../LineEdit2")
 [node name="Button2" type="Button" parent="HostMenu/PanelContainer/VBoxContainer"]
 margin_top = 169.0
 margin_right = 244.0
-margin_bottom = 195.269
+margin_bottom = 195.57
 text = "Cancel"
 
 [node name="OptionsButton" type="MarginContainer" parent="."]
@@ -433,9 +435,9 @@ __meta__ = {
 }
 
 [node name="Connect" type="Button" parent="OptionsButton/Control/VBoxContainer"]
-margin_top = 13.0
+margin_top = 47.0
 margin_right = 120.0
-margin_bottom = 39.269
+margin_bottom = 73.5702
 rect_min_size = Vector2( 120, 0 )
 text = "Connect"
 script = ExtResource( 11 )
@@ -444,9 +446,9 @@ __meta__ = {
 }
 
 [node name="Host" type="Button" parent="OptionsButton/Control/VBoxContainer"]
-margin_top = 47.0
+margin_top = 81.0
 margin_right = 120.0
-margin_bottom = 73.269
+margin_bottom = 107.57
 rect_min_size = Vector2( 120, 0 )
 text = "Host"
 script = ExtResource( 12 )
@@ -455,9 +457,10 @@ __meta__ = {
 }
 
 [node name="Button2" type="Button" parent="OptionsButton/Control/VBoxContainer"]
-margin_top = 81.0
+visible = false
+margin_top = 115.0
 margin_right = 120.0
-margin_bottom = 107.269
+margin_bottom = 141.57
 rect_min_size = Vector2( 120, 0 )
 text = "Login"
 __meta__ = {
@@ -465,11 +468,22 @@ __meta__ = {
 }
 
 [node name="Button3" type="Button" parent="OptionsButton/Control/VBoxContainer"]
+visible = false
 margin_top = 115.0
 margin_right = 120.0
-margin_bottom = 141.269
+margin_bottom = 141.57
 rect_min_size = Vector2( 120, 0 )
 text = "Register"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="About" type="Button" parent="OptionsButton/Control/VBoxContainer"]
+margin_top = 115.0
+margin_right = 120.0
+margin_bottom = 141.57
+rect_min_size = Vector2( 120, 0 )
+text = "About"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -477,7 +491,7 @@ __meta__ = {
 [node name="Button" type="Button" parent="OptionsButton/Control/VBoxContainer"]
 margin_top = 149.0
 margin_right = 120.0
-margin_bottom = 175.269
+margin_bottom = 175.57
 rect_min_size = Vector2( 120, 0 )
 text = "Options"
 __meta__ = {
@@ -485,6 +499,9 @@ __meta__ = {
 }
 
 [node name="Options" parent="." instance=ExtResource( 8 )]
+visible = false
+
+[node name="About" parent="." instance=ExtResource( 20 )]
 visible = false
 
 [node name="Login" parent="." instance=ExtResource( 10 )]
@@ -498,16 +515,17 @@ margin_bottom = 127.5
 visible = false
 
 [node name="Char" type="Spatial" parent="."]
-transform = Transform( 0.359313, 0, 0.933217, 0, 1, 0, -0.933217, 0, 0.359313, -2.44425, 6.02678, 0 )
+transform = Transform( 0.359313, 0, 0.933217, 0, 1, 0, -0.933217, 0, 0.359313, -2.44425, 0.926699, 0 )
 
 [node name="CharacterDisplay" type="Spatial" parent="Char"]
+transform = Transform( 1, 1.49012e-08, 0, 0, 0.990268, -0.139173, -2.98023e-08, 0.139173, 0.990268, -5.96046e-08, 0.578123, 0.08125 )
 
 [node name="Camera" type="Camera" parent="Char"]
-transform = Transform( 0.906006, -0.157589, 0.392835, 0.0104413, 0.936144, 0.351461, -0.423137, -0.314324, 0.849797, 0.300506, 1.57764, 2.14719 )
+transform = Transform( 0.907555, -0.0761572, 0.41297, 0.0262364, 0.99178, 0.12524, -0.419113, -0.102827, 0.902093, 0.752064, 1.69463, 3.15021 )
 current = true
-[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/Load" to="CharacterSelectorMenu" method="load_character"]
-[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/HBoxContainer/Delete" to="CharacterSelectorMenu" method="delete_character"]
-[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/CharacterSelector/VBoxContainer/HBoxContainer/Create" to="." method="switch_to_menu" binds= [ 1 ]]
+[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/Load" to="CharacterSelectorMenu" method="load_character"]
+[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/New" to="." method="switch_to_menu" binds= [ 1 ]]
+[connection signal="pressed" from="CharacterSelectorMenu/CharacterSelector/VBoxContainer/CharacterSelector/VBoxContainer/Delete" to="CharacterSelectorMenu" method="renounce_character"]
 [connection signal="pressed" from="CharacterCreationMenu/CharacterSelector2/CharacterSelector/VBoxContainer/PanelContainer/VBoxContainer/Create" to="CharacterCreationMenu" method="create"]
 [connection signal="pressed" from="CharacterCreationMenu/CharacterSelector2/CharacterSelector/VBoxContainer/PanelContainer/VBoxContainer/Back" to="." method="switch_to_menu" binds= [ 0 ]]
 [connection signal="pressed" from="ConnectMenu/PanelContainer/VBoxContainer/Button2" to="ConnectMenu" method="hide"]
@@ -516,4 +534,5 @@ current = true
 [connection signal="pressed" from="OptionsButton/Control/VBoxContainer/Host" to="HostMenu" method="show"]
 [connection signal="pressed" from="OptionsButton/Control/VBoxContainer/Button2" to="Login" method="show"]
 [connection signal="pressed" from="OptionsButton/Control/VBoxContainer/Button3" to="Register" method="show"]
+[connection signal="pressed" from="OptionsButton/Control/VBoxContainer/About" to="About" method="show"]
 [connection signal="pressed" from="OptionsButton/Control/VBoxContainer/Button" to="Options" method="show"]

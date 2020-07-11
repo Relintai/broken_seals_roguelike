@@ -4,7 +4,7 @@ class_name EntityAIGD
 # Copyright Péter Magyar relintai@gmail.com
 # MIT License, functionality from this class needs to be protable to the entity spell system
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,9 @@ var _data : Dictionary = {
 	"target_aura_spells": {},
 	"spells": []
 }
+
+func _ready():
+	pass
 
 func _on_set_owner():
 	if not is_instance_valid(owner):
@@ -73,28 +76,28 @@ func attack(delta):
 	
 	if target == null:
 		owner.ai_state = EntityEnums.AI_STATE_REGENERATE
-		owner.target_movement_direction = Vector2()
+		owner.get_body().target_movement_direction = Vector2()
 		return
 	
 	var cast : bool = false
-	if not owner.gets_has_global_cooldown():
+	if not owner.gcd_hass():
 		var taspellsdict : Dictionary = _data["target_aura_spells"]
 		
 		for taskey in taspellsdict.keys():
 			for tas in taspellsdict[taskey]:
 				var spell_id : int = tas["spell_id"]
 				
-				if not owner.hass_spell_id(spell_id):
+				if not owner.spell_hass_id(spell_id):
 					continue
 			
 				if taskey == null:
-					if target.sget_aura_by(owner, tas["aura_id"]) == null and not owner.hass_cooldown(spell_id):
-						owner.crequest_spell_cast(spell_id)
+					if target.aura_gets_by(owner, tas["aura_id"]) == null and not owner.cooldown_hass(spell_id):
+						owner.spell_crequest_cast(spell_id)
 						cast = true
 						break
 				else:
-					if target.sget_aura_with_group_by(owner, taskey) == null and not owner.hass_cooldown(spell_id):
-						owner.crequest_spell_cast(spell_id)
+					if target.aura_gets_with_group_by(owner, taskey) == null and not owner.cooldown_hass(spell_id):
+						owner.spell_crequest_cast(spell_id)
 						cast = true
 						break
 			if cast:
@@ -104,22 +107,25 @@ func attack(delta):
 			var sps : Array = _data["spells"]
 		
 			for spell_id in sps:
-				if not owner.hass_spell_id(spell_id):
+				if not owner.spell_hass_id(spell_id):
 					continue
 			
-				if not owner.hass_cooldown(spell_id):
-					owner.crequest_spell_cast(spell_id)
+				if not owner.cooldown_hass(spell_id):
+					owner.spell_crequest_cast(spell_id)
 					cast = true
 					break
 	
-	
-	if owner.sis_casting():
-		owner.target_movement_direction = Vector2()
+	if owner.cast_is_castings():
+		owner.get_body().target_movement_direction = Vector2()
 		return
 	
-	var dir : Vector2 = target.position - owner.position
+	owner.get_body().target_movement_direction = Vector2()
 	
-	owner.target_movement_direction = dir
+	var dir : Vector2 = target.get_body().position - owner.get_body().position
+	var l = dir.length()
+	
+	if l > 2.5:
+		owner.get_body().target_movement_direction = Vector2(dir.x, dir.y)
 
 func sort_spells_by_rank(a, b):
 	if a == null or b == null:

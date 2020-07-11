@@ -1,25 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://characters/Character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://player/Player.gd" type="Script" id=2]
-[ext_resource path="res://ui/player_ui/player_ui.tscn" type="PackedScene" id=3]
 
-[sub_resource type="CircleShape2D" id=1]
-radius = 8.0
+[sub_resource type="EntityResourceHealth" id=1]
+
+[sub_resource type="EntityResourceSpeed" id=2]
 
 [node name="Player" type="Entity" groups=[
 "players",
 ]]
-character_skeleton_path = NodePath("Character")
+sresources = [ SubResource( 1 ), SubResource( 2 ) ]
 script = ExtResource( 2 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 1 )
-
-[node name="Camera" type="Camera2D" parent="."]
-current = true
-
-[node name="GUILayer" parent="." instance=ExtResource( 3 )]
-
-[node name="Character" parent="." instance=ExtResource( 1 )]
-[connection signal="onc_open_loot_winow_request" from="." to="GUILayer" method="_on_Player_onc_open_loot_winow_request"]

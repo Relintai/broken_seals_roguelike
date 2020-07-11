@@ -44,27 +44,25 @@ var health_bar : TextureProgress = null
 var health_bar_label : Label = null
 
 var entity : Entity = null
-var health : Stat = null
+var health : EntityResource = null
 
-func _ready():
+var _health : EntityResource
+
+func _enter_tree():
 	name_label = get_node(name_label_path) as Label
 	health_bar = get_node(health_bar_path) as TextureProgress
 	health_bar_label = get_node(health_bar_label_path) as Label
 	
 	entity = get_node("..") as Entity
-	health = entity.get_health()
-	
-	health.connect("c_changed", self, "c_health_changed")
+	entity.connect("centity_resource_added", self, "on_centity_resource_added")
 	
 	name_label.text = entity.centity_name
 	
 	entity.connect("cname_changed", self, "cname_changed")
-	entity.connect("onc_mouse_entered", self, "onc_entity_mouse_entered")
-	entity.connect("onc_mouse_exited", self, "onc_entity_mouse_exited")
-	entity.connect("onc_targeted", self, "onc_targeted")
-	entity.connect("onc_untargeted", self, "onc_untargeted")
-
-	c_health_changed(health)
+	entity.connect("notification_cmouse_entered", self, "onc_entity_mouse_entered")
+	entity.connect("notification_cmouse_exited", self, "onc_entity_mouse_exited")
+	entity.connect("notification_ctargeted", self, "notification_ctargeted")
+	entity.connect("notification_cuntargeted", self, "notification_cuntargeted")
 	
 	modulate = normal_color
 	set_scale(normal_scale)
@@ -77,19 +75,16 @@ func _ready():
 func _process(delta):
 	if interpolating:
 		var d : Vector2 = ((target_scale - get_scale()).normalized() * delta) + get_scale()
-		
+
 		set_scale(d)
-		
+
 		if (get_scale() - target_scale).length() < 0.04:
 			interpolating = false
-
 	
-	var position : Vector2 = entity.position
+	var position : Vector2 = entity.get_body().position
 	
-	position = get_global_transform().xform_inv(position)
-	
-	position.x -= (rect_size.x / 2.0 + 24) * rect_scale.x
-	position.y -= 130 * rect_scale.y
+	position.x -= (rect_size.x / 2.0) * rect_scale.x
+	position.y -= 60
 	
 	set_position(position)
 	
@@ -98,19 +93,19 @@ func set_max_distance(var value : float) -> void:
 	max_distance_squared = value * value
 	
 	max_distance = value
-
-func c_health_changed(stat : Stat) -> void:
-	if health.cmax == 0:
+	
+func c_health_changed() -> void:
+	if _health.max_value == 0:
 		health_bar.max_value = 1
 		health_bar.value = 0
-		
 		return
-	
-	health_bar.max_value = stat.cmax
-	health_bar.value = stat.ccurrent
+		
+	health_bar.max_value = _health.max_value
+	health_bar.value = _health.current_value
 	
 #	if stat.cmax != 0:
 #		health_bar_label.text = str(int(stat.ccurrent / stat.cmax * 100))
+
 
 func cname_changed(ent : Entity) -> void:
 	name_label.text = ent.centity_name
@@ -129,13 +124,14 @@ func onc_entity_mouse_exited() -> void:
 	modulate = normal_color
 	interpolate_scale(normal_scale)
 	
-func onc_targeted() -> void:
+	
+func notification_ctargeted() -> void:
 	targeted = true
 
 	modulate = targeted_color
 	interpolate_scale(targeted_scale)
 	
-func onc_untargeted() -> void:
+func notification_cuntargeted() -> void:
 	targeted = false
 	
 	modulate = normal_color
@@ -144,3 +140,11 @@ func onc_untargeted() -> void:
 func interpolate_scale(target : Vector2) -> void:
 	target_scale = target
 	interpolating = true
+
+func on_centity_resource_added(resorce) -> void:
+	if health != null:
+		return
+	
+	_health = entity.getc_health()
+	_health.connect("changed", self, "c_health_changed")
+	c_health_changed()

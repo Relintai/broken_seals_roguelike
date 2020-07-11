@@ -1,6 +1,6 @@
 extends SpellGD
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,15 +20,15 @@ extends SpellGD
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-func _sfinish_cast(info : SpellCastInfo) -> void:
+func _cast_finishs(info : SpellCastInfo) -> void:
 	var target : Entity = info.target
 	
 	if not is_instance_valid(target):
 		return
 	
-	for i in range(target.sget_aura_count()):
+	for i in range(target.aura_gets_count()):
 		
-		var ad : AuraData = target.sget_aura(i)
+		var ad : AuraData = target.aura_gets(i)
 		
 		if ad.caster == info.caster:
 			var aura : Aura = ad.aura

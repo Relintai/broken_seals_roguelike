@@ -1,6 +1,6 @@
 extends PanelContainer
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -96,3 +96,10 @@ func centity_data_changed(data: EntityData) -> void:
 		
 		s.set_spec(_player, spec, i)
 
+
+
+func _on_TalentButton_toggled(button_pressed):
+	if button_pressed:
+		show()
+	else:
+		hide()

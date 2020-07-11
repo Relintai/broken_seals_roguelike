@@ -3,6 +3,7 @@
 [ext_resource path="res://characters/char_t1_outline_split.png" type="Texture" id=1]
 [ext_resource path="res://player/HumanoidCharacterBones2D.gd" type="Script" id=2]
 
+
 [sub_resource type="Animation" id=1]
 resource_name = "casting"
 length = 2.0

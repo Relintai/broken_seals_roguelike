@@ -1,6 +1,6 @@
 extends Button
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ var player : Entity
 var spell_id : int = 0
 #var spell_type : int = 0
 
-var cd : Cooldown = null
+var cd : float = 0
 
 var has_gcd : bool = false
 var gcd : float = 0.0
@@ -57,14 +57,20 @@ func _ready() -> void:
 	
 	_stack_counter = get_node(stack_counter) as Label
 	
-	button.connect("pressed", self, "_on_button_pressed")
+	button.connect("button_up", self, "_on_button_pressed")
 	
 #func _exit_tree():
 #	if item != null:
 #		item.disconnect("stack_size_changed", self, "stack_size_changed")
 
 func _process(delta : float) -> void:
-	if cd == null and gcd < 0.001:
+	if cd > 0:
+		cd -= delta
+		
+		if cd < 0:
+			cd = 0
+	
+	if cd < 0.02 and gcd < 0.001:
 		set_process(false)
 		hide_cooldown_timer()
 		return
@@ -77,8 +83,8 @@ func _process(delta : float) -> void:
 		
 	var value : float = gcd
 		
-	if cd != null and cd.remaining > value:
-		value = cd.remaining
+	if cd > value:
+		value = cd
 	
 	set_cooldown_time(value) 
 
@@ -124,8 +130,8 @@ func setup_icon() -> void:
 			
 		if item.item_template.use_spell != null:
 			var spell : Spell = item.item_template.use_spell
-			spell_id = spell.spell_id
-			has_gcd = spell.cooldown_global_cooldown
+			spell_id = spell.id
+			has_gcd = spell.cooldown_global_cooldown_enabled
 		else:
 			spell_id = 0
 			has_gcd = false
@@ -134,10 +140,6 @@ func setup_icon() -> void:
 		
 		
 	
-func _on_button_pressed() -> void:
-	#if spell_id != 0:
-	#	player.crequest_spell_cast(button_entry.item_id)
-	pass
 		
 func set_button_entry_data(ii : ItemInstance) -> void:
 	if item != null and item.item_template.stack_size > 1:
@@ -171,8 +173,9 @@ func get_drag_data(pos: Vector2) -> Object:
 
 	esd.origin = self
 	esd.type = ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_INVENTORY_ITEM
-	esd.item_id = slot_id
-	
+	esd.item_path = item.item_template.resource_path
+	esd.set_meta("slot_id", slot_id)
+		
 	setup_icon()
 
 	return esd
@@ -184,10 +187,10 @@ func can_drop_data(pos, data) -> bool:
 
 func drop_data(pos, esd) -> void:
 	if esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_INVENTORY_ITEM:
-		player.crequest_item_swap(slot_id, esd.item_id)
+		player.item_crequest_swap(slot_id, esd.get_meta("slot_id"))
 		setup_icon()
 	elif esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_EQUIPPED_ITEM:
-		player.crequest_equip(esd.item_id, slot_id)
+		player.equip_crequest(ESS.resource_db.get_item_template_path(esd.item_path).id, slot_id)
 		setup_icon()
 
 func set_slot_id(pslot_id : int) -> void:
@@ -208,8 +211,8 @@ func set_player(p_player: Entity) -> void:
 	if player == null:
 		return
 
-#	for i in range(player.getc_cooldown_count()):
-#		var cooldown : Cooldown = player.getc_cooldown(i)
+#	for i in range(player.cooldown_getc_count()):
+#		var cooldown : Cooldown = player.cooldown_getc(i)
 
 	player.connect("ccooldown_added", self, "_ccooldown_added")
 	player.connect("ccooldown_removed", self, "_ccooldown_removed")
@@ -218,15 +221,15 @@ func set_player(p_player: Entity) -> void:
 	player.connect("cgcd_finished", self, "_cgcd_finished")
 
 
-func _ccooldown_added(cooldown : Cooldown) -> void:
-	if cooldown.spell_id == spell_id:
-		cd = cooldown
+func _ccooldown_added(id : int, value : float) -> void:
+	if id == spell_id:
+		cd = value
 		set_process(true)
-		show_cooldown_timer(cooldown.remaining)
+		show_cooldown_timer(value)
 
-func _ccooldown_removed(cooldown : Cooldown) -> void:
-	if cooldown.spell_id == spell_id:
-		cd = null
+func _ccooldown_removed(id : int, value : float) -> void:
+	if id == spell_id:
+		cd = 0
 	
 func _cgcd_started(value :float) -> void:
 	if not has_gcd:
@@ -238,13 +241,14 @@ func _cgcd_started(value :float) -> void:
 	
 func _cgcd_finished() -> void:
 	gcd = 0
-	
-func _pressed():
+
+func _on_button_pressed() -> void:
+#func _pressed():
 	if _tooltip != null and item != null:
 		var pos : Vector2 = rect_global_position
 		pos.x += rect_size.x
 		
-		_tooltip.set_item(item)
+		_tooltip.set_item(player, item)
 		_tooltip.popup(Rect2(pos, _tooltip.rect_size))
 #		_tooltip.pac
 	

@@ -27,30 +27,30 @@ class_name NetworkedPlayerGD
 #export (float) var MOUSE_SENSITIVITY : float = 0.05
 #export (String) var map_path : String
 
-const ray_length = 1000
-const ACCEL : float = 100.0
-const DEACCEL : float = 100.0
-const GRAVITY : float = -24.8
-const JUMP_SPEED : float = 3.8
-const MAX_SLOPE_ANGLE : float = 40.0
-const MOUSE_TARGET_MAX_OFFSET : int = 10
-
-#var _on : bool = true
-
-var y_rot : float = 0.0
-
-#var vel : Vector3 = Vector3()
-#var dir : Vector3 = Vector3()
-
-var animation_tree : AnimationTree
-var anim_node_state_machine : AnimationNodeStateMachinePlayback = null
-#var animation_run : bool = false
-
-func _ready() -> void:
-	animation_tree = get_character_skeleton().get_animation_tree()
-	
-	if animation_tree != null:
-		anim_node_state_machine = animation_tree["parameters/playback"]
+#const ray_length = 1000
+#const ACCEL : float = 100.0
+#const DEACCEL : float = 100.0
+#const GRAVITY : float = -24.8
+#const JUMP_SPEED : float = 3.8
+#const MAX_SLOPE_ANGLE : float = 40.0
+#const MOUSE_TARGET_MAX_OFFSET : int = 10
+#
+##var _on : bool = true
+#
+#var y_rot : float = 0.0
+#
+##var vel : Vector3 = Vector3()
+##var dir : Vector3 = Vector3()
+#
+#var animation_tree : AnimationTree
+#var anim_node_state_machine : AnimationNodeStateMachinePlayback = null
+##var animation_run : bool = false
+#
+#func _ready() -> void:
+#	animation_tree = get_character_skeleton().get_animation_tree()
+#
+#	if animation_tree != null:
+#		anim_node_state_machine = animation_tree["parameters/playback"]
 	
 
 #func _physics_process(delta : float) -> void:
@@ -96,24 +96,25 @@ func _ready() -> void:
 #remote func set_position(position : Vector3, rot : Vector3) -> void:
 #	translation = position
 #	rotation = rot
-
-remote func sset_position(pposition : Vector2, protation : float) -> void:
-
-#	if get_network_master() != 1:
-#		print(str(get_network_master()) + "npsset")
-
-	if multiplayer.network_peer and multiplayer.is_network_server():
-		cset_position(pposition, protation)
-		vrpc("cset_position", pposition, protation)
-		
-remote func cset_position(pposition : Vector2, protation : float) -> void:
-#	if get_network_master() != 1:
-#		print(str(get_network_master()) + "npcset")
-		
-	position = pposition
-	rotation = protation
-		
-func _moved() -> void:
-	if sis_casting():
-		sfail_cast()
-	
+#
+#remote func sset_position(pposition : Vector2, protation : float) -> void:
+#
+##	if get_network_master() != 1:
+##		print(str(get_network_master()) + "npsset")
+#
+#	if multiplayer.network_peer and multiplayer.is_network_server():
+#		cset_position(pposition, protation)
+#		vrpc("cset_position", pposition, protation)
+#
+#remote func cset_position(pposition : Vector2, protation : float) -> void:
+##	if get_network_master() != 1:
+##		print(str(get_network_master()) + "npcset")
+#
+#	get_body().position = pposition
+#	get_body().rotation = protation
+#
+#func _moved() -> void:
+#
+#	if sis_casting():
+#		sfail_cast()
+#

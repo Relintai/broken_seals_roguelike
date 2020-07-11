@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://player/CharacterSkeleton2D.gd" type="Script" id=1]
+[ext_resource path="res://player/CharacterSkeleton2DGD.gd" type="Script" id=1]
 [ext_resource path="res://characters/CharacterSideModel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://characters/CharacterFrontModel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scripts/item_visuals/CharacterAtlas2D.gd" type="Script" id=4]
@@ -45,7 +45,20 @@ HUMANOID_BONES_MAX = 16,"
 texture = ExtResource( 6 )
 slots = [ null, SubResource( 1 ), null, null, null, null, null, null, null, null, null, null, null, null, SubResource( 2 ), null ]
 
-[node name="Character" type="CharacterSkeleton"]
+[node name="Character" type="CharacterSkeleton2D"]
+entity_type = 1
+attach_point_paths/0_left_hand = NodePath("")
+attach_point_paths/1_right_hand = NodePath("")
+attach_point_paths/2_torso = NodePath("")
+attach_point_paths/3_root = NodePath("")
+attach_point_paths/4_right_hip = NodePath("")
+attach_point_paths/5_left_hip = NodePath("")
+attach_point_paths/6_spine_2 = NodePath("")
+attach_point_paths/7_weapon_left = NodePath("")
+attach_point_paths/8_weapon_right = NodePath("")
+attach_point_paths/9_weapon_left_back = NodePath("")
+attach_point_paths/10_weapon_right_back = NodePath("")
+attach_point_paths/11_weapon_shield_left = NodePath("")
 script = ExtResource( 1 )
 front_node_path = NodePath("CharacterFrontModel")
 front_animation_player_path = NodePath("../Character/CharacterFrontModel/AnimationPlayer")

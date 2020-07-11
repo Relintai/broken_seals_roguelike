@@ -1,20 +1,16 @@
 extends Entity
-
-# Copyright Péter Magyar relintai@gmail.com
-# MIT License, functionality from this class needs to be protable to the entity spell system
-
-# Copyright (c) 2019 Péter Magyar
-
+# Copyright (c) 2019-2020 Péter Magyar
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,10 +37,10 @@ func _ready():
 
 func c_on_damage_taken(entity, dpd):
 	print("c " + str(dpd.damage))
-	print("ch " + str(get_health().ccurrent) + "/" + str(get_health().cmax))
+#	print("ch " + str(heal_getth().ccurrent) + "/" + str(heal_getth().cmax))
 	pass
 
 func s_on_damage_taken(entity, dpd):
 	print("s " + str(dpd.damage))
-	#print("ch " + str(get_health().scurrent) + "/" + str(get_health().smax))
+	#print("ch " + str(heal_getth().scurrent) + "/" + str(heal_getth().smax))
 	pass

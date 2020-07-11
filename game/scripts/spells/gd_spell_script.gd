@@ -1,7 +1,7 @@
 extends Spell
 class_name SpellGD
 
-# Copyright (c) 2019 Péter Magyar
+# Copyright (c) 2019-2020 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,71 +21,120 @@ class_name SpellGD
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-func _sstart_casting(info : SpellCastInfo) -> void:
-	if info.caster.sis_casting():
-		return
-	
-	if info.spell.cooldown_global_cooldown and info.caster.gets_has_global_cooldown() or info.caster.hass_category_cooldown(spell_type) or info.caster.hass_cooldown(id):
-		return
-	
-	if !info.caster.hass_spell(self):
-		return
-	
-	if cast:
-		info.caster.sstart_casting(info)
-		return
 
-	info.caster.sspell_cast_success(info)
+func _cast_starts(info : SpellCastInfo) -> void:
+	if needs_target and info.target == null:
+		return
+		
+	if info.caster.cast_is_castings():
+		return
+	
+	if cooldown_global_cooldown_enabled and info.caster.gcd_hass() or info.caster.category_cooldown_hass(spell_type) or info.caster.cooldown_hass(id):
+		return
+	
+	if !info.caster.spell_hass_id(id):
+		return
+		
+	var entity_relation_type = info.caster.gets_relation_to(info.target)
+	
+	var ok = false
+	
+	if target_relation_type & TARGET_FRIENDLY or target_relation_type & TARGET_SELF:
+		if entity_relation_type == EntityEnums.ENTITY_RELATION_TYPE_FRIENDLY or entity_relation_type == EntityEnums.ENTITY_RELATION_TYPE_NEUTRAL:
+			ok = true
+		else:
+			if entity_relation_type == EntityEnums.ENTITY_RELATION_TYPE_HOSTILE:
+				info.target = info.caster
+				ok = true
+			
+	if target_relation_type & TARGET_ENEMY:
+		if entity_relation_type == EntityEnums.ENTITY_RELATION_TYPE_HOSTILE:
+			ok = true
+			
+	if !ok:
+		return
+		
+	if range_enabled:
+		if info.caster != info.target:
+			var c : Vector2 = info.caster.get_body().position
+			var t : Vector2 = info.target.get_body().position
+			
+			if (c - t).length() > range_range:
+				return
+	
+	if resource_cost != null and resource_cost.entity_resource_data != null:
+		var r : EntityResource = info.caster.resource_gets_id(resource_cost.entity_resource_data.id)
+
+		if r == null:
+			return
+
+		if r.current_value < resource_cost.cost:
+			return
+	
+	if cast_enabled:
+		info.caster.cast_starts(info)
+		return
+		
+	if resource_cost != null and resource_cost.entity_resource_data != null:
+		var r : EntityResource = info.caster.resource_gets_id(resource_cost.entity_resource_data.id)
+
+		r.current_value -= resource_cost.cost
+
+	info.caster.notification_scast(SpellEnums.NOTIFICATION_CAST_FINISHED, info)
+	info.caster.notification_scast(SpellEnums.NOTIFICATION_CAST_SUCCESS, info)
+	
+	info.caster.notification_ccast(SpellEnums.NOTIFICATION_CAST_FINISHED, info)
 
 	if info.target:
-		info.target.son_cast_finished_target(info)
+		info.target.notification_scast(SpellEnums.NOTIFICATION_CAST_FINISHED_TARGET, info)
 
 	handle_cooldown(info)
 		
-	if projectile != null:
-		fire_projectile(info)
-	else:
-		handle_effect(info)
+#	if projectile != null:
+#		handle_projectile(info)
+#	else:
+	handle_effect(info)
 		
 	handle_gcd(info)
 
-func _sfinish_cast(info : SpellCastInfo) -> void:
-	info.caster.son_cast_finished(info)
-	info.caster.sspell_cast_success(info)
+func _cast_finishs(info : SpellCastInfo) -> void:
+	if resource_cost != null and resource_cost.entity_resource_data != null:
+		var r : EntityResource = info.caster.resource_gets_id(resource_cost.entity_resource_data.id)
+
+		if r.current_value < resource_cost.cost:
+			info.caster.son_cast_failed(info)
+			return
+
+		r.current_value -= resource_cost.cost
+
+	info.caster.notification_scast(SpellEnums.NOTIFICATION_CAST_FINISHED, info)
+	info.caster.notification_scast(SpellEnums.NOTIFICATION_CAST_SUCCESS, info)
+	
+	info.caster.notification_ccast(SpellEnums.NOTIFICATION_CAST_FINISHED, info)
 	
 	if is_instance_valid(info.target):
-		info.target.son_cast_finished_target(info)
-	
-	if projectile != null:
-		fire_projectile(info)
+		info.target.notification_scast(SpellEnums.NOTIFICATION_CAST_FINISHED_TARGET, info)
+
+	if projectile_scene != null:
+		handle_projectile(info)
 	else:
 		handle_effect(info)
 		
 	handle_cooldown(info)
-
+	handle_gcd(info)
+	
+	
 func _son_cast_player_moved(info):
 	if !cast_can_move_while_casting:
-		info.caster.sfail_cast()
+		info.caster.cast_fails()
 
-func fire_projectile(info : SpellCastInfo):
-	pass
-#	if projectile_type == SPELL_PROJECTILE_TYPE_FOLLOW:
-#		var sp : WorldSpellGD = WorldSpellGD.new()
-#
-#		info.get_caster().get_parent().add_child(sp)
-#		sp.owner = info.get_caster().get_parent()
-#
-#		sp.launch(info, projectile, projectile_speed)
-
-func _son_spell_hit(info):
-	handle_effect(info)
 
 func handle_effect(info : SpellCastInfo) -> void:
 	if target_type == SPELL_TARGET_TYPE_TARGET:
 		if info.target == null:
 			return
 			
-		var ok : bool = false
+#		var ok : bool = false
 		
 #		if (target_relation_type & TARGET_SELF):
 #			ok = true
@@ -102,7 +151,7 @@ func handle_effect(info : SpellCastInfo) -> void:
 	elif target_type == SPELL_TARGET_TYPE_SELF:
 		info.target = info.caster
 		
-	if damage and info.target:
+	if damage_enabled and info.target:
 		var sdi : SpellDamageInfo = SpellDamageInfo.new()
 		
 		sdi.damage_source = self
@@ -110,6 +159,15 @@ func handle_effect(info : SpellCastInfo) -> void:
 		sdi.receiver = info.target
 		
 		handle_spell_damage(sdi)
+		
+	if heal_enabled and info.target:
+		var shi : SpellHealInfo = SpellHealInfo.new()
+		
+		shi.heal_source = self
+		shi.dealer = info.caster
+		shi.receiver = info.target
+		
+		handle_spell_heal(shi)
 		
 	for aura in caster_aura_applys:
 		var ainfo : AuraApplyInfo = AuraApplyInfo.new()
@@ -126,12 +184,12 @@ func handle_effect(info : SpellCastInfo) -> void:
 			var ad : AuraData = null
 			
 			if aura.aura_group != null:
-				ad = info.target.sget_aura_with_group_by(info.caster, aura.aura_group)
+				ad = info.target.aura_gets_with_group_by(info.caster, aura.aura_group)
 			else:
-				ad = info.target.sget_aura_by(info.caster, aura.get_id())
+				ad = info.target.aura_gets_by(info.caster, aura.get_id())
 			
 			if ad != null:
-				info.target.sremove_aura_exact(ad)
+				info.target.aura_removes_exact(ad)
 			
 			var ainfo : AuraApplyInfo = AuraApplyInfo.new()
 		
@@ -146,53 +204,56 @@ func handle_effect(info : SpellCastInfo) -> void:
 		
 func handle_cooldown(info : SpellCastInfo) -> void:
 	if cooldown_cooldown > 0:
-		info.caster.adds_cooldown(id, cooldown_cooldown)
+		info.caster.cooldown_adds(id, cooldown_cooldown)
 		
 func handle_gcd(info : SpellCastInfo) -> void:
-	if cooldown_global_cooldown and cast_cast_time < 0.01:
-		info.caster.sstart_global_cooldown(info.caster.get_gcd().scurrent)
+	if cooldown_global_cooldown_enabled and cast_cast_time < 0.01:
+		info.caster.gcd_starts(info.caster.get_gcd().scurrent)
 
 func add_spell_cast_effect(info : SpellCastInfo) -> void:
 	var basic_spell_effect : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
 		
-#	if basic_spell_effect != null:
-#		if basic_spell_effect.spell_cast_effect_left_hand != null:
-#			info.caster.get_character_skeleton().left_hand_attach_point.add_effect(basic_spell_effect.spell_cast_effect_left_hand)
-#
-#		if basic_spell_effect.spell_cast_effect_right_hand != null:
-#			info.caster.get_character_skeleton().right_hand_attach_point.add_effect(basic_spell_effect.spell_cast_effect_right_hand)
+	if basic_spell_effect != null:
+		if basic_spell_effect.spell_cast_effect_left_hand != null:
+			info.caster.get_character_skeleton().common_attach_point_add(EntityEnums.COMMON_SKELETON_POINT_LEFT_HAND, basic_spell_effect.spell_cast_effect_left_hand)
+		
+		if basic_spell_effect.spell_cast_effect_right_hand != null:
+			info.caster.get_character_skeleton().common_attach_point_add(EntityEnums.COMMON_SKELETON_POINT_RIGHT_HAND, basic_spell_effect.spell_cast_effect_right_hand)
 		
 func remove_spell_cast_effect(info : SpellCastInfo) -> void:
 	var basic_spell_effect : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
 		
-#	if basic_spell_effect != null:
-#		if basic_spell_effect.spell_cast_effect_left_hand != null:
-#			info.caster.get_character_skeleton().left_hand_attach_point.remove_effect(basic_spell_effect.spell_cast_effect_left_hand)
-#
-#		if basic_spell_effect.spell_cast_effect_right_hand != null:
-#			info.caster.get_character_skeleton().right_hand_attach_point.remove_effect(basic_spell_effect.spell_cast_effect_right_hand)
+	if basic_spell_effect != null:
+		if basic_spell_effect.spell_cast_effect_left_hand != null:
+			info.caster.get_character_skeleton().common_attach_point_remove(EntityEnums.COMMON_SKELETON_POINT_LEFT_HAND, basic_spell_effect.spell_cast_effect_left_hand)
 		
-func _con_spell_cast_started(info):
-	add_spell_cast_effect(info)
-
-func _con_spell_cast_failed(info):
-	remove_spell_cast_effect(info)
-	
-func _con_spell_cast_interrupted(info):
-	remove_spell_cast_effect(info)
-	
-func _con_spell_cast_success(info):
-	remove_spell_cast_effect(info)
-	
-	if not is_instance_valid(info.target):
-		return
-	
-	var bse : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
+		if basic_spell_effect.spell_cast_effect_right_hand != null:
+			info.caster.get_character_skeleton().common_attach_point_remove(EntityEnums.COMMON_SKELETON_POINT_RIGHT_HAND, basic_spell_effect.spell_cast_effect_right_hand)
 		
-	if bse != null:
-		if bse.torso_spell_cast_finish_effect != null:
-			info.target.get_character_skeleton().torso_attach_point.add_effect_timed(bse.torso_spell_cast_finish_effect, bse.torso_spell_cast_finish_effect_time)
+func _notification_ccast(what, info):
+	if what == SpellEnums.NOTIFICATION_CAST_STARTED:
+		add_spell_cast_effect(info)
+	elif what == SpellEnums.NOTIFICATION_CAST_FAILED:
+		remove_spell_cast_effect(info)
+	elif what == SpellEnums.NOTIFICATION_CAST_FINISHED:
+		remove_spell_cast_effect(info)
+	elif what == SpellEnums.NOTIFICATION_CAST_INTERRUPTED:
+		remove_spell_cast_effect(info)
+	elif what == SpellEnums.NOTIFICATION_CAST_SUCCESS:
+		remove_spell_cast_effect(info)
 
-		if bse.root_spell_cast_finish_effect != null:
-			info.target.get_character_skeleton().root_attach_point.add_effect_timed(bse.root_spell_cast_finish_effect, bse.root_spell_cast_finish_effect_time)
+		if not is_instance_valid(info.target):
+			return
+		
+		var bse : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
 			
+		if bse != null:
+			if bse.torso_spell_cast_finish_effect != null:
+				info.target.get_character_skeleton().common_attach_point_add_timed(EntityEnums.COMMON_SKELETON_POINT_TORSO, bse.torso_spell_cast_finish_effect_time)
+
+			if bse.root_spell_cast_finish_effect != null:
+				info.target.get_character_skeleton().common_attach_point_add_timed(EntityEnums.COMMON_SKELETON_POINT_ROOT, bse.root_spell_cast_finish_effect_time)
+
+
+func _son_spell_hit(info):
+	handle_effect(info)

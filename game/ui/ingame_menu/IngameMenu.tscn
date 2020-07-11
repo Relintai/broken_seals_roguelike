@@ -35,25 +35,25 @@ margin_bottom = 132.0
 
 [node name="Resume" type="Button" parent="Menu/VBoxContainer"]
 margin_right = 147.0
-margin_bottom = 26.269
+margin_bottom = 26.5702
 text = "Resume"
 
 [node name="Keybinds" type="Button" parent="Menu/VBoxContainer"]
 margin_top = 34.0
 margin_right = 147.0
-margin_bottom = 60.269
+margin_bottom = 60.5702
 text = "Keybinds"
 
 [node name="Options" type="Button" parent="Menu/VBoxContainer"]
 margin_top = 68.0
 margin_right = 147.0
-margin_bottom = 94.269
+margin_bottom = 94.5702
 text = "Options"
 
 [node name="Exit" type="Button" parent="Menu/VBoxContainer"]
 margin_top = 102.0
 margin_right = 147.0
-margin_bottom = 128.269
+margin_bottom = 128.57
 text = "Exit"
 script = ExtResource( 3 )
 
