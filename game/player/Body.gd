@@ -473,6 +473,7 @@ func on_c_controlled_changed(val):
 	
 	if val:
 		camera = Camera2D.new()
+		camera.zoom = Vector2(0.8, 0.8)
 		add_child(camera)
 		camera.current = true
 
