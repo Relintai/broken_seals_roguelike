@@ -85,6 +85,8 @@ var character_skeleton : CharacterSkeleton2D
 
 var visibility_update_timer : float = randi()
 
+var gui : Node = null
+
 func _enter_tree() -> void:
 	world = get_node(world_path) as Node
 	camera = get_node_or_null("Camera") as Camera2D
@@ -102,6 +104,10 @@ func _enter_tree() -> void:
 	transform = entity.get_transform_2d(true)
 
 	set_physics_process(true)
+	
+func _exit_tree():
+	if gui != null and not gui.is_queued_for_deletion():
+		gui.queue_free()
 
 func _process(delta : float) -> void:
 	if entity.ai_state == EntityEnums.AI_STATE_OFF:
@@ -478,7 +484,10 @@ func on_c_controlled_changed(val):
 
 		var uiscn : PackedScene = ResourceLoader.load("res://ui/player_ui/player_ui.tscn")
 		var ui = uiscn.instance()
-		add_child(ui)
+#		add_child(ui)
+		get_node("/root/Main/GUI").add_child(ui)
+		ui.set_player(entity)
+		gui = ui
 		
 		set_process_input(true)
 		set_process_unhandled_input(true)
@@ -489,9 +498,13 @@ func on_c_controlled_changed(val):
 			
 		set_process_input(false)
 		set_process_unhandled_input(false)
-		var nameplatescn : PackedScene = ResourceLoader.load("res://ui/nameplates/NamePlate.tscn")
-		var nameplate = nameplatescn.instance()
-		get_parent().add_child(nameplate)
+#		var nameplatescn : PackedScene = ResourceLoader.load("res://ui/nameplates/NamePlate.tscn")
+#		var nameplate = nameplatescn.instance()
+#
+#		get_node("/root/Main/GUI").add_child(nameplate)
+##		get_parent().add_child(nameplate)
+#		nameplate.set_player(entity)
+#		gui = nameplate
 		
 		
  

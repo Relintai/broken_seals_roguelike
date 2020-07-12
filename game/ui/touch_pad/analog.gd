@@ -20,6 +20,8 @@ var ballPos = Vector2()
 var squaredHalfSizeLength = 0
 var currentPointerIDX = INACTIVE_IDX;
 
+var entity
+
 func _ready():
 	set_process_input(true)
 	bg = get_node("bg")
@@ -29,15 +31,16 @@ func _ready():
 	halfSize = bg.texture.get_size()/2
 	squaredHalfSizeLength = halfSize.x * halfSize.y
 	
-	if (listenerNodePath != "" && listenerNodePath!=null):
-		listenerNode = get_node(listenerNodePath)
-	elif listenerNodePath=="":
-		listenerNode = null
+#	if (listenerNodePath != "" && listenerNodePath!=null):
+#		listenerNode = get_node(listenerNodePath)
+#	elif listenerNodePath=="":
+#		listenerNode = null
 
 #	isDynamicallyShowing = isDynamicallyShowing and parent extends Control
 	if isDynamicallyShowing:
 		modulate.a = 0
 #		hide()
+
 
 func get_force():
 	return currentForce
@@ -154,3 +157,13 @@ func isReleased(event):
 		return !event.is_pressed()
 	elif event is InputEventMouseButton:
 		return !event.is_pressed()
+
+func set_player(p):
+	entity = p
+	listenerNode = p.get_body()
+	
+	if listenerNode == null:
+		call_deferred("get_body")
+
+func get_body():
+	listenerNode = entity.get_body()

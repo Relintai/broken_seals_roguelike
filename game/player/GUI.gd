@@ -20,19 +20,16 @@ extends Control
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-export (String) var player_path : String = "../../.."
+#export (String) var player_path : String = "../../.."
 export (Array, NodePath) var child_controls : Array
 
-func _ready()  -> void:
-	if player_path != null:
-		var player : Entity = get_node(player_path) as Entity
-		
-		if (player == null):
-			print("Player is null!")
-			return
+func set_player(player : Entity)  -> void:
+	if (player == null):
+		print("Player is null!")
+		return
 
-		for child_path in child_controls:
-			var child = get_node(child_path)
+	for child_path in child_controls:
+		var child = get_node(child_path)
 			
-			child.set_player(player)
+		child.set_player(player)
 	

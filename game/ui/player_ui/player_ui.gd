@@ -29,3 +29,6 @@ func _ready():
 func _on_Player_onc_open_loot_winow_request() -> void:
 	if loot_window != null:
 		loot_window.show()
+
+func set_player(player : Entity)  -> void:
+	$GUI.set_player(player)
