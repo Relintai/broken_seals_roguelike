@@ -1,5 +1,5 @@
 tool
-extends ItemVisualEntry
+extends SkeletonModelEntry
 class_name ItemVisualEntry2D
 
 # Copyright (c) 2019 Péter Magyar

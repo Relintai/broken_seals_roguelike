@@ -71,7 +71,7 @@ var casting_anim : bool = false
 
 var last_mouse_over : Entity = null
 
-var world : Node2D = null
+var world : Node = null
 
 var _controlled : bool = false
 
@@ -83,10 +83,10 @@ var death_timer : float = 0
 var entity : Entity
 var character_skeleton : CharacterSkeleton2D 
 
-var visibility_update_timer : float = 0
+var visibility_update_timer : float = randi()
 
 func _enter_tree() -> void:
-	world = get_node(world_path) as Node2D
+	world = get_node(world_path) as Node
 	camera = get_node_or_null("Camera") as Camera2D
 	
 	character_skeleton = get_node(character_skeleton_path)
@@ -113,33 +113,20 @@ func _process(delta : float) -> void:
 		return
 		
 	visibility_update_timer = 0
-	
-#	var camera : Camera = get_tree().get_root().get_camera() as Camera
-#
-#	if camera == null:
-#		return
-#
-#	var cam_pos : Vector3 = camera.global_transform.xform(Vector3())
-#	var dstv : Vector3 = cam_pos - translation
-#	dstv.y = 0
-#	var dst : float = dstv.length_squared()
-#
-#	if dst > max_visible_distance_squared:
-#		if visible:
-#			hide()
-#		return
-#	else:
-##		var lod_level : int = int(dst / max_visible_distance_squared * 3.0)
-#
-#		if dst < 400: #20^2
-#			character_skeleton.set_lod_level(0)
-#		elif dst > 400 and dst < 900: #20^2, 30^2
-#			character_skeleton.set_lod_level(1)
-#		else:
-#			character_skeleton.set_lod_level(2)
-#
-#		if not visible:
-#			show()
+
+	var vpos : Vector2 = -get_tree().root.canvas_transform.get_origin() + (get_tree().root.get_visible_rect().size / 2) - position
+	var l : float = vpos.length_squared()
+	var rs : float = get_tree().root.size.x * get_tree().root.size.x
+	rs *= 0.3
+
+	if l < rs:
+		if not visible:
+			show()
+			set_physics_process(true)
+	else:
+		if visible:
+			hide()
+			set_physics_process(false)
 
 
 func _physics_process(delta : float) -> void:
@@ -197,7 +184,7 @@ func process_input(delta: float) -> void:
 	
 	if input_length > 0.1:
 		#handle_graphic_facing(abs(dir.dot(Vector2(0, 1))) > 0.9)
-		character_skeleton.update_facing(dir)
+		character_skeleton.update_facing(input_dir)
 			
 	character_skeleton.get_animation_tree().set("parameters/walking/blend_amount", input_dir.length())
 
@@ -427,18 +414,18 @@ func cmouseover(event):
 			
 				if last_mouse_over != null and last_mouse_over != mo:
 					if is_instance_valid(last_mouse_over):
-						last_mouse_over.onc_mouse_exit()
+						last_mouse_over.notification_cmouse_exit()
 					
 					last_mouse_over = null
 			
 				if last_mouse_over == null:
-					mo.onc_mouse_enter()
+					mo.notification_cmouse_enter()
 					last_mouse_over = mo
 			
 				return
 			
 	if last_mouse_over != null:
-		last_mouse_over.onc_mouse_exit()
+		last_mouse_over.notification_cmouse_exit()
 		last_mouse_over = null
 	
 	
@@ -517,5 +504,4 @@ remote func sset_position(pposition : Vector2) -> void:
 		
 remote func cset_position(pposition : Vector2) -> void:
 	pposition = pposition
-		
 		

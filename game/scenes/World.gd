@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 # Copyright (c) 2019 Péter Magyar
 #
@@ -22,6 +22,7 @@ extends Node2D
 
 export(PackedScene) var world_layer : PackedScene
 
+export(bool) var spawn_mobs : bool = true
 export(bool) var editor_generate : bool = false setget set_editor_generate, get_editor_generate
 export(bool) var show_loading_screen : bool = true
 export(bool) var generate_on_ready : bool = false
@@ -56,10 +57,8 @@ func load_character(file_name: String) -> void:
 	
 	Server.sset_seed(_player.sseed)
 	
-	generate()
-	
-	
-
+	if spawn_mobs:
+		generate()
 
 func generate() -> void:
 	for x in range(-5, 5):
