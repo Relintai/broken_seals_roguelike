@@ -53,16 +53,7 @@ func _enter_tree():
 	health_bar = get_node(health_bar_path) as TextureProgress
 	health_bar_label = get_node(health_bar_label_path) as Label
 	
-	modulate = normal_color
-	set_scale(normal_scale)
-	
-	target_scale = normal_scale
-	interpolating = false
-	
-	set_process(false)
-	
-func set_player(e : Entity):
-	entity = e
+	entity = get_node("..") as Entity
 	entity.connect("centity_resource_added", self, "on_centity_resource_added")
 	
 	name_label.text = entity.centity_name
@@ -72,6 +63,12 @@ func set_player(e : Entity):
 	entity.connect("notification_cmouse_exited", self, "onc_entity_mouse_exited")
 	entity.connect("notification_ctargeted", self, "notification_ctargeted")
 	entity.connect("notification_cuntargeted", self, "notification_cuntargeted")
+	
+	modulate = normal_color
+	set_scale(normal_scale)
+	
+	target_scale = normal_scale
+	interpolating = false
 	
 	set_process(true)
 

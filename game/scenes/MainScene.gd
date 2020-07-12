@@ -26,11 +26,6 @@ export(PackedScene) var menu_scene : PackedScene
 export(PackedScene) var world_scene : PackedScene
 export(PackedScene) var debug_camera_scene : PackedScene
 export(NodePath) var loading_screen_path : NodePath
-export(NodePath) var gui_path : NodePath
-export(NodePath) var viewport_path : NodePath
-
-var gui : Node
-var viewport : Node
 
 enum StartSceneTypes {
 	NONE, MENU, WORLD
@@ -45,8 +40,6 @@ var _modules : Array
 
 func _ready() -> void:
 	_loading_screen = get_node(loading_screen_path)
-	gui = get_node(gui_path)
-	viewport = get_node(viewport_path)
 	
 	ProfileManager.load()
 	ESS.load_entity_spawner()
@@ -123,7 +116,7 @@ func switch_scene(scene : int) -> void:
 	
 	elif scene == StartSceneTypes.WORLD:
 		var gs : Node = world_scene.instance()
-		viewport.add_child(gs)
+		add_child(gs)
 		gs.owner = self
 		
 		current_scene = gs
@@ -155,9 +148,6 @@ func switch_scene(scene : int) -> void:
 	if current_scene.has_method("needs_loading_screen"):
 		if current_scene.needs_loading_screen():
 			show_loading_screen()
-
-func add_entity(entity : Entity) -> void:
-	pass
 
 func load_character(file_name : String) -> void:
 	current_character_file_name = file_name

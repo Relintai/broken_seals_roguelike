@@ -41,7 +41,7 @@ var connect_button : Button
 var naturalist_button : Button
 
 var player : Entity
-#var terrarin : VoxelWorld
+var terrarin : VoxelWorld
 
 var spawned : bool = false
 
@@ -61,7 +61,7 @@ func _ready():
 	naturalist_button = get_node(naturalist_button_path)
 	naturalist_button.connect("pressed", self, "_on_client_naturalist_button_clicked")
 	
-#	terrarin = get_node(terrarin_path) as VoxelWorld
+	terrarin = get_node(terrarin_path) as VoxelWorld
 	
 	Server.connect("cplayer_master_created", self, "_cplayer_master_created")
 	
@@ -90,8 +90,8 @@ func spawn():
 #		ESS.entity_spawner.spawn_mob(1, 50, Vector3(54, 6, 22))
 #		ESS.entity_spawner.spawn_mob(1, 50, Vector3(76, 6, 54))
 
-#func set_terrarin_player():
-#	terrarin.set_player(player.get_body() as Spatial)
+func set_terrarin_player():
+	terrarin.set_player(player.get_body() as Spatial)
 
 func _on_host_button_clicked():
 	get_tree().connect("network_peer_connected", self, "_network_peer_connected")
