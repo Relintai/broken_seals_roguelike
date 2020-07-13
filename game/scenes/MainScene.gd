@@ -26,6 +26,10 @@ export(PackedScene) var menu_scene : PackedScene
 export(PackedScene) var world_scene : PackedScene
 export(PackedScene) var debug_camera_scene : PackedScene
 export(NodePath) var loading_screen_path : NodePath
+export(int) var curent_style : int = 0
+export(Array, PackedScene) var worlds : Array
+export(Array, Vector2) var world_scales : Array
+export(Array, PackedScene) var bodies : Array
 
 enum StartSceneTypes {
 	NONE, MENU, WORLD
@@ -115,7 +119,8 @@ func switch_scene(scene : int) -> void:
 		current_scene = gs
 	
 	elif scene == StartSceneTypes.WORLD:
-		var gs : Node = world_scene.instance()
+#		var gs : Node = world_scene.instance()
+		var gs : Node = get_world().instance()
 		add_child(gs)
 		gs.owner = self
 		
@@ -165,3 +170,12 @@ class ModulePathSorter:
 		if a.resource_path < b.resource_path:
 			return true
 		return false
+
+func get_world():
+	return worlds[curent_style]
+
+func get_world_scale():
+	return world_scales[curent_style]
+	
+func get_body():
+	return bodies[curent_style]

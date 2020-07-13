@@ -79,6 +79,11 @@ func _ready() -> void:
 	_active_animation_tree = _side_animation_tree
 	_is_front_side = false
 
+#func _enter_tree():
+#	var body = get_node("/root/Main").get_body().instance()
+#	add_child(body)
+
+
 func update_facing(input_direction : Vector2) -> void:
 	var front : bool = abs(input_direction.dot(Vector2(0, 1))) > 0.9
 	

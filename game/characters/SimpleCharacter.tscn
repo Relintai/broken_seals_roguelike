@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://characters/SimpleCharacter.gd" type="Script" id=1]
+
+[node name="Character" type="CharacterSkeleton2D"]
+script = ExtResource( 1 )

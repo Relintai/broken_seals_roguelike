@@ -186,7 +186,7 @@ func process_input(delta: float) -> void:
 		#handle_graphic_facing(abs(dir.dot(Vector2(0, 1))) > 0.9)
 		character_skeleton.update_facing(input_dir)
 			
-	character_skeleton.get_animation_tree().set("parameters/walking/blend_amount", input_dir.length())
+#	character_skeleton.get_animation_tree().set("parameters/walking/blend_amount", input_dir.length())
 
 
 func process_movement(delta : float) -> void:
@@ -473,7 +473,8 @@ func on_c_controlled_changed(val):
 	
 	if val:
 		camera = Camera2D.new()
-		camera.zoom = Vector2(0.6, 0.6)
+#		camera.zoom = Vector2(0.6, 0.6)
+		camera.zoom = get_node("/root/Main").get_world_scale()
 		add_child(camera)
 		camera.current = true
 
