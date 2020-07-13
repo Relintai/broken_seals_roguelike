@@ -9,7 +9,6 @@
 ]]
 script = ExtResource( 1 )
 world_layer = ExtResource( 2 )
-spawn_mobs = false
 
 [node name="Terrarin" type="TileMap" parent="."]
 z_index = -10
