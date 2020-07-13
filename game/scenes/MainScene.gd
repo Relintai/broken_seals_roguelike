@@ -54,7 +54,19 @@ func _ready() -> void:
 	
 	initialize_modules()
 	
+	Settings.connect("setting_changed", self, "setting_changed")
+	Settings.connect("settings_loaded", self, "settings_loaded")
+	settings_loaded()
+	
 	switch_scene(start_scene)
+
+	
+func setting_changed(section, key, value):
+	if section == "debug" and key == "style":
+		curent_style = value
+	
+func settings_loaded():
+	curent_style = Settings.get_value("debug", "style")
 
 func initialize_modules() -> void:
 	_modules.clear()

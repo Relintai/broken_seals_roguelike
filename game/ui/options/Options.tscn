@@ -151,18 +151,30 @@ margin_right = -4.0
 margin_bottom = -4.0
 size_flags_horizontal = 3
 
+[node name="OptionsSpinboxRow" parent="PanelContainer/VBoxContainer/TabContainer/Debug" instance=ExtResource( 8 )]
+margin_top = 0.0
+margin_bottom = 24.0
+property_category = "debug"
+property_name = "style"
+property_label = "Style"
+min_value = 0
+max_value = 100
+prefix = ""
+suffix = ""
+
 [node name="DebugInfo" type="CheckBox" parent="PanelContainer/VBoxContainer/TabContainer/Debug"]
+margin_top = 32.0
 margin_right = 527.0
-margin_bottom = 26.269
+margin_bottom = 58.5702
 text = "Show Debug info"
 script = ExtResource( 5 )
 property_category = "debug"
 property_name = "debug_info"
 
 [node name="RemoveProfile" type="Button" parent="PanelContainer/VBoxContainer/TabContainer/Debug"]
-margin_top = 34.0
+margin_top = 66.0
 margin_right = 527.0
-margin_bottom = 60.269
+margin_bottom = 92.5702
 size_flags_horizontal = 3
 text = "Remove Profile"
 script = ExtResource( 2 )
