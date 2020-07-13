@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tilesets/rogue_lite/8x.png" type="Texture" id=1]
+
+[node name="Node2D" type="Sprite"]
+texture = ExtResource( 1 )
+flip_h = true
+region_enabled = true
+region_rect = Rect2( 23, 1, 10, 10 )
