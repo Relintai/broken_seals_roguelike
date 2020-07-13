@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tilesets/rogue_lite/8x.png" type="Texture" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Floor" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 29, 103, 8, 8 )
+
+[node name="Wall" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 47, 76, 8, 8 )
+
+[node name="Wall2" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 47, 85, 8, 8 )

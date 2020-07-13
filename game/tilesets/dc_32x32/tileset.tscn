@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://tilesets/dc_32x32/DungeonCrawl_ProjectUtumnoTileset.png" type="Texture" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Floor" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 992, 416, 32, 32 )
+
+[node name="Wall" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 736, 512, 32, 32 )
+
+[node name="Wall2" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 801, 512, 32, 32 )

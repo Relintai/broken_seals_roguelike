@@ -1,0 +1,285 @@
+<Attributions>
+<Module>
+<Name>Test Tilesets</Name>
+<URL></URL>
+<Description></Description>
+<Licenses>
+MIT
+</Licenses>
+</Module>
+
+<Attribution>
+<Name>Rogue Dungeon</Name>
+<URL>https://opengameart.org/content/rogue-dungeon</URL>
+<Description>
+A collection of 8x8 sprites for a roguelike game.
+
+Contains over 100 sprites including
+
+    Wall and floor tiles
+    Items including knives, swords, bows and staffs
+    Characters including knights, wizards, theifs, goblins and more
+    Other various objects
+    UI and font
+    Version made in 4 shade greyscale.
+
+UPDATE
+
+    Fixed Several Mistakes
+    Added trees and flowers
+    Added lightened bushes and barrels
+    Added large flasks
+
+Copyright/Attribution Notice: 
+Please inform me about your project before using these sprites, and give credit to "LD" or "Lucid Design" and link to http://luciddesignart.tk/
+
+Author: 
+LD
+</Description>
+<Licenses>
+OGA-BY 3.0
+</Licenses>
+<Files>tilesets/rogue_dungeon/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>RogueLite</Name>
+<URL>https://opengameart.org/content/roguelite</URL>
+<Description>
+A small set of sprites for a roguelike game
+
+Includes
+
+    17 Unique animated characters
+    Tileset including animated doors and water
+    A variety of weapons and items
+    UI elements and 3x5 font
+
+Check out luciddesignart.tk for more of my art
+Copyright/Attribution Notice: 
+Please give credit to "Lucid Design Art", and link to "luciddesignart.tk", I would also appreciate if you inform me about your project if you use this art.
+
+Author: 
+LD
+</Description>
+<Licenses>
+OGA-BY 3.0
+</Licenses>
+<Files>tilesets/rogue_lite/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>RogueDB32</Name>
+<URL>https://opengameart.org/content/roguedb32</URL>
+<Description>
+Tileset suitable for a "Roguelike" game or whatever you like.  Uses db32 palette, most are 8x8.
+
+A few things to note:
+
+* The gui box is made to be drawn using a rectangle on top of a filled rectangle, and the tiles drawn on the corners.  This way you can size it however you like.  I suggest you just save one 16x16 image for the corner and just rotate it to fit.
+
+* The fonts are not monospace, and some are the same height.  I included different versions of the font to allow for personal preference.  The way I recommend using the fonts is take the largest font for capitals, and smallest for lowercase.  Draw a shadow color version of it behind and 1 pixel to the left, then another 1 pixel below that one.  See the text "Test" in the font section for example.
+
+* I realize there isn't a lot of variety in items, monsters, settings, but hopefully you can get creative (palette swap the stone background for grass, etc.
+
+UPDATE: Also check out this add-on: http://opengameart.org/content/roguedb32-plus-add-on-tiles
+Copyright/Attribution Notice: 
+No attribution required. If you want to credit me anyway, credit me as "SpiderDave", and maybe link to this page or whatever you like.
+
+Author: 
+SpiderDave
+</Description>
+<Licenses>
+CC0
+</Licenses>
+<Files>tilesets/rogue_db32/rogue_db32_spiderdave_1.png</Files>
+</Attribution>
+
+<Attribution>
+<Name>RogueDB32 Plus - add on tiles</Name>
+<URL>https://opengameart.org/content/roguedb32-plus-add-on-tiles</URL>
+<Description>
+Add on tileset suitable for a roguelike game or whatever you like. Uses db32 palette and 8x8 images. I thank the original contributor, SpiderDave, for the submission that gave me the inspiration to make these. Some are adaptations of his work and some are new content. They are released to the public domain to reflect the original license and in the hope that others will add their own free content and upload it here.
+
+FAQ:
+
+* "This is cool, but I want a GUI." There's a simple but effective one already in the original file this is an add on to. Please download that.
+
+* "What about fonts?" There are more font variations than you can shake a stick at in the original file.
+
+* "Many of these graphics are just a color swap of each other!" Some are. But some are variations to reflect level and ability changes. It's CC0, so use as much or as little as you want. You'll probably drop some. I like the LD ghosts below and the original skeletons better, for example.
+
+* "Almost none of these could be used for player characters." You're correct. See the original file, or adapt one of the others below.
+
+* "The graphics should have a shadow." They're 8x8 tiles, so a shadow wouldn't fit, really. (For comparison purposes, a lot of tilesets for roguelikes are 16x16 or 24x24 or larger. That would be four or nine or more of these graphics put together.) You can control that by picking foreground and background tiles that have enough contrast, or by making character/object tiles 10x10 with a dark pixel on the edges but set to overlap the 8x8 background tiles. If you are going to blow theses graphics up larger before use (preservng the low resolution look while still seeing the detail on a new monitor) you might make one normal pixel equal to maybe four new pixels and then add a one pixel shadow. Or whatever you decide.
+
+* "Couldn't many of these graphics be used for a platformer or other game?" Sure. Do what you like.
+
+* "I want more!" Great. I will try to link files here as appropriate, but if anyone else wants to make a collection or page they can certainly do so. Here's what I have:
+
+The original RogueDB32: http://opengameart.org/content/roguedb32
+
+Lucid Design has 8x8 roguelike pages on this site, but with different colors and an OGA license: http://opengameart.org/content/rogue-dungeon and http://opengameart.org/content/roguelite
+
+There's a collections page for 8x8 rogues assets here, but keep in mind that the rest are different colors, often different licenses, and many times not actually 8x8 tiles. They might prove useful, though: http://opengameart.org/content/8x8cc0oga-byroguelike
+
+(Note: If you favorite or download this file please do both to the original RogueDB32 file, as this submission doesn't copy what that file already has unless there was a change made.)
+
+ 
+Copyright/Attribution Notice: 
+No attribution required. Totally free! If you want to credit this anyway, you can thank "SpiderDave" for the original tiles and "Dan Norder" for extra content. Links to this page or the original file or both are also a possibility.
+
+Author: 
+dannorder
+</Description>
+<Licenses>
+CC0
+</Licenses>
+<Files>tilesets/rogue_db32/rogue_db32_plus_cc0.png</Files>
+</Attribution>
+
+<Attribution>
+<Name>DENZI's 32x32 orthogonal tilesets</Name>
+<URL>https://opengameart.org/content/denzis-32x32-orthogonal-tilesets</URL>
+<Description>
+One of many of Denzi's wonderful pixel art sets. 32x32 pixel 3/4 overhead orthogonal perspective stuff including dungeon tiles, monsters, items, ability icons and more. 
+
+There are other 32x32 pixel orthogonal sprites from Denzi, but I've kept them as separate submissions because they are released under different licenses. 
+
+This may work well with Denzi's other works
+Copyright/Attribution Notice: 
+DENZI部屋のドット絵フリー素材は、クリエイティブ・コモンズ・ライセンス (http://www3.wind.ne.jp/DENZI/diary/) に基づいて公開しています。（CC-by SA　表示-継承）https://creativecommons.org/licenses/by-sa/3.0/ ___________________________________________________________________________ Translation: "DENZI Room's pixel art (published at http://www3.wind.ne.jp/DENZI/diary/) is free material under the Creative Commons license (CC-BY-SA attribution, share alike) https://creativecommons.org/licenses/by-sa/3.0/"
+
+Author: 
+DENZI
+(Submitted by MedicineStorm)
+</Description>
+<Licenses>
+CC BY-SA 3.0
+</Licenses>
+<Files>tilesets/denzi_32x32_orthogonal/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>DENZI's public domain art</Name>
+<URL>https://opengameart.org/content/denzis-public-domain-art</URL>
+<Description>
+One of many of Denzi's wonderful pixel art sets. 3/4 overhead orthogonal perspective stuff including dungeon tiles, monsters, items, ability icons, and more. 
+
+Much of this artwork can also be found in the Dungeon Crawl Stone Soup set, but a lot of really great stuff can be found here that was not included in that set.
+
+Most of this is 32x32 pixel sprites. There are other 32x32 pixel orthogonal sprites from Denzi, but I've kept them as separate submissions because they are released under different licenses. 
+
+This may work well with Denzi's other works
+
+UPDATE: new preview images showing more of what's inside. Also, if you prefer your sprites and tiles as individual files, they're all organized into handy category folders!
+
+
+Artwork by DENZI
+denzi.diary@gmail.com
+
+Originally downloaded from http://www3.wind.ne.jp/DENZI/diary/
+
+Attribution/Licensing:
+	Creative Commons Zero: http://creativecommons.org/publicdomain/zero/1.0/
+	Attribution not required, but appreciated: DENZI Room's pixel art http://www3.wind.ne.jp/DENZI/diary/
+	
+Also available at http://opengameart.org/content/denzis-public-domain-art
+
+DENZI's public domain art
+Author: 
+DENZI
+(Submitted by MedicineStorm)
+</Description>
+<Licenses>
+CC0
+</Licenses>
+<Files>tilesets/denzi_public_domain/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>DENZI's 16x16 orthogonal tilesets</Name>
+<URL>https://opengameart.org/content/denzis-16x16-orthogonal-tilesets</URL>
+<Description>
+One of many of Denzi's wonderful pixel art sets. 16x16 pixel 3/4 overhead orthogonal perspective stuff including dungeon tiles, monsters, items, character paper dolls, ability icons and more. Monochrome, Sci-Fi, medieval, modern, animated, lots of stuff.
+
+This may work well with Denzi's other works
+Copyright/Attribution Notice: 
+DENZI部屋のドット絵フリー素材は、クリエイティブ・コモンズ・ライセンス (http://www3.wind.ne.jp/DENZI/diary/) に基づいて公開しています。（CC-by SA　表示-継承）https://creativecommons.org/licenses/by-sa/3.0/ ___________________________________________________________________________ Translation: "DENZI Room's pixel art (published at http://www3.wind.ne.jp/DENZI/diary/) is free material under the Creative Commons license (CC-BY-SA attribution, share alike) https://creativecommons.org/licenses/by-sa/3.0/"
+
+Artwork by DENZI
+denzi.diary@gmail.com
+
+Originally downloaded from http://www3.wind.ne.jp/DENZI/diary/
+
+Attribution/Licensing:
+	DENZI部屋のドット絵フリー素材は、クリエイティブ・コモンズ・ライセンス (http://www3.wind.ne.jp/DENZI/diary/) に基づいて公開しています。　（CC-by SA　表示-継承） https://creativecommons.org/licenses/by-sa/3.0/ 
+	"DENZI Room's pixel art (published at http://www3.wind.ne.jp/DENZI/diary/) is free material under the Creative Commons license (CC-BY-SA attribution, share alike) https://creativecommons.org/licenses/by-sa/3.0/"
+	
+Also available at http://opengameart.org/content/denzis-16x16-orthogonal-tilesets
+
+Author: 
+DENZI
+(Submitted by MedicineStorm)
+</Description>
+<Licenses>
+CC BY-SA 3.0
+</Licenses>
+<Files>tilesets/16x16_orthogonal/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>Dungeon Crawl 32x32 tiles</Name>
+<URL>https://opengameart.org/content/dungeon-crawl-32x32-tiles</URL>
+<Description>
+Here are the tiles used in the game Dungeon Crawl Stone Soup http://crawl.develz.org/wordpress/
+
+Package contains over 3000 tiles! This is a collaborative effort from many, many artists. The full list of artists can be found in the package crawl-tiles Oct-5-2010\utility\FilteredList.txt
+
+All images are 2D 32x32 pixel tiles in orthogonal (overhead) three-quarters  perspective. 
+
+Contains things like terrain, walls, decorative dungeon features, monsters, spell effects, items, GUI elements, player avatars, and more!
+
+EDIT: A new supplemental set of over 3000 additional tiles is now available! Check out https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental
+Copyright/Attribution Notice: 
+You can use these tilesets in your program freely. No attribution is required. As a courtesy, include a link to the OGA page: http://opengameart.org/content/dungeon-crawl-32x32-tiles, the crawl-tiles page: http://code.google.com/p/crawl-tiles/ or see the License Notice instructions on http://rltiles.sourceforge.net/
+
+Author: 
+Chris Hamons (maintainer)
+(Submitted by MedicineStorm)
+</Description>
+<Licenses>
+CC0
+</Licenses>
+<Files>tilesets/dc_32x32/*</Files>
+</Attribution>
+
+<Attribution>
+<Name>Dungeon Crawl 32x32 tiles supplemental</Name>
+<URL>https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental</URL>
+<Description>
+In addition to the 3000+ original tiles, here are 3000+ MORE tiles used in the game Dungeon Crawl Stone Soup http://crawl.develz.org/wordpress/
+
+The great artists of the Dungeon Crawl Stone Soup team have recently enhanced and added to the already-amazing set with this supplemental collection of tiles: even more spells, effects, monsters, items, GUI elements, player avatars, terrain, and dungeon features.
+
+All images are 2D 32x32 pixel tiles in orthogonal (overhead) three-quarters  perspective.
+
+    Dungeon Crawl Stone Soup Supplemental.zip file contains the latest addition of 3000+ tiles. The tiles are individual 32x32 sprite .png files organized into folder categories. See https://opengameart.org/content/dungeon-crawl-32x32-tiles for the original set of tiles these are meant to supplement.
+    Dungeon Crawl Stone Soup Full.zip file contains both the first set plus this newer addition for a total of over 6000 tiles! The tiles are individual 32x32 sprite .png files organized into folder categories.
+    ProjectUtumno_supplemental.png file is the same 3000+ found in Dungeon Crawl Stone Soup Supplemental.zip, but arranged in a nice (huge) tileset.
+    ProjectUtumno_full.png file is the same 6000+ found in Dungeon Crawl Stone Soup Full.zip, but arranged in a nice (huger) tileset.
+
+Have you ever played Dungeon Crawl Stone Soup? You should. Seriously, it's a great game. These tiles are a collaborative effort of many artists. See README.TXT included in the .zip files for a full list of the contributors.
+Copyright/Attribution Notice: 
+You can use these tilesets in your program freely. No attribution is required. As a courtesy, include a link to the OGA page: http://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental, or the crawl-tiles page: https://github.com/crawl/tiles
+
+Author: 
+MedicineStorm
+</Description>
+<Licenses>
+CC0
+</Licenses>
+<Files>tilesets/dc_32x32/*</Files>
+</Attribution>
+
+</Attributions>
