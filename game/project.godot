@@ -254,12 +254,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://player/Mob.gd"
 }, {
-"base": "",
-"class": "NetworkedPlayerGD",
-"language": "GDScript",
-"path": "res://player/NetworkedPlayer.gd"
-}, {
-"base": "",
+"base": "Entity",
 "class": "PlayerGD",
 "language": "GDScript",
 "path": "res://player/Player.gd"
@@ -334,7 +329,6 @@ _global_script_class_icons={
 "ManaResource": "",
 "Menu": "",
 "MobGD": "",
-"NetworkedPlayerGD": "",
 "PlayerGD": "",
 "PlayerMaster": "",
 "SpeedResource": "",

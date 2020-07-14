@@ -249,7 +249,8 @@ func _request_entity_spawn(createinfo : EntityCreateInfo):
 			else:
 				entity_node = MobGD.new()
 		else:
-			entity_node = NetworkedPlayerGD.new()
+			entity_node = Entity.new()
+#			entity_node = NetworkedPlayerGD.new()
 		
 	if entity_node == null:
 		print("EntityManager: entity node is null")

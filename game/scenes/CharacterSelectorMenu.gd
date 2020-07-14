@@ -178,7 +178,11 @@ func renounce_character() -> void:
 	var f : File = File.new()
 			
 	if f.file_exists(file_name):
+		
 		var d : Directory = Directory.new()
+		
+		d.open(file_name.get_base_dir())
+		
 		if d.remove(file_name) == OK:
 			refresh()
 	
