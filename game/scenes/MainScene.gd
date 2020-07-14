@@ -30,6 +30,7 @@ export(int) var curent_style : int = 0
 export(Array, PackedScene) var worlds : Array
 export(Array, Vector2) var world_scales : Array
 export(Array, PackedScene) var bodies : Array
+export(Array, int) var tile_sizes : Array
 
 enum StartSceneTypes {
 	NONE, MENU, WORLD
@@ -191,3 +192,6 @@ func get_world_scale():
 	
 func get_body():
 	return bodies[curent_style]
+	
+func get_tile_size():
+	return tile_sizes[curent_style]

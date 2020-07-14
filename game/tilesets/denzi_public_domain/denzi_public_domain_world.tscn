@@ -4,7 +4,7 @@
 [ext_resource path="res://world/WorldLayer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://tilesets/denzi_public_domain/new_tileset.tres" type="TileSet" id=3]
 
-[node name="World" type="Node2D" groups=[
+[node name="World" type="Navigation2D" groups=[
 "save",
 ]]
 script = ExtResource( 1 )
