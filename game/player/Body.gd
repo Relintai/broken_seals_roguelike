@@ -140,12 +140,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				camera.zoom -= Vector2(event.factor, event.factor) * 0.01
 		elif event.button_index == BUTTON_LEFT and event.device != -1:
 			if event.pressed:
-				#https://github.com/godotengine/godot/issues/32222
-				var pos = event.position - get_viewport_transform().origin
-				pos *= camera.zoom
-					
+				var pos : Vector2 = world.make_canvas_position_local(event.position)
+				
 				pos -= transform.origin
-					
+				
 				if pos.length() < tile_size / 2:
 					#wait
 					world.player_moved() 
@@ -180,12 +178,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 	if event is InputEventScreenTouch and event.pressed:
 		if !target(event.position):
-			#https://github.com/godotengine/godot/issues/32222
-			var pos = event.position - get_viewport_transform().origin
-			pos *= camera.zoom
-				
+			var pos : Vector2 = world.make_canvas_position_local(event.position)
+			
 			pos -= transform.origin
-				
+			
 			if pos.length() < tile_size / 2:
 				#wait
 				world.player_moved() 
@@ -271,13 +267,11 @@ func set_tile_position(pos : Vector2) -> void:
 	transform.origin = pos * tile_size + Vector2(tile_size / 2, tile_size / 2)
 
 func target(position : Vector2) -> bool:
-	#https://github.com/godotengine/godot/issues/32222
-	position = position - get_viewport_transform().origin
-	position *= camera.zoom
-	
+	position = world.make_canvas_position_local(position)
+
 	var pos : Vector2 = world.pixel_to_tile(position.x, position.y)
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
-
+	
 	if enemy:
 		if entity.getc_target() != enemy:
 			entity.target_crequest_change(enemy.get_path())
