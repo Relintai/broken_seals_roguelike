@@ -140,7 +140,33 @@ func _unhandled_input(event: InputEvent) -> void:
 				camera.zoom -= Vector2(event.factor, event.factor) * 0.01
 		elif event.button_index == BUTTON_LEFT and event.device != -1:
 			if event.pressed:
-				target(event.position)
+				#https://github.com/godotengine/godot/issues/32222
+				var pos = event.position - get_viewport_transform().origin
+				pos *= camera.zoom
+					
+				pos -= transform.origin
+					
+				if pos.length() < tile_size / 2:
+					#wait
+					world.player_moved() 
+					return
+					
+				var mx : int = 0
+				var my : int = 0
+					
+				if abs(pos.x) > tile_size / 2:
+					if pos.x >= 0:
+						mx = 1
+					else:
+						mx = -1
+							
+				if abs(pos.y) > tile_size / 2:
+					if pos.y >= 0:
+						my = 1
+					else:
+						my = -1
+							
+				try_move(mx, my)
 
 #		if not event.pressed and event.button_index == BUTTON_LEFT and event.device != -1:
 #			if mouse_down_delta.length() < MOUSE_TARGET_MAX_OFFSET:
@@ -148,12 +174,40 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if event.pressed and event.button_index == BUTTON_RIGHT and event.device != -1:
 			target(event.position)
-			
+					
 		get_tree().set_input_as_handled()
 				
 			
 	if event is InputEventScreenTouch and event.pressed:
-		target(event.position)
+		if !target(event.position):
+			#https://github.com/godotengine/godot/issues/32222
+			var pos = event.position - get_viewport_transform().origin
+			pos *= camera.zoom
+				
+			pos -= transform.origin
+				
+			if pos.length() < tile_size / 2:
+				#wait
+				world.player_moved() 
+				return
+				
+			var mx : int = 0
+			var my : int = 0
+				
+			if abs(pos.x) > tile_size / 2:
+				if pos.x >= 0:
+					mx = 1
+				else:
+					mx = -1
+						
+			if abs(pos.y) > tile_size / 2:
+				if pos.y >= 0:
+					my = 1
+				else:
+					my = -1
+						
+			try_move(mx, my)
+
 		get_tree().set_input_as_handled()
 			
 			
@@ -216,7 +270,7 @@ func get_tile_position() -> Vector2:
 func set_tile_position(pos : Vector2) -> void:
 	transform.origin = pos * tile_size + Vector2(tile_size / 2, tile_size / 2)
 
-func target(position : Vector2) -> void:
+func target(position : Vector2) -> bool:
 	#https://github.com/godotengine/godot/issues/32222
 	position = position - get_viewport_transform().origin
 	position *= camera.zoom
@@ -227,8 +281,11 @@ func target(position : Vector2) -> void:
 	if enemy:
 		if entity.getc_target() != enemy:
 			entity.target_crequest_change(enemy.get_path())
+			return true
 	else:
 		entity.target_crequest_change(NodePath())
+		
+	return false
 
 func cmouseover(position : Vector2):
 	#https://github.com/godotengine/godot/issues/32222
