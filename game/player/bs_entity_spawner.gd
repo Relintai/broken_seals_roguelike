@@ -105,7 +105,7 @@ func load_player(file_name : String, position : Vector3, network_owner : int) ->
 	createinfo.entity_controller = EntityEnums.ENITIY_CONTROLLER_PLAYER
 	createinfo.entity_player_type = EntityEnums.ENTITY_PLAYER_TYPE_PLAYER
 	createinfo.serialized_data = load_file(file_name)
-	createinfo.transform.origin = position
+	createinfo.transform2d.origin = Vector2(position.x, position.y)
 	createinfo.networked = false
 #	print("Player spawned ")
 	ESS.request_entity_spawn(createinfo)

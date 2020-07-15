@@ -48,7 +48,20 @@ var health : EntityResource = null
 
 var _health : EntityResource
 
+var offset : int = 60
+
 func _enter_tree():
+	var m = get_node_or_null("/root/Main")
+	if m != null:
+		var ts = m.get_tile_size()
+		
+		if ts == 8:
+			offset = 20
+		elif ts == 16:
+			offset = 24
+		elif ts == 32:
+			offset = 34
+	
 	name_label = get_node(name_label_path) as Label
 	health_bar = get_node(health_bar_path) as TextureProgress
 	health_bar_label = get_node(health_bar_label_path) as Label
@@ -84,7 +97,7 @@ func _process(delta):
 	var position : Vector2 = entity.get_body().position
 	
 	position.x -= (rect_size.x / 2.0) * rect_scale.x
-	position.y -= 60
+	position.y -= offset
 	
 	set_position(position)
 	

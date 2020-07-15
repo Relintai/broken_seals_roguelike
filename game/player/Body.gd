@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-extends KinematicBody2D
+extends Node2D
 
 export(String) var world_path : String = "../.."
 export(NodePath) var character_skeleton_path : NodePath = "Character"
@@ -54,12 +54,16 @@ var character_skeleton : CharacterSkeleton2D
 
 var visibility_update_timer : float = randi()
 
-var ray : RayCast2D
+var tile_size : int = 32
 
 func _enter_tree() -> void:
-	ray = $Ray
 	world = get_node(world_path) as Node
+	tile_size = get_node("/root/Main").get_tile_size()
+	
 	camera = get_node_or_null("Camera") as Camera2D
+
+	set_process_input(false)
+	set_process_unhandled_input(false)
 	
 	character_skeleton = get_node(character_skeleton_path)
 	entity = get_node("..")
@@ -73,10 +77,8 @@ func _enter_tree() -> void:
 	
 	transform = entity.get_transform_2d(true)
 
-	set_physics_process(true)
-	
-	set_process_input(false)
-	set_process_unhandled_input(false)
+#	set_physics_process(true)
+
 
 func _process(delta : float) -> void:
 	if entity.ai_state == EntityEnums.AI_STATE_OFF:
@@ -97,36 +99,36 @@ func _process(delta : float) -> void:
 	if l < rs:
 		if not visible:
 			show()
-			set_physics_process(true)
+#			set_physics_process(true)
 	else:
 		if visible:
 			hide()
-			set_physics_process(false)
+#			set_physics_process(false)
 
 
-func _physics_process(delta : float) -> void:
-	if entity.sentity_data == null:
-		return
-		
-	if dead:
-		return
-		
-	if entity.c_is_controlled:
-		process_movement(delta)
-	else:
-		if sleep:
-			sleep_recheck_timer += delta
-			
-			if sleep_recheck_timer < 0.5:
-				return
-				
-			sleep_recheck_timer = 0
-		
-#		if world != null:
-#			if not world.is_position_walkable(transform.origin):
+#func _physics_process(delta : float) -> void:
+#	if entity.sentity_data == null:
+#		return
+#
+#	if dead:
+#		return
+#
+#	if entity.c_is_controlled:
+#		process_movement(delta)
+#	else:
+#		if sleep:
+#			sleep_recheck_timer += delta
+#
+#			if sleep_recheck_timer < 0.5:
 #				return
-
-		process_movement(delta)
+#
+#			sleep_recheck_timer = 0
+#
+##		if world != null:
+##			if not world.is_position_walkable(transform.origin):
+##				return
+#
+#		process_movement(delta)
 
 
 func process_movement(delta : float) -> void:
@@ -167,28 +169,24 @@ func process_movement(delta : float) -> void:
 #			rpc_id(1, "sset_position", position)
 #		else:
 #			sset_position(position)
-		
+	
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		var ievkey : InputEventKey = event as InputEventKey
+	#Not sure why yet, but _unhandled_input gets called even after set_process_unhandled_input(false)
+	if !entity.c_is_controlled:
+		return 
 		
-		if ievkey.echo:
-			return
-			
-		var val : int = 1
-		
-		if not event.pressed:
-			val = -1
-		
-		if ievkey.scancode == KEY_W:
-			input_direction.y -= val
-		if ievkey.scancode == KEY_S:
-			input_direction.y += val
-		if ievkey.scancode == KEY_A:
-			input_direction.x -= val
-		if ievkey.scancode == KEY_D:
-			input_direction.x += val
-
+	if event.is_action_pressed("left"):
+		try_move(-1, 0)
+		return
+	elif event.is_action_pressed("right"):
+		try_move(1, 0)
+		return
+	elif event.is_action_pressed("up"):
+		try_move(0, -1)
+		return
+	elif event.is_action_pressed("down"):
+		try_move(0, 1)
+		return
 			
 	if event is InputEventMouseMotion and event.device != -1:
 		cmouseover(event)
@@ -227,48 +225,70 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 			
 
-func target(position : Vector2) -> bool:
-	var space_state = get_world_2d().direct_space_state
-	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
-	#var results = space_state.intersect_point(position, 32, [], 2)
+func try_move(dx, dy):
+	var tp : Vector2 = get_tile_position()
+	tp.x += dx
+	tp.y += dy
+	
+	if !world.is_position_walkable(tp.x, tp.y):
+		return
+	
+	#todo
+	#world.can_interact
+	
+	set_tile_position(tp)
+	
+func get_tile_position() -> Vector2:
+	var v : Vector2 = Vector2(int(transform.origin.x / tile_size), int(transform.origin.y / tile_size))
+	
+	return v
+	
+func set_tile_position(pos : Vector2) -> void:
+	transform.origin = pos * tile_size + Vector2(tile_size / 2, tile_size / 2)
 
-	if results:
-		for result in results:
-			if result.collider and result.collider.owner is Entity:
-				entity.target_crequest_change((result.collider.owner as Node).get_path())
-				return true
-				
-		entity.target_crequest_change(NodePath())
-	else:
-		entity.target_crequest_change(NodePath())
-		
+func target(position : Vector2) -> bool:
+#	var space_state = get_world_2d().direct_space_state
+#	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
+#	#var results = space_state.intersect_point(position, 32, [], 2)
+#
+#	if results:
+#		for result in results:
+#			if result.collider and result.collider.owner is Entity:
+#				entity.target_crequest_change((result.collider.owner as Node).get_path())
+#				return true
+#
+#		entity.target_crequest_change(NodePath())
+#	else:
+#		entity.target_crequest_change(NodePath())
+#
 	return false
 
 func cmouseover(event):
-	var space_state = get_world_2d().direct_space_state
-	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
-	#var results = space_state.intersect_point(position, 32, [], 2)
-
-	if results:
-		for result in results:
-			if result.collider and result.collider.owner is Entity:
-				var mo : Entity = result.collider.owner as Entity
-			
-				if last_mouse_over != null and last_mouse_over != mo:
-					if is_instance_valid(last_mouse_over):
-						last_mouse_over.notification_cmouse_exit()
-					
-					last_mouse_over = null
-			
-				if last_mouse_over == null:
-					mo.notification_cmouse_enter()
-					last_mouse_over = mo
-			
-				return
-			
-	if last_mouse_over != null:
-		last_mouse_over.notification_cmouse_exit()
-		last_mouse_over = null
+#	var space_state = get_world_2d().direct_space_state
+#	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
+#	#var results = space_state.intersect_point(position, 32, [], 2)
+#
+#	if results:
+#		for result in results:
+#			if result.collider and result.collider.owner is Entity:
+#				var mo : Entity = result.collider.owner as Entity
+#
+#				if last_mouse_over != null and last_mouse_over != mo:
+#					if is_instance_valid(last_mouse_over):
+#						last_mouse_over.notification_cmouse_exit()
+#
+#					last_mouse_over = null
+#
+#				if last_mouse_over == null:
+#					mo.notification_cmouse_enter()
+#					last_mouse_over = mo
+#
+#				return
+#
+#	if last_mouse_over != null:
+#		last_mouse_over.notification_cmouse_exit()
+#		last_mouse_over = null
+	pass
 	
 	
 func on_c_controlled_changed(val):
@@ -286,14 +306,14 @@ func on_c_controlled_changed(val):
 		var ui = uiscn.instance()
 		add_child(ui)
 		
-		set_process_input(true)
+#		set_process_input(true)
 		set_process_unhandled_input(true)
 	else:
 		if camera:
 			camera.queue_free()
 			camera = null
-			
-		set_process_input(false)
+		
+#		set_process_input(false)
 		set_process_unhandled_input(false)
 		var nameplatescn : PackedScene = ResourceLoader.load("res://ui/nameplates/NamePlate.tscn")
 		var nameplate = nameplatescn.instance()
