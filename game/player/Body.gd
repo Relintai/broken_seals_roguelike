@@ -56,6 +56,8 @@ var visibility_update_timer : float = randi()
 
 var tile_size : int = 32
 
+var nameplate : Node
+
 func _enter_tree() -> void:
 	world = get_node(world_path) as Node2D
 	tile_size = get_node("/root/Main").get_tile_size()
@@ -77,99 +79,18 @@ func _enter_tree() -> void:
 	
 	transform = entity.get_transform_2d(true)
 
-#	set_physics_process(true)
+func set_visibility(val : bool) -> void:
+	if val:
+		show()
 
-
-func _process(delta : float) -> void:
-	if entity.ai_state == EntityEnums.AI_STATE_OFF:
-		return
+		if nameplate:
+			nameplate.show()
+	elif !val:
+		hide()
 		
-	visibility_update_timer += delta
-	
-	if visibility_update_timer < 1:
-		return
-		
-	visibility_update_timer = 0
+		if nameplate:
+			nameplate.hide()
 
-	var vpos : Vector2 = -get_tree().root.canvas_transform.get_origin() + (get_tree().root.get_visible_rect().size / 2) - position
-	var l : float = vpos.length_squared()
-	var rs : float = get_tree().root.size.x * get_tree().root.size.x
-	rs *= 0.3
-
-	if l < rs:
-		if not visible:
-			show()
-#			set_physics_process(true)
-	else:
-		if visible:
-			hide()
-#			set_physics_process(false)
-
-
-#func _physics_process(delta : float) -> void:
-#	if entity.sentity_data == null:
-#		return
-#
-#	if dead:
-#		return
-#
-#	if entity.c_is_controlled:
-#		process_movement(delta)
-#	else:
-#		if sleep:
-#			sleep_recheck_timer += delta
-#
-#			if sleep_recheck_timer < 0.5:
-#				return
-#
-#			sleep_recheck_timer = 0
-#
-##		if world != null:
-##			if not world.is_position_walkable(transform.origin):
-##				return
-#
-#		process_movement(delta)
-
-
-func process_movement(delta : float) -> void:
-	var state : int = entity.getc_state()
-	
-	if state & EntityEnums.ENTITY_STATE_TYPE_FLAG_ROOT != 0 or state & EntityEnums.ENTITY_STATE_TYPE_FLAG_STUN != 0:
-		return
-#
-#	if (input_dir.length_squared() > 0.1):
-#		moving = true
-##		entity.moved()
-#	else:
-#		moving = false
-#
-#	var hvel = vel
-#
-#	var target = dir
-#	target *= entity.get_speed().ccurrent
-#
-#	var accel
-#	if dir.dot(hvel) > 0:
-#		accel = ACCEL
-#	else:
-#		accel = DEACCEL
-#
-#	hvel = hvel.linear_interpolate(target, accel*delta)
-#	vel = hvel
-#	vel = move_and_slide(vel)
-
-#	if input_length > 0.1:
-#		#handle_graphic_facing(abs(dir.dot(Vector2(0, 1))) > 0.9)
-#		character_skeleton.update_facing(input_dir)
-#
-#	character_skeleton.get_animation_tree().set("parameters/walking/blend_amount", input_dir.length())
-#
-#	if multiplayer.has_network_peer():
-#		if not multiplayer.is_network_server():
-#			rpc_id(1, "sset_position", position)
-#		else:
-#			sset_position(position)
-	
 func _unhandled_input(event: InputEvent) -> void:
 	#Not sure why yet, but _unhandled_input gets called even after set_process_unhandled_input(false)
 	if !entity.c_is_controlled:
@@ -177,19 +98,28 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	if event.is_action_pressed("left"):
 		try_move(-1, 0)
+		get_tree().set_input_as_handled()
 		return
 	elif event.is_action_pressed("right"):
 		try_move(1, 0)
+		get_tree().set_input_as_handled()
 		return
 	elif event.is_action_pressed("up"):
 		try_move(0, -1)
+		get_tree().set_input_as_handled()
 		return
 	elif event.is_action_pressed("down"):
 		try_move(0, 1)
+		get_tree().set_input_as_handled()
+		return
+	elif event.is_action_pressed("wait"):
+		world.player_moved() 
+		get_tree().set_input_as_handled()
 		return
 			
 	if event is InputEventMouseMotion and event.device != -1:
-		cmouseover(event)
+		cmouseover(event.position)
+		get_tree().set_input_as_handled()
 
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_WHEEL_DOWN and event.device != -1:
@@ -218,14 +148,22 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		if event.pressed and event.button_index == BUTTON_RIGHT and event.device != -1:
 			target(event.position)
+			
+		get_tree().set_input_as_handled()
 				
 			
 	if event is InputEventScreenTouch and event.pressed:
 		target(event.position)
+		get_tree().set_input_as_handled()
 			
 			
 
 func try_move(dx, dy):
+	var state : int = entity.getc_state()
+	
+	if state & EntityEnums.ENTITY_STATE_TYPE_FLAG_ROOT != 0 or state & EntityEnums.ENTITY_STATE_TYPE_FLAG_STUN != 0:
+		return
+		
 	var tp : Vector2 = get_tile_position()
 	tp.x += dx
 	tp.y += dy
@@ -241,57 +179,81 @@ func try_move(dx, dy):
 	if entity.c_is_controlled:
 		world.player_moved() 
 	
-func get_tile_position() -> Vector2:
-	var v : Vector2 = Vector2(int(transform.origin.x / tile_size), int(transform.origin.y / tile_size))
+func move_towards_target():
+	var state : int = entity.getc_state()
 	
-	return v
+	if state & EntityEnums.ENTITY_STATE_TYPE_FLAG_ROOT != 0 or state & EntityEnums.ENTITY_STATE_TYPE_FLAG_STUN != 0:
+		return
+		
+	var t : Entity = entity.getc_target()
+	
+	if !t:
+		return
+		
+	var bp : Vector2 = t.get_body().get_tile_position()
+	
+	var my_point = world.nav_graph.get_closest_point(get_tile_position())
+	var target_point = world.nav_graph.get_closest_point(bp)
+	var path = world.nav_graph.get_point_path(my_point, target_point)
+	
+	if path:
+		assert(path.size() > 1)
+		
+		var move_tile = Vector2(path[1].x, path[1].y)
+		
+		if move_tile == bp:
+			return
+		
+		for e in world.enemies:
+			if e.get_body().get_tile_position() == move_tile:
+				return
+				
+		set_tile_position(move_tile)
+	
+func get_tile_position() -> Vector2:
+	return Vector2(int(transform.origin.x / tile_size), int(transform.origin.y / tile_size))
 	
 func set_tile_position(pos : Vector2) -> void:
 	transform.origin = pos * tile_size + Vector2(tile_size / 2, tile_size / 2)
 
-func target(position : Vector2) -> bool:
-#	var space_state = get_world_2d().direct_space_state
-#	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
-#	#var results = space_state.intersect_point(position, 32, [], 2)
-#
-#	if results:
-#		for result in results:
-#			if result.collider and result.collider.owner is Entity:
-#				entity.target_crequest_change((result.collider.owner as Node).get_path())
-#				return true
-#
-#		entity.target_crequest_change(NodePath())
-#	else:
-#		entity.target_crequest_change(NodePath())
-#
-	return false
+func target(position : Vector2) -> void:
+	#https://github.com/godotengine/godot/issues/32222
+	position = position - get_viewport_transform().origin
+	position *= camera.zoom
+	
+	var pos : Vector2 = world.pixel_to_tile(position.x, position.y)
+	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
 
-func cmouseover(event):
-#	var space_state = get_world_2d().direct_space_state
-#	var results = space_state.intersect_point(world.make_canvas_position_local(position), 32, [], get_collision_layer())
-#	#var results = space_state.intersect_point(position, 32, [], 2)
-#
-#	if results:
-#		for result in results:
-#			if result.collider and result.collider.owner is Entity:
-#				var mo : Entity = result.collider.owner as Entity
-#
-#				if last_mouse_over != null and last_mouse_over != mo:
-#					if is_instance_valid(last_mouse_over):
-#						last_mouse_over.notification_cmouse_exit()
-#
-#					last_mouse_over = null
-#
-#				if last_mouse_over == null:
-#					mo.notification_cmouse_enter()
-#					last_mouse_over = mo
-#
-#				return
-#
-#	if last_mouse_over != null:
-#		last_mouse_over.notification_cmouse_exit()
-#		last_mouse_over = null
-	pass
+	if enemy:
+		if entity.getc_target() != enemy:
+			entity.target_crequest_change(enemy.get_path())
+	else:
+		entity.target_crequest_change(NodePath())
+
+func cmouseover(position : Vector2):
+	#https://github.com/godotengine/godot/issues/32222
+	position = position - get_viewport_transform().origin
+	position *= camera.zoom
+	
+	var pos : Vector2 = world.pixel_to_tile(position.x, position.y)
+	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
+
+	if enemy:
+		if last_mouse_over != null and last_mouse_over != entity:
+			if is_instance_valid(last_mouse_over):
+				last_mouse_over.notification_cmouse_exit()
+				
+			last_mouse_over = null
+			
+		if last_mouse_over == null:
+			entity.notification_cmouse_enter()
+			last_mouse_over = entity
+			
+		return
+
+	if last_mouse_over != null:
+		last_mouse_over.notification_cmouse_exit()
+		last_mouse_over = null
 	
 	
 func on_c_controlled_changed(val):
@@ -300,7 +262,6 @@ func on_c_controlled_changed(val):
 	
 	if val:
 		camera = Camera2D.new()
-#		camera.zoom = Vector2(0.6, 0.6)
 		camera.zoom = get_node("/root/Main").get_world_scale()
 		add_child(camera)
 		camera.current = true
@@ -311,6 +272,8 @@ func on_c_controlled_changed(val):
 		
 #		set_process_input(true)
 		set_process_unhandled_input(true)
+		
+		set_visibility(true)
 	else:
 		if camera:
 			camera.queue_free()
@@ -319,9 +282,10 @@ func on_c_controlled_changed(val):
 #		set_process_input(false)
 		set_process_unhandled_input(false)
 		var nameplatescn : PackedScene = ResourceLoader.load("res://ui/nameplates/NamePlate.tscn")
-		var nameplate = nameplatescn.instance()
+		nameplate = nameplatescn.instance()
 		get_parent().add_child(nameplate)
 		
+		set_visibility(false)
 		
  
 remote func sset_position(pposition : Vector2) -> void:

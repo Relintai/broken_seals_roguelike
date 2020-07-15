@@ -70,7 +70,7 @@ remote func creceive_spawn_for(data: String, global_name : String, position: Vec
 	ESS.request_entity_spawn(createinfo)
 	
 #	print("Player spawned ")
-	
+
 	return createinfo.created_entity
 	
 remote func creceive_despawn_for(path : NodePath) -> void:
@@ -93,7 +93,7 @@ puppet func spawn_owned_player(data : String, position : Vector3) -> Entity:
 	ESS.request_entity_spawn(createinfo)
 	
 #	print("Player spawned ")
-	
+
 	return createinfo.created_entity
 
 func load_player(file_name : String, position : Vector3, network_owner : int) -> Entity:
@@ -154,7 +154,7 @@ func spawn_display_player(file_name : String, node_path : NodePath) -> Entity:
 #	print("Player spawned ")
 
 	ESS.request_entity_spawn(createinfo)
-	
+
 	return createinfo.created_entity
 
 func spawn_networked_player(class_id : int,  position : Vector3, name : String, node_name : String, sid : int) -> Entity:
@@ -182,7 +182,7 @@ func spawn_networked_player(class_id : int,  position : Vector3, name : String, 
 	createinfo.transform.origin = position
 
 	ESS.request_entity_spawn(createinfo)
-	
+
 #	print("Player spawned " + str(createinfo))
 	
 	return createinfo.created_entity
@@ -211,7 +211,7 @@ func spawn_player(class_id : int,  position : Vector3, name : String, node_name 
 	createinfo.networked =  false
 
 	ESS.request_entity_spawn(createinfo)
-	
+
 #	print("Player spawned " + str(createinfo))
 	
 	return createinfo.created_entity
@@ -272,6 +272,7 @@ func _request_entity_spawn(createinfo : EntityCreateInfo):
 		get_scene_tree().root.get_node(createinfo.parent_path).add_child(entity_node)
 
 	entity_node.setup(createinfo)
+	entity_node.set_maunal_process(true)
 	
 	createinfo.created_entity = entity_node
 	

@@ -46,6 +46,7 @@ export(int) var enemy_count : int = 14
 var map : Array = []
 var rooms : Array = []
 var enemies : Array = []
+var nav_graph : AStar2D
 
 onready var tile_map : TileMap = $Terrarin
 onready var visibility_map : TileMap = $VisibilityMap
@@ -59,9 +60,6 @@ func load_character(file_name: String) -> void:
 	
 	randomize()
 	build_level()
-	
-#	if spawn_mobs:
-#		generate()
 
 	#Place player
 	var start_room = rooms.front()
@@ -97,6 +95,11 @@ func load_character(file_name: String) -> void:
 	call_deferred("update_visibility")
 
 func player_moved():
+	_player.update(1)
+	
+	for e in enemies:
+		e.update(1)
+	
 	call_deferred("update_visibility")
 
 func update_visibility():
@@ -123,6 +126,42 @@ func update_visibility():
 
 				if !occlusion || (occlusion.position - test_point).length() < 1:
 					visibility_map.set_cell(x, y, -1)
+					
+	for e in enemies:
+		var b = e.get_body()
+		
+		if !b.visible:
+			var pos : Vector2 = b.transform.origin
+			
+			var occlusion = space_state.intersect_ray(body.transform.origin, pos)
+			
+			if !occlusion:
+				b.set_visibility(true)
+				e.sets_target(_player)
+
+func clear_path(tile):
+	var new_point = nav_graph.get_available_point_id()
+	nav_graph.add_point(new_point, Vector2(tile.x, tile.y))
+	
+	var points_to_conect = []
+	
+	if tile.x > 0 && map[tile.x - 1][tile.y] == Tile.Floor:
+		points_to_conect.append(nav_graph.get_closest_point(Vector2(tile.x - 1, tile.y)))
+		
+	if tile.y > 0 && map[tile.x][tile.y - 1] == Tile.Floor:
+		points_to_conect.append(nav_graph.get_closest_point(Vector2(tile.x, tile.y - 1)))
+		
+	if tile.x < 0 && map[tile.x + 1][tile.y] == Tile.Floor:
+		points_to_conect.append(nav_graph.get_closest_point(Vector2(tile.x + 1, tile.y)))
+		
+	if tile.y < 0 && map[tile.x][tile.y + 1] == Tile.Floor:
+		points_to_conect.append(nav_graph.get_closest_point(Vector2(tile.x, tile.y + 1)))
+		
+	for point in points_to_conect:
+		nav_graph.connect_points(point, new_point)
+
+func pixel_to_tile(x, y):
+	return tile_map.world_to_map(Vector2(x, y))
 
 func tile_to_pixel_center(x, y):
 	return Vector2((x + 0.5) * tile_size, (y + 0.5) * tile_size)
@@ -141,6 +180,14 @@ func is_position_walkable(x : int, y : int) -> bool:
 			return false
 		
 	return true
+	
+func get_enemy_at_tile(x : int, y : int) -> Entity:
+	for e in enemies:
+		var pos : Vector2 = e.get_body().get_tile_position()
+		if pos.x == x && pos.y == y:
+			return e
+		
+	return null
 		
 func build_level():
 	rooms.clear()
@@ -151,6 +198,8 @@ func build_level():
 		e.queue_free()
 		
 	enemies.clear()
+	
+	nav_graph = AStar2D.new()
 	
 	for x in range(level_size.x):
 		map.append([])
@@ -373,11 +422,9 @@ func cut_regions(free_regions, region_to_remove):
 func set_tile(x, y, type):
 	map[x][y] = type
 	tile_map.set_cell(x, y, type)
-
-func generate() -> void:
-	for x in range(-5, 5):
-		for y in range(-5, 5):
-			ESS.entity_spawner.spawn_mob(1, 50, Vector3(x * 200, y * 200, 0))
+	
+	if type == Tile.Floor:
+		clear_path(Vector2(x, y))
 
 func save() -> void:
 	if _player == null or _player_file_name == "":
