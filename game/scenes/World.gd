@@ -41,9 +41,11 @@ export(Vector2) var level_size : Vector2 = Vector2(40, 40)
 export(int) var level_room_count : int = 9
 export(int) var min_room_dimension : int = 5
 export(int) var max_room_dimension : int = 8
+export(int) var enemy_count : int = 14
 
 var map : Array = []
 var rooms : Array = []
+var enemies : Array = []
 
 onready var tile_map : TileMap = $Terrarin
 onready var visibility_map : TileMap = $VisibilityMap
@@ -58,8 +60,8 @@ func load_character(file_name: String) -> void:
 	randomize()
 	build_level()
 	
-	if spawn_mobs:
-		generate()
+#	if spawn_mobs:
+#		generate()
 
 	#Place player
 	var start_room = rooms.front()
@@ -68,6 +70,27 @@ func load_character(file_name: String) -> void:
 	var pos : Vector3 = Vector3(player_x * tile_size + tile_size / 2, player_y * tile_size + tile_size / 2, 0)
 	_player = ESS.entity_spawner.load_player(_player_file_name, pos, 1) as Entity
 	Server.sset_seed(_player.sseed)
+	
+	#Place enemies
+	for i in range(enemy_count):
+		var room = rooms[1 + randi() % (rooms.size() - 1)]
+		var x = room.position.x + 1 + randi() % int (room.size.x - 2)
+		var y = room.position.y + 1 + randi() % int (room.size.y - 2)
+		
+		var blocked = false
+		for enemy in enemies:
+			var body = enemy.get_body()
+			var bp = body.get_tile_position()
+			if bp.x == x && bp.y == y:
+				blocked = true
+				break
+				
+		if !blocked:
+			var t = tile_to_pixel_center(x, y)
+			var enemy = ESS.entity_spawner.spawn_mob(1, 1, Vector3(t.x, t.y, 0))
+			
+			enemies.append(enemy)
+			
 	
 	tile_map.update_dirty_quadrants()
 	
@@ -112,12 +135,22 @@ func is_position_walkable(x : int, y : int) -> bool:
 	elif type == Tile.Stone:
 		return false
 		
+	for e in enemies:
+		var pos : Vector2 = e.get_body().get_tile_position()
+		if pos.x == x && pos.y == y:
+			return false
+		
 	return true
 		
 func build_level():
 	rooms.clear()
 	map.clear()
 	tile_map.clear()
+	
+	for e in enemies:
+		e.queue_free()
+		
+	enemies.clear()
 	
 	for x in range(level_size.x):
 		map.append([])
