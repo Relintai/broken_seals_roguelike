@@ -11,7 +11,7 @@ extents = Vector2( 16, 16 )
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 255, 128, 32, 32 )
+region_rect = Rect2( 291, 128, 32, 32 )
 
 [node name="Wall" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -25,50 +25,38 @@ position = Vector2( 16, 16 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Wall/StaticBody2D"]
 shape = SubResource( 1 )
 
-[node name="Wall2" type="Sprite" parent="."]
+[node name="Door" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 224, 0, 32, 32 )
+region_rect = Rect2( 576, 992, 32, 32 )
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Wall2"]
+[node name="StaticBody2D2" type="StaticBody2D" parent="Door"]
 position = Vector2( 16, 16 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall2/StaticBody2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/StaticBody2D2"]
 shape = SubResource( 1 )
 
-[node name="Wall3" type="Sprite" parent="."]
+[node name="Ladder" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 224, 0, 32, 32 )
+region_rect = Rect2( 992, 993, 32, 32 )
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Wall3"]
+[node name="StaticBody2D2" type="StaticBody2D" parent="Ladder"]
 position = Vector2( 16, 16 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall3/StaticBody2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ladder/StaticBody2D2"]
 shape = SubResource( 1 )
 
-[node name="Wall4" type="Sprite" parent="."]
+[node name="Stone" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
-region_rect = Rect2( 224, 0, 32, 32 )
+region_rect = Rect2( 544, 960, 32, 32 )
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Wall4"]
+[node name="StaticBody2D2" type="StaticBody2D" parent="Stone"]
 position = Vector2( 16, 16 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall4/StaticBody2D2"]
-shape = SubResource( 1 )
-
-[node name="Wall5" type="Sprite" parent="."]
-texture = ExtResource( 1 )
-centered = false
-region_enabled = true
-region_rect = Rect2( 224, 0, 32, 32 )
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="Wall5"]
-position = Vector2( 16, 16 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall5/StaticBody2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Stone/StaticBody2D2"]
 shape = SubResource( 1 )
