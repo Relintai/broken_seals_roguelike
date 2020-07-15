@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 # Copyright (c) 2019 Péter Magyar
 #
@@ -46,6 +46,7 @@ var map : Array = []
 var rooms : Array = []
 
 onready var tile_map : TileMap = $Terrarin
+onready var visibility_map : TileMap = $VisibilityMap
 
 func _ready():
 	tile_size = get_node("/root/Main").get_tile_size()
@@ -67,7 +68,42 @@ func load_character(file_name: String) -> void:
 	var pos : Vector3 = Vector3(player_x * tile_size + tile_size / 2, player_y * tile_size + tile_size / 2, 0)
 	_player = ESS.entity_spawner.load_player(_player_file_name, pos, 1) as Entity
 	Server.sset_seed(_player.sseed)
+	
+	tile_map.update_dirty_quadrants()
+	
+	call_deferred("update_visibility")
+
+func player_moved():
+	call_deferred("update_visibility")
+
+func update_visibility():
+	if _player == null:
+		return
 		
+	var body = _player.get_body()
+	
+	if body == null:
+		return
+		
+	var tp : Vector2 = body.get_tile_position()
+	
+	var space_state : Physics2DDirectSpaceState = get_world_2d().direct_space_state
+	
+	for x in range(level_size.x):
+		for y in range(level_size.y):
+			if visibility_map.get_cell(x, y) == 0:
+				var x_dir = 1 if x < tp.x else -1
+				var y_dir = 1 if y < tp.y else -1
+				var test_point = tile_to_pixel_center(x, y) + Vector2(x_dir, y_dir) * tile_size / 2
+				
+				var occlusion = space_state.intersect_ray(body.transform.origin, test_point)
+
+				if !occlusion || (occlusion.position - test_point).length() < 1:
+					visibility_map.set_cell(x, y, -1)
+
+func tile_to_pixel_center(x, y):
+	return Vector2((x + 0.5) * tile_size, (y + 0.5) * tile_size)
+
 func is_position_walkable(x : int, y : int) -> bool:
 	var type = map[x][y]
 
@@ -88,6 +124,7 @@ func build_level():
 		for y in range(level_size.y):
 			map[x].append(Tile.Stone)
 			tile_map.set_cell(x, y, Tile.Stone)
+			visibility_map.set_cell(x, y, 0)
 			
 	var free_regions = [Rect2(Vector2(2, 2), level_size - Vector2(4, 4))]
 

@@ -40,7 +40,7 @@ var camera : Camera2D
 
 var last_mouse_over : Entity = null
 
-var world : Navigation2D = null
+var world : Node2D = null
 
 var _controlled : bool = false
 
@@ -57,7 +57,7 @@ var visibility_update_timer : float = randi()
 var tile_size : int = 32
 
 func _enter_tree() -> void:
-	world = get_node(world_path) as Node
+	world = get_node(world_path) as Node2D
 	tile_size = get_node("/root/Main").get_tile_size()
 	
 	camera = get_node_or_null("Camera") as Camera2D
@@ -237,6 +237,9 @@ func try_move(dx, dy):
 	#world.can_interact
 	
 	set_tile_position(tp)
+	
+	if entity.c_is_controlled:
+		world.player_moved() 
 	
 func get_tile_position() -> Vector2:
 	var v : Vector2 = Vector2(int(transform.origin.x / tile_size), int(transform.origin.y / tile_size))
