@@ -1,9 +1,11 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scenes/World.gd" type="Script" id=1]
+[ext_resource path="res://scenes/DungeonLevel.gd" type="Script" id=1]
 [ext_resource path="res://world/WorldLayer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://tilesets/dc_32x32/tileset.tres" type="TileSet" id=3]
 [ext_resource path="res://tilesets/Visibility_map/vis_32x32.tres" type="TileSet" id=4]
+
+
 
 [node name="World" type="Node2D" groups=[
 "save",
