@@ -60,6 +60,9 @@ var nameplate : Node
 
 var init : bool = false
 
+var touches : Array = Array()
+var touch_zoom : bool = false
+
 func _enter_tree() -> void:
 	world = get_node(world_path) as Node2D
 	tile_size = get_node("/root/Main").get_tile_size()
@@ -185,9 +188,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			pass
+			var touch : Array = [
+				event.index,
+				event.position,
+			]
+			
+			touches.append(touch)
+			
+			if touches.size() > 1:
+				touch_zoom = true
 		else:
-			if !target(event.position):
+			if !touch_zoom && !target(event.position):
 				var pos : Vector2 = world.make_canvas_position_local(event.position)
 				
 				pos -= transform.origin
@@ -213,6 +224,60 @@ func _unhandled_input(event: InputEvent) -> void:
 						my = -1
 							
 				try_move(mx, my)
+			else:
+				pass
+				
+			for i in range(touches.size()):
+				if touches[i][0] == event.index:
+					touches.remove(i)
+					break
+					
+			if touch_zoom and touches.size() == 0:
+				touch_zoom = false
+				
+
+		get_tree().set_input_as_handled()
+		
+	if event is InputEventScreenDrag && touches.size() == 2:
+		if camera == null:
+			return
+			
+		var found : bool = false
+		for t in touches:
+			if event.index == t[0]:
+				found = true
+				break
+				
+		if !found:
+			return
+			
+		var otp : Vector2
+		var ttp : Vector2
+		
+		if touches[0][0] == event.index:
+			otp = touches[1][1]
+			ttp = touches[0][1]
+		else:
+			otp = touches[0][1]
+			ttp = touches[1][1]
+			
+		var olen : float =  (otp - ttp).length()
+		var currlen : float = (otp - event.position).length()
+			
+		
+		if olen > currlen:
+			if camera.zoom.x >= 2:
+				return
+			else:
+				var l : float = event.relative.length()
+				camera.zoom += Vector2(l, l) * 0.01 * 72 / OS.get_screen_dpi()
+		else:
+			if camera.zoom.x <= 0.1:
+				return
+			else:
+				var l : float = event.relative.length()
+				camera.zoom -= Vector2(l, l) * 0.01 * 72 / OS.get_screen_dpi()
+		
 
 		get_tree().set_input_as_handled()
 			
