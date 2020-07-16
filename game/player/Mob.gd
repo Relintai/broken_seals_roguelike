@@ -106,11 +106,11 @@ func _notification_sdamage(what, info):
 			
 func _notification_cdamage(what, info):
 	if what == SpellEnums.NOTIFICATION_DAMAGE_DAMAGE_DEALT:
-		WorldNumbers.damage(get_body().position, 1.6, info.damage, info.crit)
+		WorldNumbers.damage(get_body().position, 46, info.damage, info.crit)
 			
 func _notification_cheal(what, info):
 	if what == SpellEnums.NOTIFICATION_DAMAGE_DAMAGE_DEALT:
-		WorldNumbers.heal(get_body().position, 1.6, info.heal, info.crit)
+		WorldNumbers.heal(get_body().position, 46, info.heal, info.crit)
 
 func _notification_sxp_gained(value : int) -> void:
 	if not ESS.can_character_level_up(slevel):
