@@ -217,7 +217,7 @@ func spawn_player(class_id : int,  position : Vector3, name : String, node_name 
 	return createinfo.created_entity
 
 	
-func spawn_mob(class_id : int, level : int, position : Vector3) -> Entity:
+func spawn_mob(class_id : int, level : int, position : Vector3, parent_path : String = "") -> Entity:
 	var createinfo : EntityCreateInfo = EntityCreateInfo.new()
 	
 	var cls : EntityData = ESS.get_resource_db().get_entity_data(class_id)
@@ -229,6 +229,7 @@ func spawn_mob(class_id : int, level : int, position : Vector3) -> Entity:
 	createinfo.entity_controller = EntityEnums.ENITIY_CONTROLLER_AI
 	createinfo.entity_player_type = EntityEnums.ENTITY_PLAYER_TYPE_AI
 	createinfo.transform2d.origin = Vector2(position.x, position.y)
+	createinfo.parent_path = parent_path
 	
 	ESS.request_entity_spawn(createinfo)
 	

@@ -27,11 +27,10 @@ export(bool) var editor_generate : bool = false setget set_editor_generate, get_
 export(bool) var show_loading_screen : bool = true
 export(bool) var generate_on_ready : bool = false
 
-var initial_generation : bool = false
+var generated : bool = false
 
 var _editor_generate : bool
 
-var _player_file_name : String
 var _player : Entity
 
 enum Tile { Floor, Wall, Door, Ladder, Stone }
@@ -47,17 +46,30 @@ var map : Array = []
 var rooms : Array = []
 var enemies : Array = []
 var nav_graph : AStar2D
+var entrance_position : Transform2D = Transform2D()
 
 onready var tile_map : TileMap = $Terrarin
 onready var visibility_map : TileMap = $VisibilityMap
 
 func _ready():
 	tile_size = get_node("/root/Main").get_tile_size()
+	connect("visibility_changed", self, "on_visibility_changed")
 	pass # Replace with function body.
 
-func load_character(file_name: String) -> void:
-	_player_file_name = file_name
+func place_player(player: Entity) -> void:
+	_player = player
 	
+	if (_player == null):
+		return
+	
+	if !generated:
+		build()
+		
+	_player.get_body().transform = entrance_position
+	
+	call_deferred("update_visibility")
+	
+func build():
 	randomize()
 	build_level()
 
@@ -65,8 +77,9 @@ func load_character(file_name: String) -> void:
 	var start_room = rooms.front()
 	var player_x = start_room.position.x + 1 + randi() % int(start_room.size.x  - 2)
 	var player_y = start_room.position.y + 1 + randi() % int(start_room.size.y  - 2)
-	var pos : Vector3 = Vector3(player_x * tile_size + tile_size / 2, player_y * tile_size + tile_size / 2, 0)
-	_player = ESS.entity_spawner.load_player(_player_file_name, pos, 1) as Entity
+	
+	entrance_position.origin = Vector2(player_x * tile_size + tile_size / 2, player_y * tile_size + tile_size / 2)
+#	_player = ESS.entity_spawner.load_player(_player_file_name, pos, 1) as Entity
 	#Server.sset_seed(_player.sseed)
 	
 	#Place enemies
@@ -85,14 +98,13 @@ func load_character(file_name: String) -> void:
 				
 		if !blocked:
 			var t = tile_to_pixel_center(x, y)
-			var enemy = ESS.entity_spawner.spawn_mob(1, 1, Vector3(t.x, t.y, 0))
+			var enemy = ESS.entity_spawner.spawn_mob(1, 1, Vector3(t.x, t.y, 0), get_path())
 			
 			enemies.append(enemy)
 			
-	
 	tile_map.update_dirty_quadrants()
 	
-	call_deferred("update_visibility")
+	generated = true
 
 func player_moved():
 	_player.update(1)
@@ -103,6 +115,12 @@ func player_moved():
 	call_deferred("update_visibility")
 
 func update_visibility():
+	if !visible:
+		return
+		
+	if tile_map.collision_layer == 2:
+		return
+	
 	if _player == null:
 		return
 		
@@ -112,7 +130,7 @@ func update_visibility():
 		return
 		
 	var tp : Vector2 = body.get_tile_position()
-	
+
 	var space_state : Physics2DDirectSpaceState = get_world_2d().direct_space_state
 	
 	for x in range(level_size.x):
@@ -122,7 +140,7 @@ func update_visibility():
 				var y_dir = 1 if y < tp.y else -1
 				var test_point = tile_to_pixel_center(x, y) + Vector2(x_dir, y_dir) * tile_size / 2
 				
-				var occlusion = space_state.intersect_ray(body.transform.origin, test_point)
+				var occlusion = space_state.intersect_ray(body.transform.origin, test_point, [], 1)
 
 				if !occlusion || (occlusion.position - test_point).length() < 1:
 					visibility_map.set_cell(x, y, -1)
@@ -133,11 +151,15 @@ func update_visibility():
 		if !b.visible:
 			var pos : Vector2 = b.transform.origin
 			
-			var occlusion = space_state.intersect_ray(body.transform.origin, pos)
+			var occlusion = space_state.intersect_ray(body.transform.origin, pos, [], 1)
 			
 			if !occlusion:
 				b.set_visibility(true)
 				e.sets_target(_player)
+				
+		
+#	tile_map.update_dirty_quadrants()
+#	visibility_map.update_dirty_quadrants()
 
 func clear_path(tile):
 	var new_point = nav_graph.get_available_point_id()
@@ -425,12 +447,6 @@ func set_tile(x, y, type):
 	
 	if type == Tile.Floor:
 		clear_path(Vector2(x, y))
-
-func save() -> void:
-	if _player == null or _player_file_name == "":
-		return
-
-	ESS.entity_spawner.save_player(_player, _player_file_name)
 	
 func _generation_finished():
 
@@ -456,3 +472,20 @@ func set_editor_generate(value : bool) -> void:
 		pass
 		
 	_editor_generate = value
+
+func on_visibility_changed():
+	if visible:
+		if tile_map.collision_layer != 1:
+			tile_map.collision_layer = 1
+	else:
+		if tile_map.collision_layer != 2:
+			tile_map.collision_layer = 2
+		
+		for e in enemies:
+			var b = e.get_body()
+			
+			if b.visible:
+				b.set_visibility(false)
+				e.sets_target(null)
+
+	

@@ -132,8 +132,8 @@ func switch_scene(scene : int) -> void:
 		current_scene = gs
 	
 	elif scene == StartSceneTypes.WORLD:
-#		var gs : Node = world_scene.instance()
-		var gs : Node = get_world().instance()
+		var gs : Node = world_scene.instance()
+#		var gs : Node = get_world().instance()
 		add_child(gs)
 		gs.owner = self
 		
@@ -163,7 +163,7 @@ class ModulePathSorter:
 		return false
 
 func get_world():
-	return worlds[curent_style]
+	return world_scene
 
 func get_world_scale():
 	return world_scales[curent_style]

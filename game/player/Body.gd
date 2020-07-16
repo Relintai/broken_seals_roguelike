@@ -58,9 +58,14 @@ var tile_size : int = 32
 
 var nameplate : Node
 
+var init : bool = false
+
 func _enter_tree() -> void:
 	world = get_node(world_path) as Node2D
 	tile_size = get_node("/root/Main").get_tile_size()
+	
+	if init:
+		return
 	
 	camera = get_node_or_null("Camera") as Camera2D
 
@@ -78,6 +83,8 @@ func _enter_tree() -> void:
 	on_c_controlled_changed(entity.c_is_controlled)
 	
 	transform = entity.get_transform_2d(true)
+	
+	init = true
 
 func set_visibility(val : bool) -> void:
 	if val:
@@ -282,9 +289,7 @@ func target(position : Vector2) -> bool:
 	return false
 
 func cmouseover(position : Vector2):
-	#https://github.com/godotengine/godot/issues/32222
-	position = position - get_viewport_transform().origin
-	position *= camera.zoom
+	position = world.make_canvas_position_local(position)
 	
 	var pos : Vector2 = world.pixel_to_tile(position.x, position.y)
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
