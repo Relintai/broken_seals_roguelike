@@ -133,7 +133,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if camera == null:
 				return
 			
-			if camera.zoom.x >= 1:
+			if camera.zoom.x >= 2:
 				return
 			else:
 				camera.zoom += Vector2(event.factor, event.factor) * 0.01
@@ -141,7 +141,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if camera == null:
 				return
 				
-			if camera.zoom.x <= 0.2:
+			if camera.zoom.x <= 0.1:
 				return
 			else:
 				camera.zoom -= Vector2(event.factor, event.factor) * 0.01
