@@ -4,9 +4,6 @@
 [ext_resource path="res://modules/core/shaders/3_simple_y_billboard.shader" type="Shader" id=2]
 [ext_resource path="res://modules/core/materials/2_simple_particle_billboard.tres" type="Material" id=3]
 
-
-
-
 [sub_resource type="QuadMesh" id=1]
 material = ExtResource( 3 )
 size = Vector2( 0.02, 0.02 )

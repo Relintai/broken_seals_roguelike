@@ -56,11 +56,37 @@ func update_facing(input_direction : Vector2) -> void:
 		_facing = CharacterFacing.FACING_LEFT
 		sprite.transform.x.x = 1
 
-func add_effect(bone_id : int, effect : PackedScene) -> void:
-	pass
-
-func remove_effect(bone_id : int, effect : PackedScene) -> void:
-	pass
+#func add_effect(bone_id : int, effect : PackedScene) -> void:
+#	pass
+#
+#func remove_effect(bone_id : int, effect : PackedScene) -> void:
+#	pass
+#
+func _common_attach_point_index_get(point):
+	if point == EntityEnums.COMMON_SKELETON_POINT_LEFT_HAND:
+		return 0
+	elif point == EntityEnums.COMMON_SKELETON_POINT_ROOT:
+		return 3
+	elif point == EntityEnums.COMMON_SKELETON_POINT_SPINE_2:
+		return 6
+	elif point == EntityEnums.COMMON_SKELETON_POINT_RIGHT_HAND:
+		return 1
+	elif point == EntityEnums.COMMON_SKELETON_POINT_BACK:
+		return 6
+	elif point == EntityEnums.COMMON_SKELETON_POINT_RIGHT_HIP:
+		return 4
+	elif point == EntityEnums.COMMON_SKELETON_POINT_WEAPON_LEFT:
+		return 7
+	elif point == EntityEnums.COMMON_SKELETON_POINT_WEAPON_LEFT_BACK:
+		return 9
+	elif point == EntityEnums.COMMON_SKELETON_POINT_WEAPON_RIGHT:
+		return 8
+	elif point == EntityEnums.COMMON_SKELETON_POINT_WEAPON_RIGHT_BACK:
+		return 10
+	elif point == EntityEnums.COMMON_SKELETON_POINT_WEAPON_LEFT_SHIELD:
+		return 11
+		
+	return 3
 
 func get_animation_player() -> AnimationPlayer:
 	return null
