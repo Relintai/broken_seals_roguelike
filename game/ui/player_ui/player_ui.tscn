@@ -27,6 +27,7 @@
 [ext_resource path="res://ui/windows/CharacterWindow.tscn" type="PackedScene" id=29]
 
 [node name="GUILayer" type="CanvasLayer"]
+layer = 5
 script = ExtResource( 28 )
 loot_window_path = NodePath("GUI/Windows/LootWindow")
 
@@ -226,7 +227,7 @@ __meta__ = {
 actionbar_scene = ExtResource( 14 )
 
 [node name="Windows" type="CanvasLayer" parent="GUI"]
-layer = 2
+layer = 6
 
 [node name="CharacterWindow" parent="GUI/Windows" instance=ExtResource( 29 )]
 visible = false

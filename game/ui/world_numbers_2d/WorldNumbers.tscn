@@ -3,6 +3,8 @@
 [ext_resource path="res://ui/world_numbers_2d/WorldNumbers.gd" type="Script" id=1]
 [ext_resource path="res://ui/world_numbers_2d/Number.tscn" type="PackedScene" id=2]
 
-[node name="WorldNumbers" type="Node"]
+[node name="WorldNumbers" type="CanvasLayer"]
+layer = 2
+follow_viewport_enable = true
 script = ExtResource( 1 )
 number_scene = ExtResource( 2 )
