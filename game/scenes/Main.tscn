@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://scenes/MainScene.gd" type="Script" id=1]
 [ext_resource path="res://scenes/World.tscn" type="PackedScene" id=2]
@@ -6,20 +6,12 @@
 [ext_resource path="res://ui/theme/ui_theme.tres" type="Theme" id=4]
 [ext_resource path="res://ui/debug/DebugInfo.tscn" type="PackedScene" id=5]
 [ext_resource path="res://debug/FreeLookCam.tscn" type="PackedScene" id=6]
-[ext_resource path="res://tilesets/16x16_orthogonal/16x16_orthogonal_world.tscn" type="PackedScene" id=7]
-[ext_resource path="res://tilesets/rogue_dungeon/rogue_dungeon_world.tscn" type="PackedScene" id=8]
 [ext_resource path="res://tilesets/denzi_public_domain/denzi_public_domain_world.tscn" type="PackedScene" id=9]
 [ext_resource path="res://tilesets/dc_32x32/dc_32x32_world.tscn" type="PackedScene" id=10]
-[ext_resource path="res://tilesets/rogue_lite/world_rogue_lite.tscn" type="PackedScene" id=11]
 [ext_resource path="res://tilesets/denzi_32x32_orthogonal/denzi_32x32_orthogonal_world.tscn" type="PackedScene" id=12]
-[ext_resource path="res://tilesets/rogue_db32/rogue_db32_world.tscn" type="PackedScene" id=13]
-[ext_resource path="res://tilesets/16x16_orthogonal/player.tscn" type="PackedScene" id=14]
 [ext_resource path="res://tilesets/dc_32x32/player.tscn" type="PackedScene" id=15]
 [ext_resource path="res://tilesets/denzi_32x32_orthogonal/player.tscn" type="PackedScene" id=16]
 [ext_resource path="res://tilesets/denzi_public_domain/player.tscn" type="PackedScene" id=17]
-[ext_resource path="res://tilesets/rogue_db32/player.tscn" type="PackedScene" id=18]
-[ext_resource path="res://tilesets/rogue_dungeon/player.tscn" type="PackedScene" id=19]
-[ext_resource path="res://tilesets/rogue_lite/player.tscn" type="PackedScene" id=20]
 
 [node name="Main" type="Node"]
 script = ExtResource( 1 )
@@ -27,10 +19,10 @@ menu_scene = ExtResource( 3 )
 world_scene = ExtResource( 2 )
 debug_camera_scene = ExtResource( 6 )
 loading_screen_path = NodePath("LoadingScreen/PanelContainer")
-worlds = [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 12 ), ExtResource( 9 ), ExtResource( 13 ), ExtResource( 8 ), ExtResource( 11 ) ]
-world_scales = [ Vector2( 0.5, 0.5 ), Vector2( 0.8, 0.8 ), Vector2( 0.8, 0.8 ), Vector2( 0.8, 0.8 ), Vector2( 0.5, 0.5 ), Vector2( 0.4, 0.4 ), Vector2( 0.3, 0.3 ) ]
-bodies = [ ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 20 ) ]
-tile_sizes = [ 16, 32, 32, 32, 8, 8, 8 ]
+worlds = [ ExtResource( 10 ), ExtResource( 12 ), ExtResource( 9 ) ]
+world_scales = [ Vector2( 0.8, 0.8 ), Vector2( 0.8, 0.8 ), Vector2( 0.8, 0.8 ) ]
+bodies = [ ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ) ]
+tile_sizes = [ 32, 32, 32 ]
 
 [node name="LoadingScreen" type="CanvasLayer" parent="."]
 layer = 100
