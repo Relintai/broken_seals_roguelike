@@ -295,6 +295,7 @@ margin_right = 151.0
 visible = false
 
 [node name="MiniMap" parent="GUI" instance=ExtResource( 18 )]
+visible = false
 
 [node name="AuraFrame" parent="GUI" instance=ExtResource( 5 )]
 margin_left = -331.0
