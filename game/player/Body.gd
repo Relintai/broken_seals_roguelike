@@ -183,33 +183,36 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().set_input_as_handled()
 				
 			
-	if event is InputEventScreenTouch and event.pressed:
-		if !target(event.position):
-			var pos : Vector2 = world.make_canvas_position_local(event.position)
-			
-			pos -= transform.origin
-			
-			if pos.length() < tile_size / 2:
-				#wait
-				world.player_moved() 
-				return
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			pass
+		else:
+			if !target(event.position):
+				var pos : Vector2 = world.make_canvas_position_local(event.position)
 				
-			var mx : int = 0
-			var my : int = 0
+				pos -= transform.origin
 				
-			if abs(pos.x) > tile_size / 2:
-				if pos.x >= 0:
-					mx = 1
-				else:
-					mx = -1
-						
-			if abs(pos.y) > tile_size / 2:
-				if pos.y >= 0:
-					my = 1
-				else:
-					my = -1
-						
-			try_move(mx, my)
+				if pos.length() < tile_size / 2:
+					#wait
+					world.player_moved() 
+					return
+					
+				var mx : int = 0
+				var my : int = 0
+					
+				if abs(pos.x) > tile_size / 2:
+					if pos.x >= 0:
+						mx = 1
+					else:
+						mx = -1
+							
+				if abs(pos.y) > tile_size / 2:
+					if pos.y >= 0:
+						my = 1
+					else:
+						my = -1
+							
+				try_move(mx, my)
 
 		get_tree().set_input_as_handled()
 			
@@ -280,6 +283,9 @@ func target(position : Vector2) -> bool:
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
 	
 	if enemy:
+		if !enemy.get_body().visible:
+			return false
+		
 		if entity.getc_target() != enemy:
 			entity.target_crequest_change(enemy.get_path())
 			return true
@@ -295,6 +301,9 @@ func cmouseover(position : Vector2):
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
 
 	if enemy:
+		if !enemy.get_body().visible:
+			return false
+			
 		if last_mouse_over != null and last_mouse_over != entity:
 			if is_instance_valid(last_mouse_over):
 				last_mouse_over.notification_cmouse_exit()
