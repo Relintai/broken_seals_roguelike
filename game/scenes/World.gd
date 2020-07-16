@@ -67,7 +67,7 @@ func load_character(file_name: String) -> void:
 	var player_y = start_room.position.y + 1 + randi() % int(start_room.size.y  - 2)
 	var pos : Vector3 = Vector3(player_x * tile_size + tile_size / 2, player_y * tile_size + tile_size / 2, 0)
 	_player = ESS.entity_spawner.load_player(_player_file_name, pos, 1) as Entity
-	Server.sset_seed(_player.sseed)
+	#Server.sset_seed(_player.sseed)
 	
 	#Place enemies
 	for i in range(enemy_count):

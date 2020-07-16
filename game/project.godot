@@ -173,7 +173,6 @@ config/version="0.2"
 
 [autoload]
 
-Server="*res://autoload/Server.tscn"
 ThemeAtlas="*res://ui/autoload/ThemeAtlas.tscn"
 WorldNumbers="*res://ui/world_numbers_2d/WorldNumbers.tscn"
 CursorManager="*res://cursors/autoload/CursorManager.tscn"

@@ -192,20 +192,6 @@ func load_character() -> void:
 	if b == null:
 		return
 	
-#	if multiplayer.has_network_peer():
-#		var file_name : String = "user://" + character_folder + "/" + b.file_name
-#
-#		var f : File = File.new()
-#
-#		if f.open(file_name, File.READ) == OK:
-#			var data : String = f.get_as_text()
-#
-#			f.close()
-#
-#			Server.upload_character(data)
-#
-#			get_node("/root/Main").load_character(b.file_name)
-#	else:
 	get_node("/root/Main").load_character(b.file_name)
 	
 func visibility_changed() -> void:

@@ -139,29 +139,7 @@ func switch_scene(scene : int) -> void:
 		
 		current_scene = gs
 		
-		if multiplayer.has_network_peer():# and get_tree().network_peer.get_connection_status() == NetworkedMultiplayerPeer.CONNECTION_CONNECTED:
-			if multiplayer.is_network_server():
-				gs.load_character(current_character_file_name)
-			else:
-#				var dc = debug_camera_scene.instance()
-#
-#				gs.add_child(dc)
-#				dc.owner = gs
-#
-				gs.setup_client_seed(Server._cseed)
-				
-				var file_name : String = "user://characters/" + current_character_file_name
-	
-				var f : File = File.new()
-				
-				if f.open(file_name, File.READ) == OK:
-					var data : String = f.get_as_text()
-					
-					f.close()
-					
-					Server.upload_character(data)
-		else:
-			gs.load_character(current_character_file_name)
+		gs.load_character(current_character_file_name)
 		
 	if current_scene.has_method("needs_loading_screen"):
 		if current_scene.needs_loading_screen():
