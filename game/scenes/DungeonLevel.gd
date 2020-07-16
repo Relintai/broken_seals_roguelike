@@ -133,8 +133,8 @@ func update_visibility():
 
 	var space_state : Physics2DDirectSpaceState = get_world_2d().direct_space_state
 	
-	for x in range(level_size.x):
-		for y in range(level_size.y):
+	for x in range(tp.x - 5, tp.x + 5):
+		for y in range(tp.y - 5, tp.y + 5):
 			if visibility_map.get_cell(x, y) == 0:
 				var x_dir = 1 if x < tp.x else -1
 				var y_dir = 1 if y < tp.y else -1
@@ -145,10 +145,17 @@ func update_visibility():
 				if !occlusion || (occlusion.position - test_point).length() < 1:
 					visibility_map.set_cell(x, y, -1)
 					
+	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
+					
 	for e in enemies:
 		var b = e.get_body()
 		
 		if !b.visible:
+			var tpos : Vector2 = b.get_tile_position()
+			
+			if !test_rect.has_point(tpos):
+				continue
+			
 			var pos : Vector2 = b.transform.origin
 			
 			var occlusion = space_state.intersect_ray(body.transform.origin, pos, [], 1)
