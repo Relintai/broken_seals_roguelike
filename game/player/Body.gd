@@ -349,3 +349,5 @@ remote func sset_position(pposition : Vector2) -> void:
 remote func cset_position(pposition : Vector2) -> void:
 	pposition = pposition
 		
+func on_diesd(entity):
+	pass
