@@ -1,10 +1,11 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://player/GUI.gd" type="Script" id=1]
 [ext_resource path="res://ui/ingame_menu/IngameMenu.tscn" type="PackedScene" id=2]
 [ext_resource path="res://player/Unitframes.gd" type="Script" id=3]
 [ext_resource path="res://ui/errorframe/ErrorFrame.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/auraframe/AuraFrame.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/game_over_window/GameOverWindow.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/actionbars/Actionbars.gd" type="Script" id=8]
 [ext_resource path="res://ui/buttons/Buttons.gd" type="Script" id=9]
 [ext_resource path="res://ui/theme/ui_theme.tres" type="Theme" id=10]
@@ -38,7 +39,7 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_lock_": true
 }
-child_controls = [ NodePath("Unitframes"), NodePath("Actionbars"), NodePath("Windows/SpellBookWindow"), NodePath("Buttons"), NodePath("Castbar"), NodePath("AuraFrame"), NodePath("Windows/Inventory"), NodePath("Windows/LootWindow"), NodePath("Windows/TalentWindow"), NodePath("Windows/CraftingWindow") ]
+child_controls = [ NodePath("Unitframes"), NodePath("Actionbars"), NodePath("Windows/SpellBookWindow"), NodePath("Buttons"), NodePath("Castbar"), NodePath("AuraFrame"), NodePath("Windows/Inventory"), NodePath("Windows/LootWindow"), NodePath("Windows/TalentWindow"), NodePath("Windows/CraftingWindow"), NodePath("Windows/GameOverWindow") ]
 
 [node name="Buttons" type="Control" parent="GUI"]
 anchor_left = 0.5
@@ -274,6 +275,9 @@ margin_left = 39.0
 margin_top = 85.0
 margin_right = 242.0
 margin_bottom = 315.0
+
+[node name="GameOverWindow" parent="GUI/Windows" instance=ExtResource( 6 )]
+visible = false
 
 [node name="Unitframes" type="Control" parent="GUI"]
 anchor_right = 1.0
