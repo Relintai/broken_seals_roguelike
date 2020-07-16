@@ -29,8 +29,8 @@ func damage(entity_position : Vector2, entity_height : float, value : int, crit 
 	scene.owner = self
 	
 	randomize()
-	entity_position.y -= entity_height + (0.2 * randf())
-	entity_position.x += entity_height * 0.4 - entity_height * 0.8 * randf()
+	entity_position.y -= entity_height * 1.2 + (0.5 * randf())
+	entity_position.x -= entity_height * 0.4 * randf()  + entity_height * 0.2
 	
 	scene.damage(entity_position, value, crit)
 	
