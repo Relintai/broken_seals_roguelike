@@ -43,7 +43,6 @@ var _settings : Dictionary = {
 		"touchscreen_mode" : OS.has_touchscreen_ui_hint(),
 	},
 	"debug" : {
-		"style" : 0,
 		"debug_info" : false
 	}
 }

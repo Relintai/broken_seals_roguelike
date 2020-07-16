@@ -26,11 +26,10 @@ export(PackedScene) var menu_scene : PackedScene
 export(PackedScene) var world_scene : PackedScene
 export(PackedScene) var debug_camera_scene : PackedScene
 export(NodePath) var loading_screen_path : NodePath
-export(int) var curent_style : int = 0
-export(Array, PackedScene) var worlds : Array
-export(Array, Vector2) var world_scales : Array
+
+export(Vector2) var world_scale : Vector2
 export(Array, PackedScene) var bodies : Array
-export(Array, int) var tile_sizes : Array
+export(int) var tile_size : int
 
 enum StartSceneTypes {
 	NONE, MENU, WORLD
@@ -55,19 +54,7 @@ func _ready() -> void:
 	
 	initialize_modules()
 	
-	Settings.connect("setting_changed", self, "setting_changed")
-	Settings.connect("settings_loaded", self, "settings_loaded")
-	settings_loaded()
-	
 	switch_scene(start_scene)
-
-	
-func setting_changed(section, key, value):
-	if section == "debug" and key == "style":
-		curent_style = value
-	
-func settings_loaded():
-	curent_style = Settings.get_value("debug", "style")
 
 func initialize_modules() -> void:
 	_modules.clear()
@@ -166,10 +153,10 @@ func get_world():
 	return world_scene
 
 func get_world_scale():
-	return world_scales[curent_style]
+	return world_scale
 	
 func get_body():
-	return bodies[curent_style]
+	return bodies[randi() % bodies.size()]
 	
 func get_tile_size():
-	return tile_sizes[curent_style]
+	return tile_size
