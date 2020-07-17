@@ -47,6 +47,7 @@ var rooms : Array = []
 var enemies : Array = []
 var nav_graph : AStar2D
 var entrance_position : Transform2D = Transform2D()
+var player_visibility_array : Array = Array()
 
 onready var tile_map : TileMap = $Terrarin
 onready var visibility_map : TileMap = $VisibilityMap
@@ -132,12 +133,12 @@ func update_visibility():
 	var tp : Vector2 = body.get_tile_position()
 	
 	for x in range(tp.x - 8, tp.x + 9):
-		plot_line(tp.x, tp.y, x, tp.y + 8)
-		plot_line(tp.x, tp.y, x, tp.y - 8)
+		plot_visibility_line(tp.x, tp.y, x, tp.y + 8)
+		plot_visibility_line(tp.x, tp.y, x, tp.y - 8)
 
 	for y in range(tp.y - 8, tp.y + 9):
-		plot_line(tp.x, tp.y, tp.x + 8, y)
-		plot_line(tp.x, tp.y, tp.x - 8, y)
+		plot_visibility_line(tp.x, tp.y, tp.x + 8, y)
+		plot_visibility_line(tp.x, tp.y, tp.x - 8, y)
 		
 #	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
 	for e in enemies:
@@ -484,19 +485,19 @@ func on_visibility_changed():
 func make_cell_visible(x : int, y : int):
 	visibility_map.set_cell(x, y, -1)
 
-func plot_line(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
+func plot_visibility_line(x0 : int,y0 : int, x1 : int, y1 : int) -> bool:
 	if abs(y1 - y0) < abs(x1 - x0):
 		if x0 > x1:
-			return plot_line_low_reverse(x1, y1, x0, y0)
+			return plot_visibility_line_low_reverse(x1, y1, x0, y0)
 		else:
-			return plot_line_low(x0, y0, x1, y1)
+			return plot_visibility_line_low(x0, y0, x1, y1)
 	else:
 		if y0 > y1:
-			return plot_line_high_reverse(x1, y1, x0, y0)
+			return plot_visibility_line_high_reverse(x1, y1, x0, y0)
 		else:
-			return plot_line_high(x0, y0, x1, y1)
+			return plot_visibility_line_high(x0, y0, x1, y1)
 
-func plot_line_low(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_visibility_line_low(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
 	var yi : int = 1
@@ -523,7 +524,7 @@ func plot_line_low(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plot_line_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_visibility_line_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var arr = []
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
@@ -557,7 +558,7 @@ func plot_line_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plot_line_high(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_visibility_line_high(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
 	var xi : int = 1
@@ -584,7 +585,7 @@ func plot_line_high(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plot_line_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_visibility_line_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var arr = []
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
