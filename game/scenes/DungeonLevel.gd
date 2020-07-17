@@ -132,12 +132,12 @@ func update_visibility():
 	var tp : Vector2 = body.get_tile_position()
 	
 	for x in range(tp.x - 8, tp.x + 9):
-		plotLine(tp.x, tp.y, x, tp.y + 8)
-		plotLine(tp.x, tp.y, x, tp.y - 8)
+		plot_line(tp.x, tp.y, x, tp.y + 8)
+		plot_line(tp.x, tp.y, x, tp.y - 8)
 
 	for y in range(tp.y - 8, tp.y + 9):
-		plotLine(tp.x, tp.y, tp.x + 8, y)
-		plotLine(tp.x, tp.y, tp.x - 8, y)
+		plot_line(tp.x, tp.y, tp.x + 8, y)
+		plot_line(tp.x, tp.y, tp.x - 8, y)
 		
 #	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
 	for e in enemies:
@@ -484,19 +484,19 @@ func on_visibility_changed():
 func make_cell_visible(x : int, y : int):
 	visibility_map.set_cell(x, y, -1)
 
-func plotLine(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
+func plot_line(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
 	if abs(y1 - y0) < abs(x1 - x0):
 		if x0 > x1:
-			return plotLineLowReverse(x1, y1, x0, y0)
+			return plot_line_low_reverse(x1, y1, x0, y0)
 		else:
-			return plotLineLow(x0, y0, x1, y1)
+			return plot_line_low(x0, y0, x1, y1)
 	else:
 		if y0 > y1:
-			return plotLineHighReverse(x1, y1, x0, y0)
+			return plot_line_high_reverse(x1, y1, x0, y0)
 		else:
-			return plotLineHigh(x0, y0, x1, y1)
+			return plot_line_high(x0, y0, x1, y1)
 
-func plotLineLow(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_line_low(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
 	var yi : int = 1
@@ -523,7 +523,7 @@ func plotLineLow(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plotLineLowReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_line_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var arr = []
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
@@ -557,7 +557,7 @@ func plotLineLowReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plotLineHigh(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_line_high(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
 	var xi : int = 1
@@ -584,7 +584,7 @@ func plotLineHigh(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 		
-func plotLineHighReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+func plot_line_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var arr = []
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
