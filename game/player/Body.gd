@@ -198,7 +198,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			if touches.size() > 1:
 				touch_zoom = true
 		else:
-			if !touch_zoom && !target(event.position):
+			if !touch_zoom && !target(event.position, true):
 				var pos : Vector2 = world.make_canvas_position_local(event.position)
 				
 				pos -= transform.origin
@@ -338,7 +338,7 @@ func get_tile_position() -> Vector2:
 func set_tile_position(pos : Vector2) -> void:
 	transform.origin = pos * tile_size + Vector2(tile_size / 2, tile_size / 2)
 
-func target(position : Vector2) -> bool:
+func target(position : Vector2, keep_target : bool = false) -> bool:
 	position = world.make_canvas_position_local(position)
 
 	var pos : Vector2 = world.pixel_to_tile(position.x, position.y)
@@ -352,7 +352,8 @@ func target(position : Vector2) -> bool:
 			entity.target_crequest_change(enemy.get_path())
 			return true
 	else:
-		entity.target_crequest_change(NodePath())
+		if !keep_target:
+			entity.target_crequest_change(NodePath())
 		
 	return false
 
