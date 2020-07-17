@@ -149,7 +149,7 @@ func update_visibility():
 #			if !test_rect.has_point(tpos):
 #				continue
 			
-			if plotLine(tp.x, tp.y, tpos.x, tpos.y):
+			if visibility_test(tp.x, tp.y, tpos.x, tpos.y):
 				b.set_visibility(true)
 				e.sets_target(_player)
 				
@@ -484,6 +484,18 @@ func on_visibility_changed():
 func make_cell_visible(x : int, y : int):
 	visibility_map.set_cell(x, y, -1)
 
+func plotLine(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
+	if abs(y1 - y0) < abs(x1 - x0):
+		if x0 > x1:
+			return plotLineLowReverse(x1, y1, x0, y0)
+		else:
+			return plotLineLow(x0, y0, x1, y1)
+	else:
+		if y0 > y1:
+			return plotLineHighReverse(x1, y1, x0, y0)
+		else:
+			return plotLineHigh(x0, y0, x1, y1)
+
 func plotLineLow(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 	var dx : int = x1 - x0
 	var dy : int = y1 - y0
@@ -606,14 +618,125 @@ func plotLineHighReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
 		
 	return true
 
-func plotLine(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
+func visibility_test(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
 	if abs(y1 - y0) < abs(x1 - x0):
 		if x0 > x1:
-			return plotLineLowReverse(x1, y1, x0, y0)
+			return visibility_test_low_reverse(x1, y1, x0, y0)
 		else:
-			return plotLineLow(x0, y0, x1, y1)
+			return visibility_test_low(x0, y0, x1, y1)
 	else:
 		if y0 > y1:
-			return plotLineHighReverse(x1, y1, x0, y0)
+			return visibility_test_high_reverse(x1, y1, x0, y0)
 		else:
-			return plotLineHigh(x0, y0, x1, y1)
+			return visibility_test_high(x0, y0, x1, y1)
+
+func visibility_test_low(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
+	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		if map[x][y] != Tile.Floor:
+			return false
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	return true
+		
+func visibility_test_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
+	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		arr.append([x, y])
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	for i in range(arr.size() - 1, 0, -1):
+		var x : int = arr[i][0]
+		y = arr[i][1]
+		
+		if map[x][y] != Tile.Floor:
+			return false
+
+	return true
+		
+func visibility_test_high(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		if map[x][y] != Tile.Floor:
+			return false
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	return true
+		
+func visibility_test_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		arr.append([x, y])
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	for i in range(arr.size() - 1, 0, -1):
+		x = arr[i][0]
+		var y : int = arr[i][1]
+		
+		if map[x][y] != Tile.Floor:
+			return false
+
+	return true
+
