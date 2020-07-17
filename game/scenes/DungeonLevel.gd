@@ -55,13 +55,15 @@ onready var visibility_map : TileMap = $VisibilityMap
 func _ready():
 	tile_size = get_node("/root/Main").get_tile_size()
 	connect("visibility_changed", self, "on_visibility_changed")
-	pass # Replace with function body.
 
 func place_player(player: Entity) -> void:
 	_player = player
 	
 	if (_player == null):
 		return
+		
+	if 	player_visibility_array.size() == 0:
+		player_visibility_array = create_visibility_array(8, 8)
 	
 	if !generated:
 		build()
@@ -131,15 +133,21 @@ func update_visibility():
 		return
 		
 	var tp : Vector2 = body.get_tile_position()
-	
-	for x in range(tp.x - 8, tp.x + 9):
-		plot_visibility_line(tp.x, tp.y, x, tp.y + 8)
-		plot_visibility_line(tp.x, tp.y, x, tp.y - 8)
 
-	for y in range(tp.y - 8, tp.y + 9):
-		plot_visibility_line(tp.x, tp.y, tp.x + 8, y)
-		plot_visibility_line(tp.x, tp.y, tp.x - 8, y)
+	var tppx : int = tp.x
+	var tppy : int = tp.y
+	for l in player_visibility_array:
+		var s : int = l.size()
+		for i in range(0, s, 2):
+			var x : int = l[i] + tppx
+			var y : int = l[i + 1] + tppy
+			
+			if map[x][y] != Tile.Floor:
+				make_cell_visible(x, y)
+				break
 		
+			make_cell_visible(x, y)
+			
 #	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
 	for e in enemies:
 		var b = e.get_body()
@@ -485,6 +493,149 @@ func on_visibility_changed():
 func make_cell_visible(x : int, y : int):
 	visibility_map.set_cell(x, y, -1)
 
+# -----  Visibility Array Creation  ------
+
+func create_visibility_array(x_radius : int, y_radius : int) -> Array:
+	var arr : Array = []
+	
+	for x in range(-x_radius, x_radius + 1):
+		arr.append(create_visibility_array_line(0, 0, x, -y_radius))
+		arr.append(create_visibility_array_line(0, 0, x, y_radius))
+
+	for y in range(-y_radius, y_radius + 1):
+		arr.append(create_visibility_array_line(0, 0, -x_radius, y))
+		arr.append(create_visibility_array_line(0, 0, x_radius, y))
+	
+	return arr
+
+func create_visibility_array_line(x0 : int, y0 : int, x1 : int, y1 : int) -> Array:
+	if abs(y1 - y0) < abs(x1 - x0):
+		if x0 > x1:
+			return create_visibility_array_low_reverse(x1, y1, x0, y0)
+		else:
+			return create_visibility_array_low(x0, y0, x1, y1)
+	else:
+		if y0 > y1:
+			return create_visibility_array_high_reverse(x1, y1, x0, y0)
+		else:
+			return create_visibility_array_high(x0, y0, x1, y1)
+
+func create_visibility_array_low(x0 : int, y0 : int, x1 : int, y1 : int) -> Array:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
+	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		arr.append(x)
+		arr.append(y)
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	return arr
+		
+func create_visibility_array_low_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> Array:
+	var oarr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
+	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		oarr.append([x, y])
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	var arr = []
+	for i in range(oarr.size() - 1, 0, -1):
+		var x : int = oarr[i][0]
+		y = oarr[i][1]
+		
+		arr.append(x)
+		arr.append(y)
+		
+	return arr
+		
+func create_visibility_array_high(x0 : int, y0 : int, x1 : int, y1 : int) -> Array:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		arr.append(x)
+		arr.append(y)
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	return arr
+		
+func create_visibility_array_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> Array:
+	var oarr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		oarr.append([x, y])
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	var arr = []
+	for i in range(oarr.size() - 1, 0, -1):
+		x = oarr[i][0]
+		var y : int = oarr[i][1]
+		
+		arr.append(x)
+		arr.append(y)
+		
+	return arr
+
+# -----  Plot Visibility Line  ------
+
 func plot_visibility_line(x0 : int,y0 : int, x1 : int, y1 : int) -> bool:
 	if abs(y1 - y0) < abs(x1 - x0):
 		if x0 > x1:
@@ -619,6 +770,8 @@ func plot_visibility_line_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -
 		
 	return true
 
+# -----   Visibility Test  ------
+
 func visibility_test(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
 	if abs(y1 - y0) < abs(x1 - x0):
 		if x0 > x1:
@@ -740,4 +893,7 @@ func visibility_test_high_reverse(x0 : int, y0 : int, x1 : int, y1 : int) -> boo
 			return false
 
 	return true
+
+# -----   Visibility Test End  ------
+
 
