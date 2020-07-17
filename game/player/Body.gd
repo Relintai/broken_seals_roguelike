@@ -206,26 +206,23 @@ func _unhandled_input(event: InputEvent) -> void:
 				if pos.length() < tile_size / 2:
 					#wait
 					world.player_moved() 
-					return
-					
-				var mx : int = 0
-				var my : int = 0
-					
-				if abs(pos.x) > tile_size / 2:
-					if pos.x >= 0:
-						mx = 1
-					else:
-						mx = -1
-							
-				if abs(pos.y) > tile_size / 2:
-					if pos.y >= 0:
-						my = 1
-					else:
-						my = -1
-							
-				try_move(mx, my)
-			else:
-				pass
+				else:
+					var mx : int = 0
+					var my : int = 0
+						
+					if abs(pos.x) > tile_size / 2:
+						if pos.x >= 0:
+							mx = 1
+						else:
+							mx = -1
+								
+					if abs(pos.y) > tile_size / 2:
+						if pos.y >= 0:
+							my = 1
+						else:
+							my = -1
+								
+					try_move(mx, my)
 				
 			for i in range(touches.size()):
 				if touches[i][0] == event.index:
