@@ -130,43 +130,29 @@ func update_visibility():
 		return
 		
 	var tp : Vector2 = body.get_tile_position()
-
-	var space_state : Physics2DDirectSpaceState = get_world_2d().direct_space_state
 	
-	for x in range(tp.x - 5, tp.x + 5):
-		for y in range(tp.y - 5, tp.y + 5):
-			if visibility_map.get_cell(x, y) == 0:
-				var x_dir = 1 if x < tp.x else -1
-				var y_dir = 1 if y < tp.y else -1
-				var test_point = tile_to_pixel_center(x, y) + Vector2(x_dir, y_dir) * tile_size / 2
-				
-				var occlusion = space_state.intersect_ray(body.transform.origin, test_point, [], 1)
+	for x in range(tp.x - 8, tp.x + 9):
+		plotLine(tp.x, tp.y, x, tp.y + 8)
+		plotLine(tp.x, tp.y, x, tp.y - 8)
 
-				if !occlusion || (occlusion.position - test_point).length() < 1:
-					visibility_map.set_cell(x, y, -1)
-					
-	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
-					
+	for y in range(tp.y - 8, tp.y + 9):
+		plotLine(tp.x, tp.y, tp.x + 8, y)
+		plotLine(tp.x, tp.y, tp.x - 8, y)
+		
+#	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
 	for e in enemies:
 		var b = e.get_body()
 		
 		if !b.visible:
 			var tpos : Vector2 = b.get_tile_position()
 			
-			if !test_rect.has_point(tpos):
-				continue
+#			if !test_rect.has_point(tpos):
+#				continue
 			
-			var pos : Vector2 = b.transform.origin
-			
-			var occlusion = space_state.intersect_ray(body.transform.origin, pos, [], 1)
-			
-			if !occlusion:
+			if plotLine(tp.x, tp.y, tpos.x, tpos.y):
 				b.set_visibility(true)
 				e.sets_target(_player)
 				
-		
-#	tile_map.update_dirty_quadrants()
-#	visibility_map.update_dirty_quadrants()
 
 func clear_path(tile):
 	var new_point = nav_graph.get_available_point_id()
@@ -494,5 +480,140 @@ func on_visibility_changed():
 			if b.visible:
 				b.set_visibility(false)
 				e.sets_target(null)
+				
+func make_cell_visible(x : int, y : int):
+	visibility_map.set_cell(x, y, -1)
 
+func plotLineLow(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
 	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		if map[x][y] != Tile.Floor:
+			make_cell_visible(x, y)
+			return false
+		
+		make_cell_visible(x, y)
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	return true
+		
+func plotLineLowReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var yi : int = 1
+	
+	if dy < 0:
+		yi = - 1
+		dy = - dy
+
+	var D : int = 2 * dy - dx
+	var y : int = y0
+
+	for x in range(x0, x1):
+		arr.append([x, y])
+		
+		if D > 0:
+			y = y + yi
+			D = D - 2 * dx
+
+		D = D + 2 * dy
+		
+	for i in range(arr.size() - 1, 0, -1):
+		var x : int = arr[i][0]
+		y = arr[i][1]
+		
+		if map[x][y] != Tile.Floor:
+			make_cell_visible(x, y)
+			return false
+
+		make_cell_visible(x, y)
+		
+	return true
+		
+func plotLineHigh(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		if map[x][y] != Tile.Floor:
+			make_cell_visible(x, y)
+			return false
+		
+		make_cell_visible(x, y)
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	return true
+		
+func plotLineHighReverse(x0 : int, y0 : int, x1 : int, y1 : int) -> bool:
+	var arr = []
+	var dx : int = x1 - x0
+	var dy : int = y1 - y0
+	var xi : int = 1
+	
+	if dx < 0:
+		xi = -1
+		dx = -dx
+
+	var D : int = 2 * dx - dy
+	var x : int = x0
+
+	for y in range(y0, y1):
+		arr.append([x, y])
+
+		if D > 0:
+			x = x + xi
+			D = D - 2 * dy
+
+		D = D + 2 * dx
+		
+	for i in range(arr.size() - 1, 0, -1):
+		x = arr[i][0]
+		var y : int = arr[i][1]
+		
+		if map[x][y] != Tile.Floor:
+			make_cell_visible(x, y)
+			return false
+
+		make_cell_visible(x, y)
+		
+	return true
+
+func plotLine(x0 : int,y0 : int, x1 : int,y1 : int) -> bool:
+	if abs(y1 - y0) < abs(x1 - x0):
+		if x0 > x1:
+			return plotLineLowReverse(x1, y1, x0, y0)
+		else:
+			return plotLineLow(x0, y0, x1, y1)
+	else:
+		if y0 > y1:
+			return plotLineHighReverse(x1, y1, x0, y0)
+		else:
+			return plotLineHigh(x0, y0, x1, y1)
