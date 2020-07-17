@@ -45,6 +45,7 @@ export(int) var enemy_count : int = 14
 var map : Array = []
 var rooms : Array = []
 var enemies : Array = []
+var discovered_enemies : Array = []
 var nav_graph : AStar2D
 var entrance_position : Transform2D = Transform2D()
 var player_visibility_array : Array = Array()
@@ -161,6 +162,7 @@ func update_visibility():
 			if visibility_test(tp.x, tp.y, tpos.x, tpos.y):
 				b.set_visibility(true)
 				e.sets_target(_player)
+				discovered_enemies.append(e)
 				
 
 func clear_path(tile):
@@ -477,13 +479,14 @@ func set_editor_generate(value : bool) -> void:
 
 func on_visibility_changed():
 	if visible:
-		if tile_map.collision_layer != 1:
-			tile_map.collision_layer = 1
+		for e in discovered_enemies:
+			var b = e.get_body()
+			
+			if b.visible:
+				b.set_visibility(true)
+				e.sets_target(_player)
 	else:
-		if tile_map.collision_layer != 2:
-			tile_map.collision_layer = 2
-		
-		for e in enemies:
+		for e in discovered_enemies:
 			var b = e.get_body()
 			
 			if b.visible:
