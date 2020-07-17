@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
 [ext_resource path="res://tilesets/denzi_32x32_orthogonal/32x32_terrain_Denzi110115-4.png" type="Texture" id=1]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 16, 16 )
 
 [node name="Node2D" type="Node2D"]
 
@@ -19,23 +16,11 @@ centered = false
 region_enabled = true
 region_rect = Rect2( 64, 32, 32, 32 )
 
-[node name="StaticBody2D" type="StaticBody2D" parent="Wall"]
-position = Vector2( 16, 16 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Wall/StaticBody2D"]
-shape = SubResource( 1 )
-
 [node name="Door" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 64, 128, 33, 32 )
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="Door"]
-position = Vector2( 16, 16 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Door/StaticBody2D2"]
-shape = SubResource( 1 )
 
 [node name="Ladder" type="Sprite" parent="."]
 texture = ExtResource( 1 )
@@ -43,20 +28,8 @@ centered = false
 region_enabled = true
 region_rect = Rect2( 64, 128, 33, 32 )
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Ladder"]
-position = Vector2( 16, 16 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ladder/StaticBody2D2"]
-shape = SubResource( 1 )
-
 [node name="Stone" type="Sprite" parent="."]
 texture = ExtResource( 1 )
 centered = false
 region_enabled = true
 region_rect = Rect2( 64, 128, 33, 32 )
-
-[node name="StaticBody2D2" type="StaticBody2D" parent="Stone"]
-position = Vector2( 16, 16 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Stone/StaticBody2D2"]
-shape = SubResource( 1 )
