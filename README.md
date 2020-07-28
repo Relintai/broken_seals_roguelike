@@ -1,16 +1,12 @@
-# Broken Seals
+# Broken Seals Roguelike
 
-A 3D third person RPG. With both multiplayer, and singleplayer capabilities.
-
-The main gameplay-loop goal is to create an experience with enough complexity and depth, that can rival the more old-school MMO- and action rpgs, because nowadays I feel like that is something that got lost.
-
-I want the game to run on every platform, but the game design is PC first. From the testing I've done this is not going to be an issue.
+An experimental 2d roguelike version of Broken Seals.
 
 ### In order to open the game project in Godot, you need a custom built Godot editor! [See here.](#editing-the-game)
 
 Screenshot:
 
-![Broken Seals](pictures/screen.jpg)
+![Broken Seals](pictures/screen.png)
 
 ## Editing the game
 
@@ -30,14 +26,8 @@ These are the required engine modules, they are listed here for completeness`s s
 https://github.com/Relintai/world_generator.git \
 https://github.com/Relintai/entity_spell_system.git \
 https://github.com/Relintai/ui_extensions.git \
-https://github.com/Relintai/voxelman.git \
 https://github.com/Relintai/texture_packer.git \
 https://github.com/Relintai/godot_fastnoise.git \
-https://github.com/Relintai/mesh_data_resource.git \
-https://github.com/Relintai/procedural_animations.git \
-https://github.com/Relintai/props.git \
-https://github.com/Relintai/mesh_utils.git \
-https://github.com/Relintai/broken_seals_module.git \
 https://github.com/Relintai/thread_pool.git
 
 ## Compiling
