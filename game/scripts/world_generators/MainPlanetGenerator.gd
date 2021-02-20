@@ -60,7 +60,7 @@ func create_planet():
 	else:
 		ind = _force_planet
 	
-	var planet_data : PlanetData = ResourceLoader.load(planet_files[ind], "PlanetData")
+	var planet_data : Planet = ResourceLoader.load(planet_files[ind], "PlanetData")
 	
 	if planet_data == null:
 		print("planet_data is null!")

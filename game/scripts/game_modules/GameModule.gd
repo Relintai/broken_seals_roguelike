@@ -1,6 +1,8 @@
 extends Resource
 class_name GameModule
 
+export(bool) var enabled : bool = true
+
 export(ESSResourceDB) var resource_db : ESSResourceDB
 
 func load_module():
@@ -18,3 +20,6 @@ func load_module():
 #		for s in r.get_spells():
 #			print(s.resource_name)
 #			print(s.get_id())
+
+func on_request_instance(what : int, node : Node) -> void:
+	return
