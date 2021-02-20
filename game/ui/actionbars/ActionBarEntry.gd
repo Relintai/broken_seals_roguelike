@@ -53,6 +53,8 @@ func _ready() -> void:
 	keybind_text = get_node(keybind_text_path) as Label
 	
 	button.connect("pressed", self, "_on_button_pressed")
+	
+	ProfileManager.connect("keybinds_changed", self, "on_keybinds_changed")
 
 func _exit_tree():
 	if icon_rect.texture != null:
@@ -116,7 +118,28 @@ func set_button_entry(action_bar_button_entry: ActionBarButtonEntry, p_player: E
 	if not InputMap.has_action(action_name):
 		InputMap.add_action(action_name)
 		
+	on_keybinds_changed()
+	
+	iea.action = action_name
+	iea.pressed = true
+	var sc : ShortCut = ShortCut.new()
+	sc.shortcut = iea
+	shortcut = sc
+	
+	setup_icon()
+	refresh_known()
+	
+func on_keybinds_changed():
+	var action_name : String = "actionbar_" + str(button_entry.action_bar_id) + "_" + str(button_entry.slot_id)
+	
+	keybind_text.text = ""
+	
+	if not InputMap.has_action(action_name):
+		return
+	
 	var action_list : Array = InputMap.get_action_list(action_name)
+	
+	keybind_text.text = ""
 	
 	for action in action_list:
 		if action is InputEventKey:
@@ -140,14 +163,6 @@ func set_button_entry(action_bar_button_entry: ActionBarButtonEntry, p_player: E
 			s += char(action.scancode)
 			
 			keybind_text.text = s
-	
-	iea.action = action_name
-	iea.pressed = true
-	var sc : ShortCut = ShortCut.new()
-	sc.shortcut = iea
-	shortcut = sc
-	
-	setup_icon()
 	
 func setup_icon() -> void:
 	if (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_NONE):
@@ -276,6 +291,27 @@ func drop_data(pos, esd) -> void:
 			
 	
 	setup_icon()
+	refresh_known()
+	
+func refresh_known():
+	if !player:
+		set_known(true)
+		return
+	
+	if (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_NONE):
+		set_known(true)
+	elif (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL):
+		var spell = ESS.resource_db.get_spell_path(button_entry.item_path)
+
+		set_known(player.spell_hasc(spell))
+	elif (button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_ITEM):
+		set_known(true)
+	
+func set_known(val : bool):
+	if val:
+		icon_rect.modulate = Color(1, 1, 1, 1)
+	else:
+		icon_rect.modulate = Color(0.5, 0.5, 0.5, 1)
 	
 func set_player(p_player: Entity) -> void:
 	if not player == null:
@@ -286,6 +322,9 @@ func set_player(p_player: Entity) -> void:
 		
 		player.disconnect("cgcd_started", self, "_cgcd_started")
 		player.disconnect("cgcd_finished", self, "_cgcd_finished")
+		
+		player.disconnect("cspell_added", self, "_cspell_added")
+		player.disconnect("cspell_removed", self, "_cspell_removed")
 		
 		player = null
 
@@ -304,7 +343,17 @@ func set_player(p_player: Entity) -> void:
 	
 	player.connect("cgcd_started", self, "_cgcd_started")
 	player.connect("cgcd_finished", self, "_cgcd_finished")
+	
+	player.connect("cspell_added", self, "_cspell_added")
+	player.connect("cspell_removed", self, "_cspell_removed")
+	
+func _cspell_added(entity: Entity, spell: Spell):
+	if button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL && button_entry.item_path == spell.resource_path:
+		set_known(true)
 
+func _cspell_removed(entity: Entity, spell: Spell):
+	if button_entry.type == ActionBarButtonEntry.ACTION_BAR_BUTTON_ENTRY_TYPE_SPELL && button_entry.item_path == spell.resource_path:
+		set_known(false)
 
 func _ccooldown_added(id : int, value : float) -> void:
 	if id == spell_id:
@@ -327,7 +376,7 @@ func _ccategory_cooldown_removed(id : int, value : float) -> void:
 		categ_cd = 0
 		
 	
-func _cgcd_started(value :float) -> void:
+func _cgcd_started(e : Entity, value :float) -> void:
 	if not has_gcd:
 		return
 	
@@ -335,5 +384,5 @@ func _cgcd_started(value :float) -> void:
 	show_cooldown_timer(value)
 	set_process(true)
 	
-func _cgcd_finished() -> void:
+func _cgcd_finished(val) -> void:
 	gcd = 0

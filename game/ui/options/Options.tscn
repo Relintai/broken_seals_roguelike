@@ -68,10 +68,8 @@ margin_bottom = 70.0
 property_category = "rendering"
 property_name = "viewport_scale"
 property_label = "Viewport Scale"
-min_value = 20
-max_value = 100
-step = 5
-prefix = ""
+min_value = 20.0
+step = 5.0
 suffix = "%"
 
 [node name="Borderless" parent="PanelContainer/VBoxContainer/TabContainer/Video" instance=ExtResource( 4 )]
@@ -141,6 +139,28 @@ property_category = "ui"
 property_name = "touchscreen_mode"
 property_label = "Touchscreen Mode"
 
+[node name="OptionsSpinboxRow" parent="PanelContainer/VBoxContainer/TabContainer/Interface" instance=ExtResource( 8 )]
+margin_top = 58.0
+margin_bottom = 82.0
+property_category = "ui"
+property_name = "ui_scale"
+property_label = "UI Scale"
+min_value = 0.2
+max_value = 2.4
+step = 0.01
+rounded = false
+
+[node name="OptionsSpinboxRow2" parent="PanelContainer/VBoxContainer/TabContainer/Interface" instance=ExtResource( 8 )]
+margin_top = 90.0
+margin_bottom = 114.0
+property_category = "ui"
+property_name = "ui_scale_touch"
+property_label = "UI Scale Touch"
+min_value = 0.2
+max_value = 2.4
+step = 0.01
+rounded = false
+
 [node name="Debug" type="VBoxContainer" parent="PanelContainer/VBoxContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
@@ -152,18 +172,17 @@ margin_bottom = -4.0
 size_flags_horizontal = 3
 
 [node name="DebugInfo" type="CheckBox" parent="PanelContainer/VBoxContainer/TabContainer/Debug"]
-margin_top = 32.0
 margin_right = 527.0
-margin_bottom = 58.5702
+margin_bottom = 26.269
 text = "Show Debug info"
 script = ExtResource( 5 )
 property_category = "debug"
 property_name = "debug_info"
 
 [node name="RemoveProfile" type="Button" parent="PanelContainer/VBoxContainer/TabContainer/Debug"]
-margin_top = 66.0
+margin_top = 34.0
 margin_right = 527.0
-margin_bottom = 92.5702
+margin_bottom = 60.269
 size_flags_horizontal = 3
 text = "Remove Profile"
 script = ExtResource( 2 )
@@ -173,4 +192,5 @@ margin_top = 439.0
 margin_right = 535.0
 margin_bottom = 465.57
 text = "Close"
+
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Close" to="." method="hide"]

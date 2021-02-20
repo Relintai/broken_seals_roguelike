@@ -20,6 +20,8 @@ extends Control
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+export (PackedScene) var image_button : PackedScene
+
 export (NodePath) var spell_book_path
 export (NodePath) var spell_book_button_path
 var spell_book
@@ -33,6 +35,26 @@ var player : Entity
 func _ready():
 	lock_button = get_node(lock_button_path)
 	lock_button.connect("pressed", self, "_lock_button_click")
+
+func add_image_button(texture : Texture, index : int  = -1) -> Button:
+	var button : Button = image_button.instance() as Button
+	
+	button.set_meta("button_index", index)
+	
+	button.get_child(0).texture = texture
+	
+	add_child(button)
+	
+	for ch in get_children():
+		var button_index : int = get_child_count()
+		
+		if ch.has_meta("button_index"):
+			button_index = ch.get_meta("button_index")
+
+		if button_index != -1:
+			move_child(ch, button_index)
+	
+	return button
 
 func set_player(p_player):
 	player = p_player

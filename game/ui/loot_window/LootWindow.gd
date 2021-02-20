@@ -29,12 +29,14 @@ var player : Entity
 var target_bag : Bag
 
 func _ready():
+	get_node("../../../").loot_window = self
+	
 	container = get_node(container_path)
 	
 	connect("visibility_changed", self, "on_visibility_changed")
 	
 	if entry_scene == null:
-		print("LootWindow: entry_scene is null")
+		Logger.error("LootWindow: entry_scene is null")
 
 func refresh():
 	for child in container.get_children():
@@ -57,7 +59,11 @@ func refresh():
 func set_player(p_player : Entity) -> void:
 	player = p_player
 	player.connect("ctarget_bag_changed", self, "ctarget_bag_changed")
-	player.connect("onc_open_loot_winow_request", self, "onc_open_loot_winow_request")
+	player.connect("onc_open_winow_request", self, "onc_open_loot_winow_request")
+
+func on_player_moved():
+	if visible:
+		hide()
 
 func on_visibility_changed():
 	if visible:
@@ -66,7 +72,7 @@ func on_visibility_changed():
 		if target_bag != null:
 			target_bag.disconnect("item_removed", self, "on_item_removed")
 			target_bag = null
-		
+
 func on_item_removed(bag: Bag, item: ItemInstance, slot_id: int) -> void:
 	refresh()
 
@@ -82,5 +88,11 @@ func ctarget_bag_changed(entity: Entity, bag: Bag) -> void:
 	
 	target_bag.connect("item_removed", self, "on_item_removed")
 	
-func onc_open_loot_winow_request() -> void:
+func onc_open_loot_winow_request(window_id) -> void:
+	if window_id != EntityEnums.ENTITY_WINDOW_LOOT:
+		return
+	
 	show()
+
+	if player.has_signal("player_moved") && !player.is_connected("player_moved", self, "on_player_moved"):
+		player.connect("player_moved", self, "on_player_moved", [], CONNECT_ONESHOT)

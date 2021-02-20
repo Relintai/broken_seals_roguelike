@@ -35,7 +35,7 @@ func _ready():
 	label = get_node(label_path) as RichTextLabel
 	
 	if icon == null or label == null:
-		print("LootEntry is not setup correctly!")
+		Logger.error("LootEntry is not setup correctly!")
 
 func on_click():
 	player.loot_crequest(index)

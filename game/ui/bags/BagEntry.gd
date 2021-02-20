@@ -190,7 +190,7 @@ func drop_data(pos, esd) -> void:
 		player.item_crequest_swap(slot_id, esd.get_meta("slot_id"))
 		setup_icon()
 	elif esd.type == ESDragAndDrop.ES_DRAG_AND_DROP_TYPE_EQUIPPED_ITEM:
-		player.equip_crequest(ESS.resource_db.get_item_template_path(esd.item_path).id, slot_id)
+		player.equip_crequest(ESS.resource_db.get_item_template_path(esd.item_path).equip_slot, slot_id)
 		setup_icon()
 
 func set_slot_id(pslot_id : int) -> void:
@@ -231,7 +231,7 @@ func _ccooldown_removed(id : int, value : float) -> void:
 	if id == spell_id:
 		cd = 0
 	
-func _cgcd_started(value :float) -> void:
+func _cgcd_started(entity: Entity, value :float) -> void:
 	if not has_gcd:
 		return
 	
@@ -239,7 +239,7 @@ func _cgcd_started(value :float) -> void:
 	show_cooldown_timer(value)
 	set_process(true)
 	
-func _cgcd_finished() -> void:
+func _cgcd_finished(entity) -> void:
 	gcd = 0
 
 func _on_button_pressed() -> void:

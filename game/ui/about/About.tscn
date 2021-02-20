@@ -260,4 +260,5 @@ margin_top = 439.0
 margin_right = 728.0
 margin_bottom = 465.57
 text = "Close"
+
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Close" to="." method="hide"]

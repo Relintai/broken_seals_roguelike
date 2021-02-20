@@ -394,8 +394,9 @@ func on_c_controlled_changed(val):
 		add_child(camera)
 		camera.current = true
 
-		var uiscn : PackedScene = ResourceLoader.load("res://ui/player_ui/player_ui.tscn")
-		var ui = uiscn.instance()
+		#var uiscn : PackedScene = ResourceLoader.load("res://ui/player_ui/player_ui.tscn")
+		#var ui = uiscn.instance()
+		var ui = DataManager.request_instance(DataManager.PLAYER_UI_INSTANCE)
 		add_child(ui)
 		
 #		set_process_input(true)

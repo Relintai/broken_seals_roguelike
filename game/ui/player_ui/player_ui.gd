@@ -20,11 +20,38 @@ extends CanvasLayer
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-export(NodePath) var loot_window_path : NodePath
+export (String) var player_path : String = "../.."
+
+
+export(NodePath) var gui_base_path : NodePath
+export(NodePath) var buttons_path : NodePath
+export(NodePath) var windows_path : NodePath
+
+var gui_base : Node
+var buttons : Node
+var windows : Node
+
 var loot_window : Control
 
 func _ready():
-	loot_window = get_node(loot_window_path) as Control
+	initialize()
+	
+	if player_path != null:
+		var player = get_node(player_path)
+	
+		for c in windows.get_children():
+			if c.has_method("set_player"):
+				c.set_player(player)
+				
+		for c in gui_base.get_children():
+			if c.has_method("set_player"):
+				c.set_player(player)
+
+func initialize():
+	gui_base = get_node(gui_base_path)
+	buttons = get_node(buttons_path)
+	windows = get_node(windows_path)
+
 
 func _on_Player_onc_open_loot_winow_request() -> void:
 	if loot_window != null:
