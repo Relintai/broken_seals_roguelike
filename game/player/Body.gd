@@ -56,7 +56,7 @@ var visibility_update_timer : float = randi()
 
 var tile_size : int = 32
 
-var nameplate : Node
+var _nameplate : Node
 
 var init : bool = false
 
@@ -80,10 +80,10 @@ func _enter_tree() -> void:
 	entity.set_character_skeleton(character_skeleton)
 #	entity.connect("notification_ccast", self, "on_notification_ccast")
 	entity.connect("diesd", self, "on_diesd")
-	entity.connect("isc_controlled_changed", self, "on_c_controlled_changed")
+	entity.connect("onc_entity_controller_changed", self, "on_c_controlled_changed")
 	owner = entity
 
-	on_c_controlled_changed(entity.c_is_controlled)
+	on_c_controlled_changed()
 	
 	transform = entity.get_transform_2d(true)
 	
@@ -93,17 +93,17 @@ func set_visibility(val : bool) -> void:
 	if val:
 		show()
 
-		if nameplate:
-			nameplate.show()
+		if _nameplate:
+			_nameplate.show()
 	elif !val:
 		hide()
 		
-		if nameplate:
-			nameplate.hide()
+		if _nameplate:
+			_nameplate.hide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	#Not sure why yet, but _unhandled_input gets called even after set_process_unhandled_input(false)
-	if !entity.c_is_controlled:
+	if !entity.getc_is_controlled():
 		return 
 		
 	if event.is_action_pressed("left"):
@@ -298,7 +298,7 @@ func try_move(dx, dy):
 	
 	set_tile_position(tp)
 	
-	if entity.c_is_controlled:
+	if entity.getc_is_controlled():
 		world.player_moved() 
 	
 func move_towards_target():
@@ -384,11 +384,14 @@ func cmouseover(position : Vector2):
 		last_mouse_over = null
 	
 	
-func on_c_controlled_changed(val):
+func on_c_controlled_changed():
 	#create camera and pivot if true
-	_controlled = val
+	_controlled = entity.getc_is_controlled()
 	
-	if val:
+	if _controlled:
+		if _nameplate:
+			_nameplate.queue_free()
+			
 		camera = Camera2D.new()
 		camera.zoom = get_node("/root/Main").get_world_scale()
 		add_child(camera)
@@ -411,8 +414,8 @@ func on_c_controlled_changed(val):
 #		set_process_input(false)
 		set_process_unhandled_input(false)
 		var nameplatescn : PackedScene = ResourceLoader.load("res://ui/nameplates/NamePlate.tscn")
-		nameplate = nameplatescn.instance()
-		get_parent().add_child(nameplate)
+		_nameplate = nameplatescn.instance()
+		get_parent().add_child(_nameplate)
 		
 		set_visibility(false)
 		

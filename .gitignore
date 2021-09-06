@@ -25,3 +25,4 @@ game/android/build/*
 .dir-locals.el
 
 build.config
+__pycache__/*

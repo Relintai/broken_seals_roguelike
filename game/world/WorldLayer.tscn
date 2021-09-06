@@ -3,7 +3,6 @@
 [ext_resource path="res://tilesets/tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://world/WorldLayer.gd" type="Script" id=2]
 
-
 [node name="WorldLayer" type="Navigation2D"]
 script = ExtResource( 2 )
 

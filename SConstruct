@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-# Copyright (c) 2019-2020 Péter Magyar
+# Copyright (c) 2019-2021 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +30,8 @@ import json
 import shutil
 import traceback
 
+import module_config
+
 repository_index = 0
 module_clone_path  = '/modules/' 
 clone_command = 'git clone {0} {1}'
@@ -45,26 +48,15 @@ exports = {
     'javascript': [],
 }
 
-engine_repository = [ ['https://github.com/godotengine/godot.git', 'git@github.com:godotengine/godot.git'], 'engine', '' ]
-
-module_repositories = [
-    [ ['https://github.com/Relintai/world_generator.git', 'git@github.com:Relintai/world_generator.git'], 'world_generator', '' ],
-    [ ['https://github.com/Relintai/entity_spell_system.git', 'git@github.com:Relintai/entity_spell_system.git'], 'entity_spell_system', '' ],
-    [ ['https://github.com/Relintai/ui_extensions.git', 'git@github.com:Relintai/ui_extensions.git'], 'ui_extensions', '' ],
-    [ ['https://github.com/Relintai/texture_packer.git', 'git@github.com:Relintai/texture_packer.git'], 'texture_packer', '' ],
-    [ ['https://github.com/Relintai/godot_fastnoise.git', 'git@github.com:Relintai/godot_fastnoise.git'], 'fastnoise', '' ],
-    [ ['https://github.com/Relintai/thread_pool.git', 'git@github.com:Relintai/thread_pool.git'], 'thread_pool', '' ],
-]
-
-addon_repositories = [
-]
-
-third_party_addon_repositories = [
-]
+additional_commands = {
+    'global': [],
+    'linux': [],
+    'windows': [],
+    'android': [],
+    'javascript': [],
+}
 
 target_commits = {}
-
-godot_branch = '3.2'
 
 def onerror(func, path, exc_info):
     """
@@ -182,21 +174,27 @@ def copytree(src, dst):
 
             shutil.copy2(sp, dp)
 
+def remove_repository(data, target_folder):
+    folder = os.path.abspath(target_folder + data[1])
+
+    if os.path.isdir(folder):
+        shutil.rmtree(folder)
+
 def update_engine():
-    update_repository(engine_repository, '/', godot_branch)
+    update_repository(module_config.engine_repository, '/', module_config.godot_branch)
 
 def update_modules():
-    for rep in module_repositories:
+    for rep in module_config.module_repositories:
         update_repository(rep, module_clone_path)
         copy_repository(rep, './engine/modules/', '.' + module_clone_path)
 
 def update_addons():
-    for rep in addon_repositories:
+    for rep in module_config.addon_repositories:
         update_repository(rep, module_clone_path)
         copy_repository(rep, './game/addons/', '.' + module_clone_path)
 
 def update_addons_third_party_addons():
-    for rep in third_party_addon_repositories:
+    for rep in module_config.third_party_addon_repositories:
         update_repository(rep, module_clone_path)
         copy_repository(rep, './game/addons/', '.' + module_clone_path)
 
@@ -210,20 +208,24 @@ def update_all():
 
 
 def setup_engine():
-    setup_repository(engine_repository, '/', godot_branch)
+    setup_repository(module_config.engine_repository, '/', module_config.godot_branch)
 
 def setup_modules():
-    for rep in module_repositories:
+    for rep in module_config.module_repositories:
         setup_repository(rep, module_clone_path)
         copy_repository(rep, './engine/modules/', '.' + module_clone_path)
 
+    for rep in module_config.removed_modules:
+        remove_repository(rep, './engine/modules/')
+
+
 def setup_addons():
-    for rep in addon_repositories:
+    for rep in module_config.addon_repositories:
         setup_repository(rep, module_clone_path)
         copy_repository(rep, './game/addons/', '.' + module_clone_path)
 
 def setup_addons_third_party_addons():
-    for rep in third_party_addon_repositories:
+    for rep in module_config.third_party_addon_repositories:
         setup_repository(rep, module_clone_path)
         copy_repository(rep, './game/addons/', '.' + module_clone_path)
 
@@ -254,6 +256,20 @@ def get_exports_for(platform):
         command += export_command + p + command_separator
 
     return command
+
+def get_additional_commands_for(platform):
+    command_separator = ';'
+
+    if 'win' in sys.platform:
+        command_separator = '&'
+
+    command = ''
+
+    for p in additional_commands[platform]:
+        command += p + command_separator
+
+    return command
+
 
 
 def parse_config():
@@ -292,6 +308,14 @@ def parse_config():
                 export_path = format_path(ls[8 + len(words[1]):])
 
                 exports[words[1]].append(export_path)
+            elif words[0] == 'run':
+                if (len(words) < 3) or not words[1] in additional_commands:
+                    print('This build.config line is malformed, and got ignored: ' + ls)
+                    continue
+
+                final_cmd = format_path(ls[5 + len(words[1]):])
+
+                additional_commands[words[1]].append(final_cmd)
 
 parse_config()
 
@@ -301,8 +325,12 @@ if len(sys.argv) > 1:
 
     arg = sys.argv[1]
 
+    arg_split = arg.split('_')
+    arg = arg_split[0]
+    arg_split = arg_split[1:]
+
     if arg[0] == 'b':
-        build_string = get_exports_for('global') + 'scons '
+        build_string = get_exports_for('global') + get_additional_commands_for('global') + 'scons '
 
         build_string += 'tools='
         if 'e' in arg:
@@ -342,6 +370,18 @@ if len(sys.argv) > 1:
         for i in range(2, len(sys.argv)):
             build_string += ' ' + sys.argv[i] + ' '
 
+        if 'slim' in arg_split:
+            build_string += module_config.slim_args
+            build_string += ' '
+
+        if 'latomic' in arg_split:
+            build_string += 'LINKFLAGS="-latomic"'
+            build_string += ' '
+
+        if 'strip' in arg_split:
+            build_string += 'debug_symbols=no'
+            build_string += ' '
+
         target = ' '
 
         if 'E' in arg:
@@ -367,7 +407,7 @@ if len(sys.argv) > 1:
         if 'l' in arg:
             build_string += 'platform=x11'
 
-            build_string = get_exports_for('linux') + build_string + target
+            build_string = get_exports_for('linux') + get_additional_commands_for('linux') + build_string + target
 
             print('Running command: ' + build_string)
 
@@ -375,7 +415,7 @@ if len(sys.argv) > 1:
         elif 'w' in arg:
             build_string += 'platform=windows'
 
-            build_string = get_exports_for('windows') + build_string
+            build_string = get_exports_for('windows') + get_additional_commands_for('windows') + build_string
 
             print('Running command: ' + build_string)
 
@@ -383,7 +423,7 @@ if len(sys.argv) > 1:
         elif 'a' in arg:
             build_string += 'platform=android'
 
-            build_string = get_exports_for('android') + build_string
+            build_string = get_exports_for('android') + get_additional_commands_for('android') + build_string
 
             print('Running command: ' + build_string + ' android_arch=armv7')
             subprocess.call(build_string + ' android_arch=armv7', shell=True)
@@ -394,12 +434,12 @@ if len(sys.argv) > 1:
 
             os.chdir(full_path + 'platform/android/java/')
 
-            print('Running command: ' + get_exports_for('global') + get_exports_for('android') + './gradlew generateGodotTemplates')
-            subprocess.call(get_exports_for('global') + get_exports_for('android') + './gradlew generateGodotTemplates', shell=True)
+            print('Running command: ' + get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generateGodotTemplates')
+            subprocess.call(get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generateGodotTemplates', shell=True)
         elif 'j' in arg:
             build_string += 'platform=javascript'
 
-            build_string = get_exports_for('javascript') + build_string
+            build_string = get_exports_for('javascript') + get_additional_commands_for('javascript') + build_string
 
             print('Running command: ' + build_string)
             subprocess.call(build_string, shell=True)
@@ -431,26 +471,40 @@ if len(sys.argv) > 1:
         exit()
     elif arg[0] == 'p':
         if arg == 'p':
-            #print("Applies a patch. Append c for the compilation database patch. For example: pc")
-            print("Applies a patch. No Patches right now.")
+            print("Applies a patch. No Patches right now.Append s for the skeleton editor patch. For example: ps ")
             exit()
 
         cwd = os.getcwd()
         full_path = cwd + '/engine/'
 
         if not os.path.isdir(full_path):
-            print('engine directory doesnt exists.')
+            print('engine directory does not exists.')
             exit()
 
         os.chdir(full_path)
 
         #apply the patch to just the working directory, without creating a commit
 
-        #if 'c' in arg:
-        #    subprocess.call('git apply --index ../patches/compilation_db.patch', shell=True)
+        if 's' in arg:
+            subprocess.call('git apply --index ../patches/custom_skeleton_3d_editor_plugin.patch', shell=True)
 
-        #unstage all files
-        subprocess.call('git reset', shell=True)
+            #unstage all files
+            subprocess.call('git reset', shell=True)
+
+            vman_full_path = cwd + '/engine/modules/voxelman/'
+
+            #also patch voxelman as the plugin changes forward_spatial_gui_input's definition
+            if os.path.isdir(vman_full_path):
+                os.chdir(vman_full_path)
+
+                subprocess.call('git apply --index ../../../patches/fix-voxel-editor-after-the-skeleton-editor-patch.patch', shell=True)
+
+                #unstage all files
+                subprocess.call('git reset', shell=True)
+            else:
+                print('Voxelman directory does not exists, skipping patch.')
+
+
 
         exit()
 
