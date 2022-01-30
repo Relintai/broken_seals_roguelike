@@ -7,6 +7,7 @@ module_repositories = [
     [ ['https://github.com/Relintai/texture_packer.git', 'git@github.com:Relintai/texture_packer.git'], 'texture_packer', '' ],
     [ ['https://github.com/Relintai/godot_fastnoise.git', 'git@github.com:Relintai/godot_fastnoise.git'], 'fastnoise', '' ],
     [ ['https://github.com/Relintai/thread_pool.git', 'git@github.com:Relintai/thread_pool.git'], 'thread_pool', '' ],
+    [ ['https://github.com/Relintai/rtile_map.git', 'git@github.com:Relintai/rtile_map.git'], 'rtile_map', '' ],
 ]
 
 removed_modules = [

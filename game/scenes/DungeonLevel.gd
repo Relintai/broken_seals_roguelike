@@ -50,7 +50,7 @@ var nav_graph : AStar2D
 var entrance_position : Transform2D = Transform2D()
 var player_visibility_array : Array = Array()
 
-onready var tile_map : TileMap = $Terrarin
+onready var tile_map : = $Terrarin
 onready var visibility_map : TileMap = $VisibilityMap
 
 func _ready():
