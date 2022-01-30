@@ -1,4 +1,4 @@
-extends "aura_script.gd"
+extends SpellGD
 
 export(bool) var does_stack : bool = true
 export(float) var mod_speed : float = 0

@@ -11,9 +11,7 @@
 [sub_resource type="CircleShape2D" id=3]
 radius = 20.0
 
-[node name="Mob" type="Entity" groups=[
-"mobs",
-]]
+[node name="Mob" type="Entity" groups=["mobs"]]
 body_path = NodePath("KinematicBody2D")
 character_skeleton_path = NodePath("KinematicBody2D/Character")
 sresources = [ SubResource( 1 ), SubResource( 2 ) ]

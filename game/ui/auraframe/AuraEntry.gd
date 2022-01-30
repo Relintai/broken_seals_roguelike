@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-# Copyright (c) 2019-2020 Péter Magyar
+# Copyright (c) 2019-2021 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -74,10 +74,10 @@ func set_aura_data(paura_data : AuraData):
 		set_process(false)
 		time_label.text = ""
 	
-	tooltip_node.hint_tooltip = aura_data.aura.text_description
+	tooltip_node.hint_tooltip = aura_data.aura.aura_text_description
 	texture_rect.texture = aura_data.aura.icon
 	
-	if aura_data.aura.debuff:
+	if aura_data.aura.aura_debuff:
 		var aura_type : int = aura_data.aura.aura_type
 		
 		if aura_type == SpellEnums.AURA_TYPE_MAGIC:

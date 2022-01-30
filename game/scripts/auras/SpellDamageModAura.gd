@@ -1,4 +1,4 @@
-extends "aura_script.gd"
+extends SpellGD
 
 export(String) var spell_name : String
 export(float) var mod_value : float

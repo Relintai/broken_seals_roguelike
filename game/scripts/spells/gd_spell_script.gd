@@ -32,8 +32,9 @@ func _cast_starts(info : SpellCastInfo) -> void:
 	if cooldown_global_cooldown_enabled and info.caster.gcd_hass() or info.caster.category_cooldown_hass(spell_type) or info.caster.cooldown_hass(id):
 		return
 	
-	if !info.caster.spell_hass_id(id):
-		return
+	# Todo Add source info to SpellCastInfo (player, item, spell, etc)
+	#if !info.caster.spell_hass_id(id):
+	#	return
 		
 	var entity_relation_type = info.caster.gets_relation_to(info.target)
 	
@@ -169,37 +170,56 @@ func handle_effect(info : SpellCastInfo) -> void:
 		
 		handle_spell_heal(shi)
 		
-	for aura in caster_aura_applys:
-		var ainfo : AuraApplyInfo = AuraApplyInfo.new()
-		
-		ainfo.caster = info.caster
-		ainfo.target = info.caster
-		ainfo.spell_scale = 1
-		ainfo.aura = aura
+	if is_aura():
+		var ad : AuraData = AuraData.new()
 
-		aura.sapply(ainfo)
+		if aura_get_aura_group():
+			ad = info.target.aura_gets_with_group_by(info.caster, aura_get_aura_group())
+		else:
+			ad = info.target.aura_gets_by(info.caster, id)
 		
+		if ad:
+			info.target.aura_removes_exact(ad)
+
+		var aai : AuraApplyInfo = AuraApplyInfo.new()
+
+		aai.caster_set(info.caster)
+		aai.target_set(info.target)
+		aai.spell_scale_set(info.spell_scale)
+		aai.set_aura(self)
+
+		aura_sapply(aai)
+
+	for spell in spells_cast_on_caster:
+		if !spell:
+			continue
+
+		var sci : SpellCastInfo = SpellCastInfo.new()
+
+		sci.caster = info.caster
+		sci.target = info.caster
+		sci.has_cast_time = spell.cast_enabled
+		sci.cast_time = spell.cast_cast_time
+		sci.spell_scale = info.spell_scale
+		sci.set_spell(spell)
+		
+		spell.cast_starts(sci)
+
 	if info.target != null:
-		for aura in target_aura_applys:
-			var ad : AuraData = null
-			
-			if aura.aura_group != null:
-				ad = info.target.aura_gets_with_group_by(info.caster, aura.aura_group)
-			else:
-				ad = info.target.aura_gets_by(info.caster, aura.get_id())
-			
-			if ad != null:
-				info.target.aura_removes_exact(ad)
-			
-			var ainfo : AuraApplyInfo = AuraApplyInfo.new()
-		
-			ainfo.caster = info.caster
-			ainfo.target = info.target
-			ainfo.spell_scale = 1
-			ainfo.aura = aura
+		for spell in spells_cast_on_target:
+			if !spell:
+				continue
 
-			aura.sapply(ainfo)
-		
+			var sci : SpellCastInfo = SpellCastInfo.new()
+
+			sci.caster = info.caster
+			sci.target = info.target
+			sci.has_cast_time = spell.cast_enabled
+			sci.cast_time = spell.cast_cast_time
+			sci.spell_scale = info.spell_scale
+			sci.set_spell(spell)
+
+			spell.cast_starts(sci)
 		
 		
 func handle_cooldown(info : SpellCastInfo) -> void:
@@ -257,3 +277,81 @@ func _notification_ccast(what, info):
 
 func _son_spell_hit(info):
 	handle_effect(info)
+
+
+func _aura_sapply(info : AuraApplyInfo) -> void:
+#	var add : bool = false
+	var ad : AuraData = info.target.aura_gets_by(info.caster, info.aura.id)
+
+	if ad == null:
+#		add = true
+		ad = AuraData.new()
+
+		setup_aura_data(ad, info);
+
+		for i in range(aura_stat_attribute_get_count()):
+			info.target.stat_mod(aura_stat_attribute_get_stat(id), aura_stat_attribute_get_base_mod(i), aura_stat_attribute_get_bonus_mod(i), aura_stat_attribute_get_percent_mod(i))
+
+		if aura_states_add != 0:
+			for i in range(EntityEnums.ENTITY_STATE_TYPE_INDEX_MAX):
+				var t : int = 1 << i
+
+				if aura_states_add & t != 0:
+					info.target.adds_state_ref(i)
+
+		info.target.aura_adds(ad);
+		
+		apply_mods(ad)
+	else:
+		ad.remaining_time = aura_time
+
+
+func _aura_sdeapply(data : AuraData) -> void:
+	for i in range(aura_stat_attribute_get_count()):
+		data.owner.stat_mod(aura_stat_attribute_get_stat(id), -aura_stat_attribute_get_base_mod(i), -aura_stat_attribute_get_bonus_mod(i), -aura_stat_attribute_get_percent_mod(i))
+
+	if aura_states_add != 0:
+		for i in range(EntityEnums.ENTITY_STATE_TYPE_INDEX_MAX):
+			var t : int = 1 << i
+
+			if aura_states_add & t != 0:
+				data.owner.removes_state_ref(i)
+				
+	deapply_mods(data)
+				
+func apply_mods(ad : AuraData):
+	pass
+	
+func deapply_mods(ad : AuraData):
+	pass
+	
+
+func _con_aura_added(data : AuraData) -> void:
+	if data.owner.get_character_skeleton() == null or data.owner.get_character_skeleton().root_attach_point == null:
+		return
+	
+	var bse : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
+		
+	if bse != null:
+		if bse.root_aura_effect != null:
+			if bse.root_aura_effect_time < 0.00001:
+				data.owner.get_character_skeleton().root_attach_point.add_effect(bse.root_aura_effect)
+			else:
+				data.owner.get_character_skeleton().root_attach_point.add_effect_timed(bse.root_aura_effect, bse.root_aura_effect_time)
+
+		if bse.torso_aura_effect != null:
+			if bse.torso_aura_effect_time < 0.00001:
+				data.owner.get_character_skeleton().torso_attach_point.add_effect(bse.torso_aura_effect)
+			else:
+				data.owner.get_character_skeleton().torso_attach_point.add_effect_timed(bse.torso_aura_effect, bse.torso_aura_effect_time)
+
+func _con_aura_removed(data : AuraData) -> void:
+	var bse : SpellEffectVisualBasic = visual_spell_effects as SpellEffectVisualBasic
+		
+	if bse != null:
+		if bse.root_aura_effect != null and bse.root_aura_effect_time < 0.00001:
+			data.owner.get_character_skeleton().root_attach_point.remove_effect(bse.root_aura_effect)
+			
+		if bse.torso_aura_effect != null and bse.torso_aura_effect_time < 0.00001:
+			data.owner.get_character_skeleton().torso_attach_point.remove_effect(bse.torso_aura_effect)
+

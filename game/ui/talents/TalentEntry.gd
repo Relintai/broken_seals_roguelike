@@ -1,6 +1,6 @@
 extends CenterContainer
 
-# Copyright (c) 2019-2020 Péter Magyar
+# Copyright (c) 2019-2021 Péter Magyar
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,7 @@ func refresh() -> void:
 	var known_rank_count : int = 0
 	
 	for i in range(_spec.get_num_ranks(_row, culomn)):
-		var a : Aura = _spec.get_talent(_row, culomn, i)
+		var a : Spell = _spec.get_talent(_row, culomn, i)
 		
 		if a == null:
 			break
@@ -105,10 +105,10 @@ func refresh() -> void:
 	
 		_upgrade_button.show()
 	
-	var aura : Aura = _spec.get_talent(_row, culomn, ridx)
+	var aura : Spell = _spec.get_talent(_row, culomn, ridx)
 		
 	_aura_name_label.text = aura.text_name
-	_aura_description_label.text = aura.text_description
+	_aura_description_label.text = aura.aura_text_description
 	_icon_rect.texture = aura.icon
 	_rank_label.text = str(known_rank_count) + "/" + str(rank_count)
 		

@@ -6,8 +6,6 @@
 
 [sub_resource type="EntityResourceSpeed" id=2]
 
-[node name="Player" type="Entity" groups=[
-"players",
-]]
+[node name="Player" type="Entity" groups=["players"]]
 sresources = [ SubResource( 1 ), SubResource( 2 ) ]
 script = ExtResource( 2 )
