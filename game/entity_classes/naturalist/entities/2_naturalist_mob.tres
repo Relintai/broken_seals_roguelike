@@ -1,6 +1,6 @@
 [gd_resource type="EntityData" load_steps=5 format=2]
 
-[ext_resource path="res://modules/species/species_human.tres" type="EntitySpeciesData" id=1]
+[ext_resource path="res://sprites/entities/species_human.tres" type="EntitySpeciesData" id=1]
 [ext_resource path="res://entity_classes/naturalist/1_naturalist.tres" type="EntityClassData" id=2]
 [ext_resource path="res://scripts/entities/EntityDataGD.gd" type="Script" id=3]
 
