@@ -1,6 +1,6 @@
 engine
+pandemonium_engine
 modules/*
-ignore/*
 logs/*
 
 *.d
@@ -10,6 +10,9 @@ game/.import/**
 game/.prop_tool_temp/**
 .sconsign.dblite
 .DS_Store
+
+export/**
+release/**
 
 .vs/*
 .kdev4/*
@@ -25,4 +28,5 @@ game/android/build/*
 .dir-locals.el
 
 build.config
+
 __pycache__/*

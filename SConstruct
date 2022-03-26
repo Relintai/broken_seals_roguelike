@@ -46,6 +46,9 @@ exports = {
     'windows': [],
     'android': [],
     'javascript': [],
+    'osx': [],
+    'ios': [],
+    'server': [],
 }
 
 additional_commands = {
@@ -54,6 +57,9 @@ additional_commands = {
     'windows': [],
     'android': [],
     'javascript': [],
+    'osx': [],
+    'ios': [],
+    'server': [],
 }
 
 target_commits = {}
@@ -174,6 +180,55 @@ def copytree(src, dst):
 
             shutil.copy2(sp, dp)
 
+def validate_repository_origin(data, clone_path, branch = 'master'):
+    full_path = os.path.abspath(clone_path)
+
+    if not os.path.isdir(full_path):
+        return
+
+    cwd = os.getcwd()
+    os.chdir(full_path)
+
+    res = subprocess.run('git remote -v', shell=True, capture_output=True)
+
+    resstr = res.stdout.decode('ascii')
+    resarr = resstr.split("\n")
+    res_orig = []
+
+    for l in resarr:
+        if "origin" in l:
+            res_orig.append(l)
+
+    if len(res_orig) == 0:
+        print("The repository " + clone_path + " does not seem to have an origin remote. Adding it.")
+
+        subprocess.call('git remote add origin ' + data[0][repository_index], shell=True)
+
+        os.chdir(cwd)
+
+        return
+
+    for l in data[0]:
+        for ll in res_orig:
+            if l in ll:
+                os.chdir(cwd)
+
+                return
+
+    rind = 0
+
+    if 'git@' in res_orig[0]:
+        rind = 1
+
+    subprocess.call('git remote remove origin', shell=True)
+    subprocess.call('git remote add origin ' + data[0][rind], shell=True)
+    subprocess.call('git pull origin', shell=True)
+    subprocess.call('git checkout origin/' + branch, shell=True)
+
+    print('Updated git remote origin in ' + clone_path)
+
+    os.chdir(cwd)
+
 def remove_repository(data, target_folder):
     folder = os.path.abspath(target_folder + data[1])
 
@@ -181,12 +236,13 @@ def remove_repository(data, target_folder):
         shutil.rmtree(folder)
 
 def update_engine():
-    update_repository(module_config.engine_repository, '/', module_config.godot_branch)
+    validate_repository_origin(module_config.engine_repository, './pandemonium_engine/', module_config.pandemonium_branch)
+    update_repository(module_config.engine_repository, '/', module_config.pandemonium_branch)
 
 def update_modules():
     for rep in module_config.module_repositories:
         update_repository(rep, module_clone_path)
-        copy_repository(rep, './engine/modules/', '.' + module_clone_path)
+        copy_repository(rep, './pandemonium_engine/modules/', '.' + module_clone_path)
 
 def update_addons():
     for rep in module_config.addon_repositories:
@@ -208,15 +264,16 @@ def update_all():
 
 
 def setup_engine():
-    setup_repository(module_config.engine_repository, '/', module_config.godot_branch)
+    validate_repository_origin(module_config.engine_repository, './pandemonium_engine/', module_config.pandemonium_branch)
+    setup_repository(module_config.engine_repository, '/', module_config.pandemonium_branch)
 
 def setup_modules():
     for rep in module_config.module_repositories:
         setup_repository(rep, module_clone_path)
-        copy_repository(rep, './engine/modules/', '.' + module_clone_path)
+        copy_repository(rep, './pandemonium_engine/modules/', '.' + module_clone_path)
 
     for rep in module_config.removed_modules:
-        remove_repository(rep, './engine/modules/')
+        remove_repository(rep, './pandemonium_engine/modules/')
 
 
 def setup_addons():
@@ -382,6 +439,14 @@ if len(sys.argv) > 1:
             build_string += 'debug_symbols=no'
             build_string += ' '
 
+        if 'threads' in arg_split:
+            build_string += 'threads_enabled=yes'
+            build_string += ' '
+
+        if 'c' in arg:
+            build_string += 'compiledb=yes'
+            build_string += ' '
+
         target = ' '
 
         if 'E' in arg:
@@ -396,10 +461,10 @@ if len(sys.argv) > 1:
             target += 'bin/libprocedural_animations.x11.opt.tools.64.so'
 
         cwd = os.getcwd()
-        full_path = cwd + '/engine/'
+        full_path = cwd + '/pandemonium_engine/'
 
         if not os.path.isdir(full_path):
-            print('engine directory doesnt exists.')
+            print('engine (pandemonium_engine) directory doesnt exists.')
             exit()
 
         os.chdir(full_path)
@@ -434,8 +499,12 @@ if len(sys.argv) > 1:
 
             os.chdir(full_path + 'platform/android/java/')
 
-            print('Running command: ' + get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generateGodotTemplates')
-            subprocess.call(get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generateGodotTemplates', shell=True)
+            if 'e' in arg: #editor
+                print('Running command: ' + get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generatePandemoniumEditor')
+                subprocess.call(get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generatePandemoniumEditor', shell=True)
+            else: #normal templates
+                print('Running command: ' + get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generatePandemoniumTemplates')
+                subprocess.call(get_exports_for('global') + get_additional_commands_for('global') + get_exports_for('android') + get_additional_commands_for('android') + './gradlew generatePandemoniumTemplates', shell=True)
         elif 'j' in arg:
             build_string += 'platform=javascript'
 
@@ -446,67 +515,73 @@ if len(sys.argv) > 1:
         elif 'i' in arg:
             build_string += 'platform=iphone'
 
-            subprocess.call(build_string + ' arch=arm', shell=True)
-            subprocess.call(build_string + ' arch=arm64', shell=True)
+            print('Running command: ' + build_string)
+            subprocess.call(build_string, shell=True)
 
-            #subprocess.call('lipo -create bin/libgodot.iphone.{0}.arm.a bin/libgodot.iphone.{0}.arm64.a -output bin/libgodot.iphone.{1}.fat.a'.fomat(), shell=True)
+            #print('Running command: ' + build_string + " arch=arm")
+            #subprocess.call(build_string + ' arch=arm', shell=True)
+            #print('Running command: ' + build_string + " arch=arm64")
+            #subprocess.call(build_string + ' arch=arm64', shell=True)
+            #print('Running command: ' + build_string + " arch=x86_64")
+            #subprocess.call(build_string + ' arch=x86_64', shell=True)
+        elif 'x' in arg:
+            build_string += 'platform=osx'
 
-            #lipo -create bin/libgodot.iphone.opt.debug.arm.a bin/libgodot.iphone.opt.debug.arm64.a -output bin/libgodot.iphone.debug.fat.a
-            #rm bin/ios_xcode/libgodot.iphone.debug.fat.a
-            #cp bin/libgodot.iphone.debug.fat.a  bin/ios_xcode/libgodot.iphone.debug.fat.a
+            build_string = get_exports_for('osx') + get_additional_commands_for('osx') + build_string + target
 
-            #lipo -create bin/libgodot.iphone.opt.arm.a bin/libgodot.iphone.opt.arm64.a -output bin/libgodot.iphone.release.fat.a
-            #rm bin/ios_xcode/libgodot.iphone.release.fat.a
-            #cp bin/libgodot.iphone.release.fat.a  bin/ios_xcode/libgodot.iphone.release.fat.a
+            print('Running command: ' + build_string)
+            subprocess.call(build_string, shell=True)
+        elif 'h' in arg:
+            #headless
+            build_string += 'platform=server'
 
-            subprocess.call('rm bin/iphone.zip', shell=True)
-            #cd bin/ios_xcode
-            subprocess.call(build_string + ' arch=arm64', shell=True)
-            subprocess.call('zip -r -X ../iphone.zip .', shell=True)
+            build_string = get_exports_for('server') + get_additional_commands_for('server') + build_string
+
+            print('Running command: ' + build_string)
+
+            subprocess.call(build_string, shell=True)
 
         else:
             print('No platform specified')
             exit()
 
         exit()
-    elif arg[0] == 'p':
-        if arg == 'p':
-            print("Applies a patch. No Patches right now.Append s for the skeleton editor patch. For example: ps ")
-            exit()
-
-        cwd = os.getcwd()
-        full_path = cwd + '/engine/'
-
-        if not os.path.isdir(full_path):
-            print('engine directory does not exists.')
-            exit()
-
-        os.chdir(full_path)
-
-        #apply the patch to just the working directory, without creating a commit
-
-        if 's' in arg:
-            subprocess.call('git apply --index ../patches/custom_skeleton_3d_editor_plugin.patch', shell=True)
-
-            #unstage all files
-            subprocess.call('git reset', shell=True)
-
-            vman_full_path = cwd + '/engine/modules/voxelman/'
-
-            #also patch voxelman as the plugin changes forward_spatial_gui_input's definition
-            if os.path.isdir(vman_full_path):
-                os.chdir(vman_full_path)
-
-                subprocess.call('git apply --index ../../../patches/fix-voxel-editor-after-the-skeleton-editor-patch.patch', shell=True)
-
-                #unstage all files
-                subprocess.call('git reset', shell=True)
-            else:
-                print('Voxelman directory does not exists, skipping patch.')
-
-
-
-        exit()
+#    elif arg[0] == 'p':
+#        if arg == 'p':
+#            print("Applies a patch. No Patches right now.Append s for the skeleton editor patch. For example: ps ")
+#            exit()
+#
+#        cwd = os.getcwd()
+#        full_path = cwd + '/pandemonium_engine/'
+#
+#        if not os.path.isdir(full_path):
+#            print('engine (pandemonium_engine) directory does not exists.')
+#            exit()
+#
+#        os.chdir(full_path)
+#
+#        #apply the patch to just the working directory, without creating a commit
+#
+#        if 's' in arg:
+#            subprocess.call('git apply --index ../patches/custom_skeleton_3d_editor_plugin.patch', shell=True)
+#
+#            #unstage all files
+#            subprocess.call('git reset', shell=True)
+#
+#            vman_full_path = cwd + '/pandemonium_engine/modules/voxelman/'
+#
+#            #also patch voxelman as the plugin changes forward_spatial_gui_input's definition
+#            if os.path.isdir(vman_full_path):
+#                os.chdir(vman_full_path)
+#
+#                subprocess.call('git apply --index ../../../patches/fix-voxel-editor-after-the-skeleton-editor-patch.patch', shell=True)
+#
+#                #unstage all files
+#                subprocess.call('git reset', shell=True)
+#            else:
+#                print('Voxelman directory does not exists, skipping patch.')
+#
+#        exit()
 
 opts = Variables(args=ARGUMENTS)
 
@@ -539,7 +614,7 @@ if not os.path.isdir('./modules'):
     os.mkdir('./modules')
 
 if 'm' in action:
-    godot_branch = 'master'
+    pandemonium_branch = 'master'
 
 if 'setup' in action or action[0] == 's':
     if target == 'all':

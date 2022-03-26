@@ -51,7 +51,7 @@ var entrance_position : Transform2D = Transform2D()
 var player_visibility_array : Array = Array()
 
 onready var tile_map : = $Terrarin
-onready var visibility_map : TileMap = $VisibilityMap
+onready var visibility_map : RTileMap = $VisibilityMap
 
 func _ready():
 	tile_size = get_node("/root/Main").get_tile_size()
