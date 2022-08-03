@@ -170,10 +170,10 @@ data_manager/folder_settings="[]"
 [application]
 
 config/name="Broken Seals Roguelike"
-config/description="An open source third person RPG "
+config/description="An open source 2D turn based roguelike RPG."
 run/main_scene="res://scenes/Main.tscn"
 config/icon="res://icon.png"
-config/version="0.2"
+config/version="0.3"
 
 [autoload]
 
