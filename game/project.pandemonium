@@ -163,6 +163,10 @@ _global_script_class_icons={
 }
 Node="input/actionbar_5_11"
 
+[addons]
+
+data_manager/folder_settings="[]"
+
 [application]
 
 config/name="Broken Seals Roguelike"
