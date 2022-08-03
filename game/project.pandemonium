@@ -200,6 +200,10 @@ window/size/viewport_scale=100
 window/size/ui_scale=1.0
 window/size/ui_scale_touch=1.2
 
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/data_manager/plugin.cfg" )
+
 [ess]
 
 data/ess_resource_db_path="res://data/resource_db.tres"
