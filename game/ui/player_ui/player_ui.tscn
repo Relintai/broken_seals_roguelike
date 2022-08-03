@@ -87,9 +87,6 @@ anchor_bottom = 1.0
 texture = ExtResource( 6 )
 expand = true
 stretch_mode = 6
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Windows" type="CanvasLayer" parent="GUI"]
 layer = 2
