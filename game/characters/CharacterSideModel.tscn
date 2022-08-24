@@ -3,7 +3,6 @@
 [ext_resource path="res://characters/char_t1_outline_split.png" type="Texture" id=1]
 [ext_resource path="res://player/HumanoidCharacterBones2D.gd" type="Script" id=2]
 
-
 [sub_resource type="Animation" id=1]
 resource_name = "casting"
 length = 2.0
@@ -1882,10 +1881,10 @@ tracks/37/keys = {
 [sub_resource type="AnimationNodeTimeScale" id=5]
 
 [sub_resource type="AnimationNodeAnimation" id=6]
-animation = "idle"
+animation = @"idle"
 
 [sub_resource type="AnimationNodeAnimation" id=7]
-animation = "run"
+animation = @"run"
 
 [sub_resource type="AnimationNodeBlend2" id=8]
 
@@ -1900,7 +1899,7 @@ nodes/run/node = SubResource( 7 )
 nodes/run/position = Vector2( -280, 500 )
 nodes/walking/node = SubResource( 8 )
 nodes/walking/position = Vector2( 140, 320 )
-node_connections = [ "walking", 0, "idle", "walking", 1, "RunScale", "RunScale", 0, "run", "output", 0, "walking" ]
+node_connections = [ @"output", 0, @"walking", @"RunScale", 0, @"run", @"walking", 0, @"idle", @"walking", 1, @"RunScale" ]
 
 [node name="CharacterSideModel" type="CharacterBones"]
 rotation = 0.000121465
@@ -1934,14 +1933,14 @@ region_enabled = true
 region_rect = Rect2( 49, 21, 13, 37 )
 
 [node name="arm_r" type="Sprite" parent="."]
-position = Vector2( -3.50003, -24.5128 )
+position = Vector2( -3.5, -24.3088 )
 texture = ExtResource( 1 )
 offset = Vector2( 0, 3 )
 region_enabled = true
 region_rect = Rect2( 1, 11, 4, 9 )
 
 [node name="hand_r" type="Sprite" parent="."]
-position = Vector2( -3.50003, -19.0128 )
+position = Vector2( -3.5, -18.8088 )
 texture = ExtResource( 1 )
 offset = Vector2( 0, 3 )
 region_enabled = true
@@ -2010,13 +2009,13 @@ __meta__ = {
 
 [node name="Position2D" type="Position2D" parent="Hip/leg_l/foot_l"]
 position = Vector2( -0.297693, 7.79954 )
-rotation = -0.0026232
+rotation = -0.00262319
 __meta__ = {
 "_edit_bone_": true
 }
 
 [node name="Torso" type="Sprite" parent="Hip"]
-position = Vector2( 1.24679e-05, -1.89734 )
+position = Vector2( 3.72457e-05, -1.69332 )
 texture = ExtResource( 1 )
 offset = Vector2( 0, -5 )
 region_enabled = true
@@ -2136,7 +2135,7 @@ anims/casting = SubResource( 1 )
 anims/idle = SubResource( 2 )
 anims/rest = SubResource( 3 )
 anims/run = SubResource( 4 )
-blend_times = [ "casting", "run", 1.0, "run", "idle", 1.0, "run", "rest", 1.0 ]
+blend_times = [ @"casting", @"run", 1.0, @"run", @"idle", 1.0, @"run", @"rest", 1.0 ]
 
 [node name="AnimationTree" type="AnimationTree" parent="."]
 tree_root = SubResource( 9 )

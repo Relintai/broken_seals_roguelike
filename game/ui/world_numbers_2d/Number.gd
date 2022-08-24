@@ -52,7 +52,7 @@ func setup(pos : Vector2, color : Color, value : int, crit : bool) -> void:
 	world_position = pos
 	
 	text = str(value)
-	add_color_override("font_color", color)
+	add_theme_color_override("font_color", color)
 	
 	if crit:
 		animation_player.play("crit")

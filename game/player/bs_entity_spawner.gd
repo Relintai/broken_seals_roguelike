@@ -44,7 +44,11 @@ func _ready():
 #    get_tree().connect("connected_to_server", self, "_connected_ok")
 #    get_tree().connect("connection_failed", self, "_connected_fail")
 #    get_tree().connect("server_disconnected", self, "_server_disconnected")
-	pass
+	
+	rpc_config("creceive_spawn_for", MultiplayerAPI.RPC_MODE_REMOTE)
+	rpc_config("creceive_despawn_for", MultiplayerAPI.RPC_MODE_REMOTE)
+	rpc_config("spawn_owned_player", MultiplayerAPI.RPC_MODE_PUPPET)
+	rpc_config("register_player", MultiplayerAPI.RPC_MODE_REMOTE)
 	
 func on_network_peer_packet(id : int, packet : PoolByteArray) ->void:
 	#todo
@@ -58,7 +62,7 @@ func despawn_for(player : Entity, target: Entity) -> void:
 	print("despawnfor " + target.name)
 #	rpc_id(player.get_network_master(), "creceive_despawn_for", target.get_path())
 	
-remote func creceive_spawn_for(data: String, global_name : String, position: Vector3) -> Entity:
+func creceive_spawn_for(data: String, global_name : String, position: Vector3) -> Entity:
 	var createinfo : EntityCreateInfo = EntityCreateInfo.new()
 
 	createinfo.player_name = global_name
@@ -73,14 +77,14 @@ remote func creceive_spawn_for(data: String, global_name : String, position: Vec
 
 	return createinfo.created_entity
 	
-remote func creceive_despawn_for(path : NodePath) -> void:
+func creceive_despawn_for(path : NodePath) -> void:
 #	print("recdespawnfor " + path)
 	var ent = get_tree().root.get_node_or_null(path)
 	
 	if ent:
 		ent.queue_free()
 
-puppet func spawn_owned_player(data : String, position : Vector3) -> Entity:
+func spawn_owned_player(data : String, position : Vector3) -> Entity:
 	var createinfo : EntityCreateInfo = EntityCreateInfo.new()
 
 	createinfo.guid = get_tree().multiplayer.get_network_unique_id()
@@ -295,7 +299,7 @@ func _server_disconnected():
 func _connected_fail():
 	pass # Could not even connect to server; abort.
 
-remote func register_player(id, info):
+func register_player(id, info):
 	# Store the info
 #    player_info[id] = info
 	# If I'm the server, let the new guy know about existing players.

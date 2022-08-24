@@ -10,9 +10,7 @@
 
 [sub_resource type="EntityResourceSpeed" id=4]
 
-[node name="DisplayPlayer" type="Entity" groups=[
-"players",
-]]
+[node name="DisplayPlayer" type="Entity" groups=["players"]]
 body_path = NodePath("KinematicBody2D")
 character_skeleton_path = NodePath("KinematicBody2D/Rotation_Helper/Model")
 sseed = 9240987

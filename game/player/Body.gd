@@ -63,6 +63,10 @@ var init : bool = false
 var touches : Array = Array()
 var touch_zoom : bool = false
 
+func _ready():
+	rpc_config("sset_position", MultiplayerAPI.RPC_MODE_REMOTE)
+	rpc_config("cset_position", MultiplayerAPI.RPC_MODE_REMOTE)
+
 func _enter_tree() -> void:
 	world = get_node(world_path) as Node2D
 	tile_size = get_node("/root/Main").get_tile_size()
@@ -71,6 +75,9 @@ func _enter_tree() -> void:
 		return
 	
 	camera = get_node_or_null("Camera") as Camera2D
+	
+	if camera:
+		camera.current = true
 
 	set_process_input(false)
 	set_process_unhandled_input(false)
@@ -391,11 +398,11 @@ func on_c_controlled_changed():
 	if _controlled:
 		if _nameplate:
 			_nameplate.queue_free()
-			
+		
 		camera = Camera2D.new()
 		camera.zoom = get_node("/root/Main").get_world_scale()
-		add_child(camera)
 		camera.current = true
+		add_child(camera)
 
 		#var uiscn : PackedScene = ResourceLoader.load("res://ui/player_ui/player_ui.tscn")
 		#var ui = uiscn.instance()
@@ -420,14 +427,14 @@ func on_c_controlled_changed():
 		set_visibility(false)
 		
  
-remote func sset_position(pposition : Vector2) -> void:
+func sset_position(pposition : Vector2) -> void:
 	if multiplayer.network_peer and multiplayer.is_network_server():
 		entity.vrpc("cset_position", position)
 		
 		if _controlled:
 			cset_position(position)
 		
-remote func cset_position(pposition : Vector2) -> void:
+func cset_position(pposition : Vector2) -> void:
 	pposition = pposition
 		
 func on_diesd(entity):
