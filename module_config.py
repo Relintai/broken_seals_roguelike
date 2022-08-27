@@ -3,6 +3,9 @@ pandemonium_branch = 'master'
 
 engine_repository = [ ['https://github.com/Relintai/pandemonium_engine.git', 'git@github.com:Relintai/pandemonium_engine.git'], 'pandemonium_engine', '' ]
 
+# Relative to this script's directory
+module_install_folder = './custom_modules/'
+
 module_repositories = [
     #[ ['https://github.com/Relintai/entity_spell_system.git', 'git@github.com:Relintai/entity_spell_system.git'], 'entity_spell_system', '' ],
     #[ ['https://github.com/Relintai/ui_extensions.git', 'git@github.com:Relintai/ui_extensions.git'], 'ui_extensions', '' ],
@@ -21,5 +24,8 @@ addon_repositories = [
 
 third_party_addon_repositories = [
 ]
+
+# Relative to the engine directory
+custom_module_folders = ''
 
 slim_args = 'module_webm_enabled=no module_arkit_enabled=no module_visual_script_enabled=no module_gdnative_enabled=no module_mobile_vr_enabled=no module_theora_enabled=no module_xatlas_unwrap_enabled=no no_editor_splash=yes module_bullet_enabled=no module_camera_enabled=no module_csg_enabled=no module_denoise_enabled=no module_fbx_enabled=no module_gridmap_enabled=no module_hdr_enabled=no module_lightmapper_cpu_enabled=no module_raycast_enabled=no module_recast_enabled=no module_vhacd_enabled=no module_webxr_enabled=no'
