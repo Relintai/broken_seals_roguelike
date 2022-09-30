@@ -1,3 +1,4 @@
+tool
 extends Node2D
 
 # Copyright (c) 2019 Péter Magyar
@@ -54,6 +55,9 @@ onready var tile_map : = $Terrarin
 onready var visibility_map : RTileMap = $VisibilityMap
 
 func _ready():
+	if Engine.editor_hint:
+		return
+	
 	tile_size = get_node("/root/Main").get_tile_size()
 	connect("visibility_changed", self, "on_visibility_changed")
 
@@ -464,16 +468,22 @@ func get_editor_generate() -> bool:
 	return _editor_generate
 	
 func set_editor_generate(value : bool) -> void:
+	if !Engine.editor_hint:
+		return
+	
 	if value:
 		#library.refresh_rects()
 		
 		#level_generator.setup(self, current_seed, false, library)
 		#spawn()
-		pass
+		build_level()
+		visibility_map.clear()
 	else:
 		#spawned = false
-		#clear()
-		pass
+		rooms.clear()
+		map.clear()
+		tile_map.clear()
+		visibility_map.clear()
 		
 	_editor_generate = value
 
