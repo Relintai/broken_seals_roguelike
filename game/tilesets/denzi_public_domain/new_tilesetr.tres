@@ -1,4 +1,4 @@
-[gd_resource type="RTileSet" load_steps=3 format=2]
+[gd_resource type="TileSet" load_steps=3 format=2]
 
 [ext_resource path="res://tilesets/denzi_public_domain/DENZI_CC0_32x32_tileset.png" type="Texture" id=1]
 
