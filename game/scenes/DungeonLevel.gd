@@ -165,7 +165,7 @@ func update_visibility():
 			
 			if visibility_test(tp.x, tp.y, tpos.x, tpos.y):
 				b.set_visibility(true)
-				e.sets_target(_player)
+				e.target_sets(_player)
 				discovered_enemies.append(e)
 				
 
@@ -494,14 +494,14 @@ func on_visibility_changed():
 			
 			if b.visible:
 				b.set_visibility(true)
-				e.sets_target(_player)
+				e.target_sets(_player)
 	else:
 		for e in discovered_enemies:
 			var b = e.get_body()
 			
 			if b.visible:
 				b.set_visibility(false)
-				e.sets_target(null)
+				e.target_sets(null)
 				
 func make_cell_visible(x : int, y : int):
 	visibility_map.set_cell(x, y, -1)

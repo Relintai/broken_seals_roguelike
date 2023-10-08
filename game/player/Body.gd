@@ -84,7 +84,7 @@ func _enter_tree() -> void:
 	
 	character_skeleton = get_node(character_skeleton_path)
 	entity = get_node("..")
-	entity.set_character_skeleton(character_skeleton)
+	entity.character_skeleton_set(character_skeleton)
 #	entity.connect("notification_ccast", self, "on_notification_ccast")
 	entity.connect("diesd", self, "on_diesd")
 	entity.connect("onc_entity_controller_changed", self, "on_c_controlled_changed")
@@ -288,7 +288,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 
 func try_move(dx, dy):
-	var state : int = entity.getc_state()
+	var state : int = entity.state_getc()
 	
 	if state & EntityEnums.ENTITY_STATE_TYPE_FLAG_ROOT != 0 or state & EntityEnums.ENTITY_STATE_TYPE_FLAG_STUN != 0:
 		return
@@ -309,12 +309,12 @@ func try_move(dx, dy):
 		world.player_moved() 
 	
 func move_towards_target():
-	var state : int = entity.getc_state()
+	var state : int = entity.state_getc()
 	
 	if state & EntityEnums.ENTITY_STATE_TYPE_FLAG_ROOT != 0 or state & EntityEnums.ENTITY_STATE_TYPE_FLAG_STUN != 0:
 		return
 		
-	var t : Entity = entity.getc_target()
+	var t : Entity = entity.target_getc()
 	
 	if !t:
 		return
@@ -355,7 +355,7 @@ func target(position : Vector2, keep_target : bool = false) -> bool:
 		if !enemy.get_body().visible:
 			return false
 		
-		if entity.getc_target() != enemy:
+		if entity.target_getc() != enemy:
 			entity.target_crequest_change(enemy.get_path())
 			return true
 	else:
