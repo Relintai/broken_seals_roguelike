@@ -401,7 +401,7 @@ func on_c_controlled_changed():
 		
 		camera = Camera2D.new()
 		camera.zoom = get_node("/root/Main").get_world_scale()
-		camera.current = true
+		#camera.make_current()
 		add_child(camera)
 
 		#var uiscn : PackedScene = ResourceLoader.load("res://ui/player_ui/player_ui.tscn")
