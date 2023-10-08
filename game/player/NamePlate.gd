@@ -94,7 +94,7 @@ func _process(delta):
 		if (get_scale() - target_scale).length() < 0.04:
 			interpolating = false
 	
-	var position : Vector2 = entity.get_body().position
+	var position : Vector2 = entity.body_get().position
 	
 	position.x -= (rect_size.x / 2.0) * rect_scale.x
 	position.y -= offset

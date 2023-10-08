@@ -319,7 +319,7 @@ func move_towards_target():
 	if !t:
 		return
 		
-	var bp : Vector2 = t.get_body().get_tile_position()
+	var bp : Vector2 = t.body_get().get_tile_position()
 	
 	var my_point = world.nav_graph.get_closest_point(get_tile_position())
 	var target_point = world.nav_graph.get_closest_point(bp)
@@ -334,7 +334,7 @@ func move_towards_target():
 			return
 		
 		for e in world.enemies:
-			if e.get_body().get_tile_position() == move_tile:
+			if e.body_get().get_tile_position() == move_tile:
 				return
 				
 		set_tile_position(move_tile)
@@ -352,7 +352,7 @@ func target(position : Vector2, keep_target : bool = false) -> bool:
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
 	
 	if enemy:
-		if !enemy.get_body().visible:
+		if !enemy.body_get().visible:
 			return false
 		
 		if entity.target_getc() != enemy:
@@ -371,7 +371,7 @@ func cmouseover(position : Vector2):
 	var enemy : Entity = world.get_enemy_at_tile(pos.x, pos.y)
 
 	if enemy:
-		if !enemy.get_body().visible:
+		if !enemy.body_get().visible:
 			return false
 			
 		if last_mouse_over != null and last_mouse_over != entity:

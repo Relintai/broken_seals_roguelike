@@ -97,7 +97,7 @@ func get_world():
 func get_world_scale():
 	return world_scale
 	
-func get_body():
+func body_get():
 	return bodies[randi() % bodies.size()]
 	
 func get_tile_size():

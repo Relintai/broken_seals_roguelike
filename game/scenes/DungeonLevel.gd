@@ -73,7 +73,7 @@ func place_player(player: Entity) -> void:
 	if !generated:
 		build()
 		
-	_player.get_body().transform = entrance_position
+	_player.body_get().transform = entrance_position
 	
 	call_deferred("update_visibility")
 	
@@ -98,7 +98,7 @@ func build():
 		
 		var blocked = false
 		for enemy in enemies:
-			var body = enemy.get_body()
+			var body = enemy.body_get()
 			var bp = body.get_tile_position()
 			if bp.x == x && bp.y == y:
 				blocked = true
@@ -132,7 +132,7 @@ func update_visibility():
 	if _player == null:
 		return
 		
-	var body = _player.get_body()
+	var body = _player.body_get()
 	
 	if body == null:
 		return
@@ -155,7 +155,7 @@ func update_visibility():
 			
 #	var test_rect : Rect2 = Rect2(tp, Vector2(10, 10))
 	for e in enemies:
-		var b = e.get_body()
+		var b = e.body_get()
 		
 		if !b.visible:
 			var tpos : Vector2 = b.get_tile_position()
@@ -205,7 +205,7 @@ func is_position_walkable(x : int, y : int) -> bool:
 		return false
 		
 	for e in enemies:
-		var pos : Vector2 = e.get_body().get_tile_position()
+		var pos : Vector2 = e.body_get().get_tile_position()
 		if pos.x == x && pos.y == y:
 			return false
 		
@@ -213,7 +213,7 @@ func is_position_walkable(x : int, y : int) -> bool:
 	
 func get_enemy_at_tile(x : int, y : int) -> Entity:
 	for e in enemies:
-		var pos : Vector2 = e.get_body().get_tile_position()
+		var pos : Vector2 = e.body_get().get_tile_position()
 		if pos.x == x && pos.y == y:
 			return e
 		
@@ -490,14 +490,14 @@ func set_editor_generate(value : bool) -> void:
 func on_visibility_changed():
 	if visible:
 		for e in discovered_enemies:
-			var b = e.get_body()
+			var b = e.body_get()
 			
 			if b.visible:
 				b.set_visibility(true)
 				e.target_sets(_player)
 	else:
 		for e in discovered_enemies:
-			var b = e.get_body()
+			var b = e.body_get()
 			
 			if b.visible:
 				b.set_visibility(false)

@@ -26,7 +26,7 @@ func _unhandled_key_input(event):
 		switch_to_level(l)
 
 func switch_to_level(level_index : int):
-	_player.get_body().hide()
+	_player.body_get().hide()
 	
 	if current_level != -1:
 		levels[current_level].hide()
@@ -41,14 +41,14 @@ func switch_to_level(level_index : int):
 	
 	levels[current_level].add_child(_player)
 	levels[current_level].place_player(_player)
-#	_player.get_body().world = levels[current_level]
-	_player.get_body().show()
+#	_player.body_get().world = levels[current_level]
+	_player.body_get().show()
 
 func load_character(file_name: String) -> void:
 	_player_file_name = file_name
 
 	_player = ESS.entity_spawner.load_player(_player_file_name, Vector3.ZERO, 1) as Entity
-	_player.get_body().hide()
+	_player.body_get().hide()
 	#Server.sset_seed(_player.sseed)
 	
 	call_deferred("switch_to_level", 0)

@@ -122,11 +122,11 @@ func attack(delta):
 	if owner.cast_is_castings():
 		return
 	
-	var dir : Vector2 = target.get_body().get_tile_position() - owner.get_body().get_tile_position()
+	var dir : Vector2 = target.body_get().get_tile_position() - owner.body_get().get_tile_position()
 	var l = dir.length()
 	
 	if l > 1:
-		owner.get_body().move_towards_target()
+		owner.body_get().move_towards_target()
 
 func sort_spells_by_rank(a, b):
 	if a == null or b == null:

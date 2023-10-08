@@ -80,7 +80,7 @@ func _ready() -> void:
 	_is_front_side = false
 
 #func _enter_tree():
-#	var body = get_node("/root/Main").get_body().instance()
+#	var body = get_node("/root/Main").body_get().instance()
 #	add_child(body)
 
 

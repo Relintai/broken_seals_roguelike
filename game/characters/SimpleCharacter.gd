@@ -44,7 +44,7 @@ enum CharacterFacing {
 #	sprite = get_node(sprite_path) as Sprite
 
 func _enter_tree():
-	sprite = get_node("/root/Main").get_body().instance()
+	sprite = get_node("/root/Main").body_get().instance()
 	add_child(sprite)
 
 func update_facing(input_direction : Vector2) -> void:
